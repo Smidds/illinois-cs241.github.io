@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Utilities Unleashed</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Utilities Unleashed
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/illinois-cs241/assignment-docs/blob/master//utilities_unleashed.md">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+              <div class="submission-wrapper">
+                
+                  <b>Entire Assignment</b> due <b>9/19/2018, 11:59 PM</b><br/>
+                  
+                    <b>Graded files:</b>
+                    <ul>
+                      
+                        <li>env.c</li>
+                      
+                        <li>time.c</li>
+                      
+                    </ul>
+                  
+                
+              </div>
+            
+            
+              <div class="schedule-wrapper">
+                
+                  <b>AG Schedule</b>
+                  <br/>
+                  <b>Pre-deadline Runs</b>
+                    <ul>
+                      
+                        <li>09/14 10:00 PM</li>
+                      
+                        <li>09/16 10:00 PM</li>
+                      
+                        <li>09/18 10:00 PM</li>
+                      
+                    </ul>
+                
+              </div>
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_overview" href="#overview" class="fancy-link">Overview</a></li>
+<li><a id="toc_warning" href="#warning" class="fancy-link">WARNING!</a></li>
+<li><a id="toc_formatc-and-h" href="#formatc-and-h" class="fancy-link">format.c and .h</a></li>
+<li><a id="toc_time" href="#time" class="fancy-link">time</a></li>
+<li><a id="toc_env" href="#env" class="fancy-link">env</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+  <div class="pad"><div class="card">
+<div class="title"><h2 id="learning-objectives" class="title-text">Learning Objectives<a class="anchor title-text" href="#learning-objectives">#</a>
+</h2></div>
+  
+  
+
+
+  <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>
+    The learning objectives for Utilities Unleashed are: <br>
+    </p>
+<ul class="mdl-list">
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Fork, Exec, Wait</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Environment Variables</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Writing a C Program</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Using argv, argc</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Introduction to core utils</span>
+        </li>
+      
+    </ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="suggested-readings" class="title-text">Suggested Readings<a class="anchor title-text" href="#suggested-readings">#</a>
+</h2></div>
+  
+  
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>
+    We suggest you read the following from the
+    <a href="https://github.com/angrave/SystemProgramming/wiki" class="fancy-link wiki-link">wikibook</a>
+    before starting Utilities Unleashed: <br>
+    </p>
+<ul>
+      
+        <li>
+          <a href="/wikibook/forking-part-1-introduction.html#" target="_blank" class="fancy-link wiki-link">Forking, Part 1: Introduction
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/forking-part-2-fork-exec-wait.html#" target="_blank" class="fancy-link wiki-link">Forking, Part 2: Fork, Exec, Wait
+          </a>
+        </li>
+      
+    </ul>
+</div></div></div>
+</div></div>
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="overview" class="title-text">Overview<a class="anchor title-text" href="#overview">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>In this lab, you will be implementing the following C utilities:</p>
+<ul>
+  <li><a href="#time" class="fancy-link wiki-link"><code class="highlighter-rouge">time</code></a></li>
+  <li><a href="#env" class="fancy-link wiki-link"><code class="highlighter-rouge">env</code></a></li>
+</ul>
+<p>Notes:</p>
+<ul>
+  <li>Do not worry about flags or features that we do not mention.</li>
+  <li>Do not print any of your debug information out for your final submission.</li>
+  <li>All printing (except env vars) should be handled with <code class="highlighter-rouge">format.h</code>.</li>
+  <li>A common issue is double printouts. If this happens to you, try flushing stdout before you fork/exec. If this solves your issue, ask yourself why.</li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="warning" class="title-text">WARNING!<a class="anchor title-text" href="#warning">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>If you fork bomb on <em>any</em> autograder run, you will receive a zero on this assignment.</p>
+<p>To prevent you from fork bombing your own VM, we recommend looking into <a href="https://ss64.com/bash/ulimit.html" class="fancy-link wiki-link"><code class="highlighter-rouge">ulimit</code></a>. This will allow you to set a limit for how many times you can fork.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="formatc-and-h" class="title-text">format.c and .h<a class="anchor title-text" href="#formatc-and-h">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Since this lab requires your programs to print messages to <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stdout" class="fancy-link">stdout</a></code> and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stderr" class="fancy-link">stderr</a></code>, we have provided you with <code class="highlighter-rouge">format.c</code> and <code class="highlighter-rouge">format.h</code>. You should not be printing out to stdout and stderr at all. Instead, you should be using the provided functions. You can find documentation for each function in <code class="highlighter-rouge">format.h</code>. Please <em>read</em> the documentation in <code class="highlighter-rouge">format.h</code> <em>multiple</em> times to determine when each function should be used. This is our way of ensuring that you do not lose points for formatting issues, but it also means that you are responsible for handling any errors mentioned in <code class="highlighter-rouge">format.c</code> and <code class="highlighter-rouge">format.h</code>.</p>
+<p>It is common for students to fail certain test cases on this assignment with seemingly functional code, it is almost always because of improper usage of <code class="highlighter-rouge">format.h</code>.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="time" class="title-text">time<a class="anchor title-text" href="#time">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>In this lab, you will be implementing <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/time" class="fancy-link">time</a></code>.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>time – run a program and report how long it took
+</code></pre></div></div>
+<p>So if a user enters:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./time sleep 2
+</code></pre></div></div>
+<p>then time will run <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sleep" class="fancy-link">sleep</a></code> with the argument <code class="highlighter-rouge">2</code> and print how long it took in seconds:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2.002345 seconds
+</code></pre></div></div>
+<p>For more examples, you can play with Linux’s builtin <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/time" class="fancy-link">time</a></code> command by typing <code class="highlighter-rouge">time YOURCOMMAND</code> (<code class="highlighter-rouge">time ls -l</code>, for example) in your terminal. Be sure to add <code class="highlighter-rouge">./</code> to the beginning (or use the full path to your <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/time" class="fancy-link">time</a></code> executable file if you are in another directory), otherwise the builtin <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/time" class="fancy-link">time</a></code> will be called.</p>
+<p>Note that we only care about <a href="https://en.wikipedia.org/wiki/Wall-clock_time" class="fancy-link wiki-link">wall-clock time</a>, and we recommend using <a href="http://linux.die.net/man/3/clock_gettime" class="fancy-link wiki-link"><code class="highlighter-rouge">clock_gettime</code></a> with <code class="highlighter-rouge">CLOCK_MONOTONIC</code>.</p>
+<p>Pro tip: 1 second == 1,000,000,000 nanoseconds.</p>
+<p>Nota bene:</p>
+<ul>
+  <li>You <strong>may not</strong> use the existing <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/time" class="fancy-link">time</a></code> program.</li>
+  <li>You must use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code>, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code>, and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/wait" class="fancy-link">wait</a></code> (no other solutions will be accepted).</li>
+  <li>If the child process does not terminate successfully (where its exit status is non-zero), you should exit with status 1 <em>without</em> printing the time.</li>
+  <li>We will only run <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/time" class="fancy-link">time</a></code> with one program.</li>
+  <li>The commands we will run can take any number of arguments.</li>
+  <li>Do your time computations with double-precision floating pointer numbers (<code class="highlighter-rouge">double</code>) rather that single-precision (<code class="highlighter-rouge">float</code>).</li>
+  <li>We have provided functions in <code class="highlighter-rouge">format.h</code> that we expect you to use wherever appropriate.</li>
+</ul>
+<h3 id="useful-resources" class="title-text">Useful Resources</h3>
+<ul>
+  <li><a href="http://cs-education.github.io/sys/#chapter/2/section/0/activity/0" class="fancy-link wiki-link">Program arguments: argc &amp; argv</a></li>
+  <li><a href="/wikibook/forking-part-2-fork-exec-wait.html#" class="fancy-link wiki-link">fork, exec, wait</a></li>
+  <li><a href="http://cs-education.github.io/sys/#chapter/5/section/1/activity/0" class="fancy-link wiki-link">fork and waitpid</a></li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="env" class="title-text">env<a class="anchor title-text" href="#env">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>In this lab, you will be implementing a special version of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/env" class="fancy-link">env</a></code>.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>env – run a program in modified environments
+</code></pre></div></div>
+<p>Usage:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./env [-n #] [key=val1,val2,...] [key2=val1,val2,...] ... -- cmd [args] ..
+</code></pre></div></div>
+<p>Please re-read this section <em>multiple</em> times before starting:</p>
+<ul>
+  <li>
+<code class="highlighter-rouge">-n N</code> is an <em>optional</em> flag that indicates how many values there are for each variable. <code class="highlighter-rouge">N</code> must be a number more than zero, and is only required if more than 1. This means that if each <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/key" class="fancy-link">key</a></code> only has 1 value, <code class="highlighter-rouge">-n</code> is NOT needed.</li>
+  <li>Each variable is in the form of <code class="highlighter-rouge">NAME=v1,v2,v3...vN</code>, separated by spaces.</li>
+  <li>For each variable, there can either be <em>one</em> or <code class="highlighter-rouge">N</code> values. (There can only be <code class="highlighter-rouge">N</code> <em>if and only if</em> the <code class="highlighter-rouge">-n</code> flag is used.)</li>
+  <li>Values may contain references to environment variables in the form <code class="highlighter-rouge">%NAME</code>, including variables that were set earlier. As a result, variables should be processed from left to right.</li>
+  <li>Each reference should be replaced with its value.</li>
+  <li>The names of variables (both in <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/key" class="fancy-link">key</a></code> and in <code class="highlighter-rouge">value</code>) only contain letters, numbers, or underscore characters.</li>
+  <li>For each environment variable <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/key" class="fancy-link">key</a></code>/<code class="highlighter-rouge">value</code> pair, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/env" class="fancy-link">env</a></code> will assign <code class="highlighter-rouge">value</code> to <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/key" class="fancy-link">key</a></code> in the current environment. If <code class="highlighter-rouge">N</code> is more than 1, you must iterate through all pairs of values.</li>
+  <li>Each execution must be done with <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code>, <code class="highlighter-rouge">exec,</code> and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/wait" class="fancy-link">wait</a></code>.</li>
+  <li>The executions must be done sequentially, <em>not</em> in parallel.</li>
+  <li>The last variable/value(s) pairing is followed by a <code class="highlighter-rouge">--</code>.</li>
+  <li>
+<em>Everything</em> following the <code class="highlighter-rouge">--</code> is the command and any arguments that will be executed by env.</li>
+  <li>So, if <code class="highlighter-rouge">A=1,2,3</code> and <code class="highlighter-rouge">B=4,5,6</code> and we want to exec <code class="highlighter-rouge">cmd</code>, <code class="highlighter-rouge">cmd</code> will be executed <em>three</em> times. Once with <code class="highlighter-rouge">A = 1, B = 4</code>, then <code class="highlighter-rouge">A = 2, B = 5</code>, and finally <code class="highlighter-rouge">A = 3, B = 6</code>.</li>
+  <li>If any <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/key" class="fancy-link">key</a></code> has <em>one</em> value instead of <code class="highlighter-rouge">N</code>, you should set that <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/key" class="fancy-link">key</a></code> to that <code class="highlighter-rouge">value</code> <code class="highlighter-rouge">N</code> times.</li>
+  <li>If <code class="highlighter-rouge">A=1</code> and <code class="highlighter-rouge">B=4,5,6</code>, then you want to execute <code class="highlighter-rouge">cmd</code> three times again, but each time has <code class="highlighter-rouge">A=1</code>, and <code class="highlighter-rouge">B</code> switches between 4, 5, and then 6.</li>
+  <li>Since variables can contain references to environment variables, and execution has to be done sequentially - you can have something of the form <code class="highlighter-rouge">A=1,2,3</code> and <code class="highlighter-rouge">B=4,%A,6</code>, then you want to execute <code class="highlighter-rouge">cmd</code> three times again, once with <code class="highlighter-rouge">A = 1, B = 4</code>, then <code class="highlighter-rouge">A = 2, B = 2</code>, and finally <code class="highlighter-rouge">A = 3, B = 6</code>.</li>
+  <li>Invalid input should result in the usage being printed. It is your job to enforce correct usage! You shouldn’t ignore bad usage.</li>
+</ul>
+<p>This is the canonical example and a practical use case:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./env -n 4 TZ=EST5EDT,CST6CDT,MST7MDT,PST8PDT -- date
+Sat Sep  9 19:19:42 EDT 2017
+Sat Sep  9 18:19:42 CDT 2017
+Sat Sep  9 17:19:42 MDT 2017
+Sat Sep  9 16:19:42 PDT 2017
+$
+</code></pre></div></div>
+<p>It runs <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/date" class="fancy-link">date</a></code> <em>four</em> times, once for each time zone, and shows us the result.</p>
+<p>(Note: the output is in order of the variables, and is done sequentially.)</p>
+<p>Example of using references to other variables:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./env -n 4 TEMP=EST5EDT,CST6CDT,MST7MDT,PST8PDT TZ=%TEMP -- date
+Sat Sep  9 19:19:42 EDT 2017
+Sat Sep  9 18:19:42 CDT 2017
+Sat Sep  9 17:19:42 MDT 2017
+Sat Sep  9 16:19:42 PDT 2017
+$
+</code></pre></div></div>
+<p>This has the exact same behavior as before, because <code class="highlighter-rouge">TEMP</code> is first set to <code class="highlighter-rouge">EST5EDT</code>, and then when <code class="highlighter-rouge">TZ</code> is set to <code class="highlighter-rouge">%TEMP</code>, the value of <code class="highlighter-rouge">EST5EDT</code> is retrieved and then <code class="highlighter-rouge">TZ</code> is set to that.</p>
+<p>Notice that the variables are set sequentially, or else it wouldn’t work.</p>
+<p>Again like <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/time" class="fancy-link">time</a></code>, you can play with Linux’s builtin <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/env" class="fancy-link">env</a></code> command by typing <code class="highlighter-rouge">env &lt;var-list&gt; &lt;command-name&gt;</code> (<code class="highlighter-rouge">env MYVAR=CS241 printenv</code>, for example) in your terminal. Again, remember to add <code class="highlighter-rouge">./</code> to the beginning (or the full path to your <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/env" class="fancy-link">env</a></code> executable file if you are in another directory), otherwise the builtin <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/env" class="fancy-link">env</a></code> will be called. Keep in mind that the builtin <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/env" class="fancy-link">env</a></code> <em>does not match</em> our specifications.</p>
+<p>In addition, keep in mind that the builtin <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/env" class="fancy-link">env</a></code> uses <code class="highlighter-rouge">$</code> instead of <code class="highlighter-rouge">%</code> to denote environment variables, and they are separated by spaces in the var list instead of commas.</p>
+<p>In practice, it can be very useful to change some environment variables when running certain command.</p>
+<p>For example, you may notice people write <code class="highlighter-rouge"><span class="c1">#!/usr/bin/env python</span></code> on the first line of their Python script. This line ensures the Python interpreter used is the first one on user’s environment <code class="highlighter-rouge">$PATH</code>. However, users may want to use another version of Python, and it may not be the first one on <code class="highlighter-rouge">$PATH</code>. Say, your desired location is <code class="highlighter-rouge">/usr/local/bin</code> for instance.</p>
+<p>One way to solve this is by exporting <code class="highlighter-rouge">$PATH</code> to the correct position in your terminal, however, this may mess up other commands or executable under the same session.</p>
+<p>An alternative and better way is to use our <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/env" class="fancy-link">env</a></code>, and enter:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./env PATH=/usr/local/bin -- ./XXX.py
+</code></pre></div></div>
+<p>then it runs the script with the desired Python interpreter.</p>
+<p>Nota bene:</p>
+<ul>
+  <li>You <strong>may not</strong> use the existing <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/env" class="fancy-link">env</a></code> program. (Our specification is different than the existing <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/env" class="fancy-link">env</a></code> program.)</li>
+  <li>You <strong>may not</strong> replace <code class="highlighter-rouge">%</code> with <code class="highlighter-rouge">$</code> or use <code class="highlighter-rouge">wordexp(3)</code>.</li>
+  <li>You <strong>may not</strong> use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/execvpe" class="fancy-link">execvpe</a></code>, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/execve" class="fancy-link">execve</a></code>, or <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/execle" class="fancy-link">execle</a></code>.</li>
+  <li>All changes in environment variables and execution must happen only in the child process.</li>
+  <li>You must use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code>/<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code>/<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/wait" class="fancy-link">wait</a></code>.</li>
+  <li>If a variable doesn’t exist, interpret its value as a zero-length string.</li>
+  <li>
+<strong>Do not fork bomb the autograder!</strong> You will fail if you forkbomb the AG. (See the <a href="#warning" class="fancy-link wiki-link">warning</a>.)</li>
+</ul>
+<h3 id="useful-resources-1" class="title-text">Useful Resources</h3>
+<ul>
+  <li><a href="http://cs-education.github.io/sys/#chapter/2/section/1/activity/0" class="fancy-link wiki-link">Environment variables</a></li>
+  <li><a href="http://www.gnu.org/software/libc/manual/html_node/Environment-Variables.html" class="fancy-link wiki-link">Environment variable functions</a></li>
+  <li><a href="http://man7.org/linux/man-pages/man3/string.3.html" class="fancy-link wiki-link">string.h</a></li>
+  <li><a href="https://www.quora.com/How-do-you-write-a-C-program-to-split-a-string-by-a-delimiter" class="fancy-link wiki-link">Split a string by a delimiter</a></li>
+</ul>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="submission-instructions" class="title-text">Submission Instructions<a class="anchor title-text" href="#submission-instructions">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Please read details on <a href="/#academic-integrity" class="fancy-link wiki-link">Academic Integrity</a> fully. These are shared by all assignments in CS 241.</p>
+<p>We will be using GitHub as our hand-in system this semester. Our grading system will checkout your most recent (pre-deadline) commit for grading. Therefore, to hand in your code, all you have to do is commit and push to your Github repository.</p>
+<p>To check out the provided code for <code class="highlighter-rouge">utilities_unleashed</code> from the class repository, go to your cs241 directory (the one you checked out for “know your tools”) and run:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git pull release master
+</code></pre></div></div>
+<p>If you run <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/ls" class="fancy-link">ls</a></code> you will now see a <code class="highlighter-rouge">utilities_unleashed</code> folder, where you can find this assignment! To commit your changes (send them to us), type:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git add utilities_unleashed
+git commit -m "utilities_unleashed submission"
+git push origin master
+</code></pre></div></div>
+<p>Your repository directory can be viewed from a web browser from the following URL: 
+<a href="https://github-dev.cs.illinois.edu/cs241-fa18/NETID/tree/master/utilities_unleashed" class="fancy-link wiki-link">https://github-dev.cs.illinois.edu/cs241-fa18/NETID/tree/master/utilities_unleashed</a> where NETID is your University NetID. It is important to check that the files you expect to be graded are present and up to date in your remote git copy.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="assignment-feedback" class="title-text">Assignment Feedback<a class="anchor title-text" href="#assignment-feedback">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>We strive to provide the best assignments that we can for this course, and we would like your feedback on them!</p>
+<p>This is the form we will use to evaluate our assignments. We appreciate the time you take to give us your honest feedback and we promise to keep improving the course to make your experience in CS 241 the best it can be.</p>
+<p><a href="https://goo.gl/forms/hREf0ojFWumYfQF12" class="fancy-link wiki-link">https://goo.gl/forms/hREf0ojFWumYfQF12</a></p>
+</div></div></div>
+</div></div>
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_docs/utilities_unleashed.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

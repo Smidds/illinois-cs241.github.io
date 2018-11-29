@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Schedule</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid schedule-container">
+  <div class="row">
+  <!-- Your content goes here -->
+  <div class="col-sm-12 col-xs-12">
+  <div class="container-fluid">
+  
+  <div class = "row">
+  	<div class = "col-lg-3 col-xs-12"><h2><a href="https://echo360.org/"> Recordings</a></h2></div>
+  	<div class = "col-lg-3 hidden-xs"><h2>Monday</h2></div>
+  	<div class = "col-lg-3 hidden-xs"><h2>Wednesday</h2></div>
+  	<div class = "col-lg-3 hidden-xs"><h2>Friday</h2></div>
+  </div>
+
+  
+  <div class = "row">
+    <div class = "col-lg-3 announcement-card">
+      <h3 class="annoucement-title">#1: <span class = "week">8/27 - 8/31</span> </h3>
+      <div class = "announcement" style = "color:#37474F">
+        <ul>
+ <li>
+   <a target='_blank' href = 'https://github.com/angrave/SystemProgramming/wiki/HW0'>HW0</a> is out
+ </li>
+</ul>
+
+      </div>
+    </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#F44336">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">System Programming</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>1. Dive into System programming</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>Prelecture: <a target='_blank' href = 'https://github.com/angrave/SystemProgramming/wiki/HW0'>HW0</a>. The lecture will assume you've made significant progress on this homework</p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#F44336">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">How to crash in C</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>2. Dive into C programming</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>Prelecture: <a href = 'https://github.com/angrave/SystemProgramming/wiki/C-Programming%2C-Part-1%3A-Introduction'>Intro to C Notes</a>. The lecture will assume you've already reviewed and played with this material.</p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#F44336">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">C Crash Course 2</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>3. man,asprintf,free,assert</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See the <a href='https://github.com/angrave/SystemProgramming/wiki/C-Programming%2C-Part-3%3A-Common-Gotchas' target='_blank'>Wikibook C Gotchas</a></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+  </div>
+  
+  <div class = "row">
+    <div class = "col-lg-3 announcement-card">
+      <h3 class="annoucement-title">#2: <span class = "week">9/3 - 9/7</span> </h3>
+      <div class = "announcement" style = "color:#37474F">
+        <ul>
+  <li>Quiz 1 (Tues-Fri): <a target='blank' href='https://cbtf.engr.illinois.edu/'>Sign up!</a></li>
+</ul>
+
+      </div>
+    </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#808080">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Labor day</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>Labor day (no class)</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#F44336">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">C Crash Course 3</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>4. getenv, scanf, getline, fork </p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See the <a target='blank'  href='https://github.com/angrave/SystemProgramming/wiki/C-Programming%2C-Part-2%3A-Text-Input-And-Output'>Wikibook Input and Output</a></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#E91E63">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Fork and wait</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>5. fork and waitpid</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See the <a target='blank' href='https://github.com/angrave/SystemProgramming/wiki/Forking%2C-Part-1%3A-Introduction'>Wikibook forking</a></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+  </div>
+  
+  <div class = "row">
+    <div class = "col-lg-3 announcement-card">
+      <h3 class="annoucement-title">#3: <span class = "week">9/10 - 9/14</span> </h3>
+      <div class = "announcement" style = "color:#37474F">
+        <!-- <ul> </ul> -->
+
+      </div>
+    </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#E91E63">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Forking Processes</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>6. The fork-exec-wait pattern</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See the <a href='https://github.com/angrave/SystemProgramming/wiki/Forking%2C-Part-2%3A-Fork%2C-Exec%2C-Wait' target='_blank'>Wikibook Fork, Exec, Wait</a></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#E91E63">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Signals for Process Control</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>7. Introducing POSIX signals to suspend and kill child processes. SIGSTOP, SIGKILL, SIGINT</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See the <a target='blank'  href='https://github.com/angrave/SystemProgramming/wiki/Process-Control%2C-Part-1%3A-Wait-macros%2C-using-signals'>Wikibook process control</a></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#9C27B0">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Signals 2</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>8. Advanced Signals</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See the <a target='blank' href='https://github.com/angrave/SystemProgramming/wiki#10-signals'>Wikibook heap memory introduction</a></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+  </div>
+  
+  <div class = "row">
+    <div class = "col-lg-3 announcement-card">
+      <h3 class="annoucement-title">#4: <span class = "week">9/17 - 9/21</span> </h3>
+      <div class = "announcement" style = "color:#37474F">
+        <ul>
+  <li>Quiz 2 (Tues-Fri): <a target='blank' href='https://cbtf.engr.illinois.edu/'>Sign up!</a></li>
+</ul>
+
+      </div>
+    </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#9C27B0">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Thanks for the heap memory</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>How to build a memory allocator. Placement algorithms. Fragmentation.</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See the <a target='blank' href='https://github.com/angrave/SystemProgramming/wiki/Memory%2C-Part-1%3A-Heap-Memory-Introduction'>Wikibook heap memory introduction</a></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#9C27B0">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Memory allocators I</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>Hone your pointer skills when writing malloc and free.</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki/Memory%2C-Part-2%3A-Implementing-a-Memory-Allocator'>Memory, Part 2</a></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#9C27B0">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Memory allocators II </h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>Memory allocators part 2.</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki/Memory%2C-Part-2%3A-Implementing-a-Memory-Allocator'>Memory, Part 2</a></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+  </div>
+  
+  <div class = "row">
+    <div class = "col-lg-3 announcement-card">
+      <h3 class="annoucement-title">#5: <span class = "week">9/24 - 9/28</span> </h3>
+      <div class = "announcement" style = "color:#37474F">
+        <ul> <!--   <li>Lab: <a target='blank' href='./mini_valgrind'>Mini Valgrind</a> Due</li>
+  <li>Lab: <a target='blank' href='./mangled_mutexes'>Mangled Mutexes</a> Released</li>
+  <li>MP: <a target='blank' href='./Shell'>Shell</a> Due</li>
+  <li>MP: <a target='blank' href='./malloc'>Malloc</a> Released</li> -->
+</ul> 
+
+      </div>
+    </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#673AB7">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Threads</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>Introducing pthreads. stacks. Concurrency programming gotchas.</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki/Pthreads%2C-Part-1%3A-Introduction'>Intro to Threads</a></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#673AB7">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Threads and mutex locks</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>Introducing pthreads. stacks, shared memory. creating and joining. Concurrency programming gotchas.</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki/Synchronization%2C-Part-1%3A-Mutex-Locks'>Synchronization, Part 1: Mutex Locks</a></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#2196F3">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Mutexes and semaphores</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>Why we need Mutex locks and semaphores. Basic usage of pthread implementations. Common gotchas.</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki/Synchronization%2C-Part-2%3A-Counting-Semaphores'>Synchronization, Part 2: Counting Semaphores</a>.<a href='https://github.com/angrave/SystemProgramming/wiki/Synchronization%2C-Part-3%3A-Working-with-Mutexes-And-Semaphores'>Synchronization, Part 3: Working with Mutexes And Semaphores</a>.</p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+  </div>
+  
+  <div class = "row">
+    <div class = "col-lg-3 announcement-card">
+      <h3 class="annoucement-title">#6: <span class = "week">10/1 - 10/5</span> </h3>
+      <div class = "announcement" style = "color:#37474F">
+        Quiz 3 (Tues-Fri): <a target='blank' href='https://cbtf.engr.illinois.edu/'>Sign up!</a>
+
+      </div>
+    </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#2196F3">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Condition Variables</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>Mutex and Condition Variable examples. How to implement a lock (The critical section problem).</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki/Synchronization%2C-Part-4%3A-The-Critical-Section-Problem'>Synchronization, Part 4: The Critical Section Problem</a> and <a href='https://github.com/angrave/SystemProgramming/wiki/Synchronization%2C-Part-5%3A-Condition-Variables'>Condition Variables</a></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#2196F3">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Critical Section Problem</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>Incorrect attempts to solve the Critical Section Problem. Introduction to Condition Variables.</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki/Synchronization%2C-Part-4%3A-The-Critical-Section-Problem'>Synchronization, Part 4: The Critical Section Problem</a>.</p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#2196F3">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Condition Variables II</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>Condition Variables. Implementing a semaphore using a Condition Variable.</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki/Synchronization%2C-Part-5%3A-Condition-Variables'>Condition Variables</a>.</p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+  </div>
+  
+  <div class = "row">
+    <div class = "col-lg-3 announcement-card">
+      <h3 class="annoucement-title">#7: <span class = "week">10/8 - 10/12</span> </h3>
+      <div class = "announcement" style = "color:#37474F">
+        <!-- <ul>
+  <li>Quiz 4: <a target='blank' href='https://cbtf.engr.illinois.edu/'>Sign up!</a></li>
+</ul> -->
+
+      </div>
+    </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#03A9F4">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Reader Writer Problem</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>Implementing a barrier. Implementing the R/W Problem using Condition Variables.</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki/Synchronization%2C-Part-6%3A-Implementing-a-barrier'>Implementing a barrier</a>,<a href='https://github.com/angrave/SystemProgramming/wiki/Synchronization%2C-Part-7%3A-The-Reader-Writer-Problem'>The Reader Writer Problem</a></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#00BCD4">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Dining Philosophers</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>The Dining Philosophers problem</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki/Deadlock%2C-Part-3%3A-Dining-Philosophers'>Dining Philosophers</a>.</p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#00BCD4">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Deadlock</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>Introduction to Deadlock. Coffman conditions.</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki/Deadlock%2C-Part-2%3A-Deadlock-Conditions'>Deadlock</a>.</p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+  </div>
+  
+  <div class = "row">
+    <div class = "col-lg-3 announcement-card">
+      <h3 class="annoucement-title">#8: <span class = "week">10/15 - 10/19</span> </h3>
+      <div class = "announcement" style = "color:#37474F">
+        <ul>
+  <li>Quiz 4 (Tues-Fri): <a target='blank' href='https://cbtf.engr.illinois.edu/'>Sign up!</a></li>
+</ul>     
+
+      </div>
+    </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#009688">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Page tables</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>Virtual memory</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki/Virtual-Memory%2C-Part-1%3A-Introduction-to-Virtual-Memory'>Virtual Memory</a>.</p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#CDDC39">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Scheduling</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>Scheduling examples</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki/Scheduling%2C-Part-1%3A-Scheduling-Processes'>Scheduling</a></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#CDDC39">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Scheduling-2</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>Scheduling simulator. epoll</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki/Scheduling%2C-Part-2%3A-Scheduling-Processes%3A-Algorithms'>Scheduling</a>.</p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+  </div>
+  
+  <div class = "row">
+    <div class = "col-lg-3 announcement-card">
+      <h3 class="annoucement-title">#9: <span class = "week">10/22- 10/26</span> </h3>
+      <div class = "announcement" style = "color:#37474F">
+        <!-- <ul>
+  <li>Quiz 5: <a target='blank' href='https://cbtf.engr.illinois.edu/'>Sign up!</a></li>
+</ul> -->
+
+      </div>
+    </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#4CAF50">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Pipes and Files</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>POSIX Pipes and random access files</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki/Pipes%2C-Part-1%3A-Introduction-to-pipes'>Introduction to Pipes</a> and <a href='https://github.com/angrave/SystemProgramming/wiki/Pipes%2C-Part-2%3A-Pipe-programming-secrets'>Working with Pipes</a></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#4CAF50">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Pipes, Files, VM II</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>POSIX Pipes, files, memory II</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki/Files%2C-Part-1%3A-Working-with-files'>Files</a></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#FFC107">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Files-1</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>ext2/3/4 filesystem. inode</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki/File-System%2C-Part-1%3A-Introduction'>Files</a>.</p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+  </div>
+  
+  <div class = "row">
+    <div class = "col-lg-3 announcement-card">
+      <h3 class="annoucement-title">#10: <span class = "week">10/29 - 11/2</span> </h3>
+      <div class = "announcement" style = "color:#37474F">
+        <ul>"
+  <li>Quiz 5 (Tues-Fri): <a target='blank' href='https://cbtf.engr.illinois.edu/'>Sign up!</a></li>
+</ul>
+
+      </div>
+    </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#A8A8A8">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">No lecture</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>No lecture</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#FFC107">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Files-3</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>Permissions</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki/File-System%2C-Part-3%3A-Permissions'>Permissions</a>.</p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#8BC34A">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Errno. Networking Intro</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>Robust error handling. EINTR. Intro to TCP,UDP,IP</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki/POSIX%2C-Part-1%3A-Error-handling'>Error handling</a> and <a href='https://github.com/angrave/SystemProgramming/wiki/Networking%2C-Part-1%3A-Introduction'>Networking Introduction</a></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+  </div>
+  
+  <div class = "row">
+    <div class = "col-lg-3 announcement-card">
+      <h3 class="annoucement-title">#11: <span class = "week">11/5 - 11/9</span> </h3>
+      <div class = "announcement" style = "color:#37474F">
+        <!-- <ul>
+  <li>Quiz 6: <a target='blank' href='https://cbtf.engr.illinois.edu/'>Sign up!</a></li>
+</ul> -->
+
+      </div>
+    </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#8BC34A">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">TCP</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>TCP/IP Header. IPv4 exhaustion. A web client</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki#8-networking'>Networking</a></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#8BC34A">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">TCP Server</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>Passive sockets. The 4 server calls and what they do. Gotchas.</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki/Networking%2C-Part-4%3A-Building-a-simple-TCP-Server'>TCP Server</a></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#8BC34A">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">TCP Server II</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>Socket Programming Gotchas. Intro to scheduling</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki/Networking%2C-Part-4%3A-Building-a-simple-TCP-Server'>TCP Server</a></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+  </div>
+  
+  <div class = "row">
+    <div class = "col-lg-3 announcement-card">
+      <h3 class="annoucement-title">#12: <span class = "week">11/12 - 11/16</span> </h3>
+      <div class = "announcement" style = "color:#37474F">
+        <ul>
+  <li>Quiz 6 (Tues-Fri): <a target='blank' href='https://cbtf.engr.illinois.edu/'>Sign up!</a></li>
+</ul>
+
+      </div>
+    </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#FFC107">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">UDP</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>UDP</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki/Networking%2C-Part-6%3A-Creating-a-UDP-server'>UDP</a>.</p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#FFC107">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">UDP</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>UDP</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki/Networking%2C-Part-6%3A-Creating-a-UDP-server'>UDP</a>.</p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#FFC107">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">RPC</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>RPC</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki/RPC%2C-Part-1%3A-Introduction-to-Remote-Procedure-Calls'>RPC</a>.</p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+  </div>
+  
+  <div class = "row">
+    <div class = "col-lg-3 announcement-card">
+      <h3 class="annoucement-title">#13: <span class = "week">11/19 - 11/23</span> </h3>
+      <div class = "announcement" style = "color:#37474F">
+        <!-- -->
+      </div>
+    </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#aaaaaa">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">No lecture</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>Fall Break</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#aaaaaa">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">No lecture</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>Fall Break</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#aaaaaa">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">No lecture</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>Fall Break</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+  </div>
+  
+  <div class = "row">
+    <div class = "col-lg-3 announcement-card">
+      <h3 class="annoucement-title">#14: <span class = "week">11/26 - 11/30</span> </h3>
+      <div class = "announcement" style = "color:#37474F">
+        <ul>
+  <li>Quiz 7 (Tues-Fri): <a target='blank' href='https://cbtf.engr.illinois.edu/'>Sign up!</a></li>
+</ul>
+
+      </div>
+    </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#8BC34A">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Network Review</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>Overview</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki#8-networking'>Networking</a></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#FFC107">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Mmap</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>Memory mapped files</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki/File-System%2C-Part-6%3A-Memory-mapped-files-and-Shared-memory'>Memory Mapped</a>.</p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#FFC107">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">VFS</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p>Virtual f/s</p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p>See <a href='https://github.com/angrave/SystemProgramming/wiki/File-System%2C-Part-5%3A-Virtual-file-systems'>VFS</a>.</p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+  </div>
+  
+  <div class = "row">
+    <div class = "col-lg-3 announcement-card">
+      <h3 class="annoucement-title">#15: <span class = "week">12/3 - 12/7</span> </h3>
+      <div class = "announcement" style = "color:#37474F">
+        <ul>
+  <li>Quiz 8 (Tues-Fri): <a target='blank' href='https://cbtf.engr.illinois.edu/'>Sign up!</a></li>
+</ul>
+
+      </div>
+    </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#C38A80">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Special Topics 1</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p></p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#C38A80">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Special Topics 2</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p></p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#C38A80">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Special Topics 3 / Review</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p></p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+  </div>
+  
+  <div class = "row">
+    <div class = "col-lg-3 announcement-card">
+      <h3 class="annoucement-title">#16: <span class = "week">12/10 - 12/14</span> </h3>
+      <div class = "announcement" style = "color:#37474F">
+        <!-- <ul>
+  <li>Quiz 6: <a target='blank' href='https://cbtf.engr.illinois.edu/'>Sign up!</a></li>
+</ul> -->
+      </div>
+    </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#C38A80">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">Special Topics 4 / Review</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p></p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#808080">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">No class</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p></p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+      <div class="col-lg-3 ">
+      <div class="day container">
+        <div class="day-title row"  style = "background-color:#808080">
+          <div class="day-title-text col-md-12">
+            <h3 class="day-title-h3">No class</h3>
+
+          </div>
+        </div>
+        <div class="day-summary row">
+          <div class="col-xs-10 offset-xs-1"> <p></p> </div>
+          <div class="col-xs-1"></div>
+        </div>
+        <div class="day-resources row">
+          <div class="col-md-10 offset-md-1"> <p></p> </div>
+          <div class="col-md-1"></div>
+        </div>
+      </div>
+      </div>
+    
+  </div>
+  
+  </div>
+  </div>
+</div>
+</div>
+<!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

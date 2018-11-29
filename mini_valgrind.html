@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Mini Valgrind</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Mini Valgrind
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/illinois-cs241/assignment-docs/blob/master//mini_valgrind.md">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+              <div class="submission-wrapper">
+                
+                  <b>Entire Assignment</b> due <b>09/26/18, 11:59 PM</b><br/>
+                  
+                    <b>Graded files:</b>
+                    <ul>
+                      
+                        <li>mini_valgrind.c</li>
+                      
+                    </ul>
+                  
+                
+              </div>
+            
+            
+              <div class="schedule-wrapper">
+                
+                  <b>AG Schedule</b>
+                  <br/>
+                  <b>Pre-deadline Runs</b>
+                    <ul>
+                      
+                        <li>09/21 10:00 PM</li>
+                      
+                        <li>09/23 10:00 PM</li>
+                      
+                        <li>09/25 10:00 PM</li>
+                      
+                    </ul>
+                
+              </div>
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_overview" href="#overview" class="fancy-link">Overview</a></li>
+<li><a id="toc_main-concepts" href="#main-concepts" class="fancy-link">Main Concepts</a></li>
+<li><a id="toc_mini_valgrindc" href="#mini_valgrindc" class="fancy-link">mini_valgrind.c</a></li>
+<li><a id="toc_testing" href="#testing" class="fancy-link">Testing</a></li>
+<li><a id="toc_example" href="#example" class="fancy-link">Example</a></li>
+<li><a id="toc_optional-fun-sentinel-value" href="#optional-fun-sentinel-value" class="fancy-link">Optional Fun: Sentinel Value!</a></li>
+<li><a id="toc_behind-the-scenes" href="#behind-the-scenes" class="fancy-link">Behind the Scenes</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+  <div class="pad"><div class="card">
+<div class="title"><h2 id="learning-objectives" class="title-text">Learning Objectives<a class="anchor title-text" href="#learning-objectives">#</a>
+</h2></div>
+  
+  
+
+
+  <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>
+    The learning objectives for Mini Valgrind are: <br>
+    </p>
+<ul class="mdl-list">
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Using metadata for memory bookkeeping</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Memory management and linked lists</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Learning what Valgrind does</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Preparation for the Malloc MP</span>
+        </li>
+      
+    </ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="suggested-readings" class="title-text">Suggested Readings<a class="anchor title-text" href="#suggested-readings">#</a>
+</h2></div>
+  
+  
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>
+    We suggest you read the following from the
+    <a href="https://github.com/angrave/SystemProgramming/wiki" class="fancy-link wiki-link">wikibook</a>
+    before starting Mini Valgrind: <br>
+    </p>
+<ul>
+      
+        <li>
+          <a href="/wikibook/memory-part-1-heap-memory-introduction.html#" target="_blank" class="fancy-link wiki-link">Memory, Part 1: Heap Memory Introduction
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/memory-part-2-implementing-a-memory-allocator.html#" target="_blank" class="fancy-link wiki-link">Memory, Part 2: Implementing a Memory Allocator
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/memory-part-3-smashing-the-stack-example.html#" target="_blank" class="fancy-link wiki-link">Memory, Part 3: Smashing the Stack Example
+          </a>
+        </li>
+      
+    </ul>
+</div></div></div>
+</div></div>
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="overview" class="title-text">Overview<a class="anchor title-text" href="#overview">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>For this lab, you will be implementing a small version of <a href="http://valgrind.org/docs/manual/quick-start.html" class="fancy-link wiki-link">Valgrind</a> called <code class="highlighter-rouge">mini_valgrind</code>. Valgrind is a great tool for monitoring memory usage, and you have likely used it earlier in this class. Your version will print out a summary of the memory leaks in a particular C program. This lab is meant in part as preparation for your Malloc MP, introducing some topics and techniques which you will find helpful there.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="main-concepts" class="title-text">Main Concepts<a class="anchor title-text" href="#main-concepts">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The main concept of this lab is that we can track each block of memory using some extra space before each allocation (called <em>metadata</em>). We have provided you with a struct <code class="highlighter-rouge">meta_data</code> in <code class="highlighter-rouge">mini_valgrind.h</code>. The metadata is set up as a linked list of nodes which store information for each allocated block. Each node stores the amount of memory requested, the filename and location of the instruction that made the request, and a pointer to the next allocated block.</p>
+<p>Here’s an illustration:</p>
+<p><img src="./images/mini_valgrind.jpg" alt="meta_data_linked_list"></p>
+<p>When the program is about to exit, we can look at this metadata list to see what the user hasn’t freed. These are your memory leaks.</p>
+<p>If you feel that you need a refresher on linked lists or other prerequisite concepts, feel free to ask a CA or TA one-on-one.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="mini_valgrindc" class="title-text">mini_valgrind.c<a class="anchor title-text" href="#mini_valgrindc">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>We have set up <code class="highlighter-rouge">mini_valgrind</code> to dynamically replace every call to <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code>, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/calloc" class="fancy-link">calloc</a></code>, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/realloc" class="fancy-link">realloc</a></code>, and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/free" class="fancy-link">free</a></code> in the user’s program with a call to <code class="highlighter-rouge">mini_malloc</code>, <code class="highlighter-rouge">mini_calloc</code>, <code class="highlighter-rouge">mini_realloc</code>, and <code class="highlighter-rouge">mini_free</code>, respectively. You will be implementing these four functions in order to track the memory the user allocates.</p>
+<p>Inside <code class="highlighter-rouge">mini_valgrind.c</code>, it is safe to call the real versions of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code> and related functions. You should <em>not</em> be writing your own implementation of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code> using <code class="highlighter-rouge"><a href="https://linux.die.net/man/2/sbrk" class="fancy-link">sbrk</a></code> or related system calls.</p>
+<p>See the <code class="highlighter-rouge">mini_valgrind.h</code> header file for details.</p>
+<h3 id="global-variables" class="title-text">Global Variables</h3>
+<p>In addition to the four functions above, you’ll need to maintain the following global variables:</p>
+<ul>
+  <li>
+    <p><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/head" class="fancy-link">head</a></code>: a pointer to the head of a linked list storing all the metadata corresponding to allocated memory blocks</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">total_memory_requested</code>: stores the total number of bytes of memory requested by the user throughout the lifetime of the program (excluding metadata)</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">total_memory_freed</code>: stores the total number of bytes of memory freed by the user throughout the lifetime of the program</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">invalid_addresses</code>: stores the number of times the user has tried to <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/realloc" class="fancy-link">realloc</a></code> or <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/free" class="fancy-link">free</a></code> an invalid pointer</p>
+  </li>
+</ul>
+<p>Since we keep track of this data, we can show the user how much memory they’ve allocated, just like the real Valgrind. We can also find out how much memory a user might be leaking, by subtracting <code class="highlighter-rouge">total_memory_freed</code> from <code class="highlighter-rouge">total_memory_requested</code>.</p>
+<p>If you look in <code class="highlighter-rouge">mini_valgrind.h</code>, you’ll notice that these are declared as <code class="highlighter-rouge">extern</code> variables. This allows variables to live somewhere else beside the line where you are ‘declaring’ them, pushing the responsibility of providing a real location in memory for these variables elsewhere and letting the <a href="https://stackoverflow.com/questions/3322911/what-do-linkers-do" class="fancy-link wiki-link">linker</a> resolve the variable name to where memory is actually reserved. This <a href="https://stackoverflow.com/questions/496448/how-to-correctly-use-the-extern-keyword-in-c" class="fancy-link wiki-link">link</a> has a nice explanation of how to use this. <strong>In order to prevent your code from crashing, you will have to declare these variables as globals in <code class="highlighter-rouge">mini_valgrind.c</code></strong>.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="testing" class="title-text">Testing<a class="anchor title-text" href="#testing">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>You’ll want to test your <code class="highlighter-rouge">mini_valgrind</code> thoroughly.</p>
+<p>We’ve provided you with a <code class="highlighter-rouge">test.c</code> file that you can put test cases in. Running <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/make" class="fancy-link">make</a></code> will generate a <code class="highlighter-rouge">./test</code> executable alongside <code class="highlighter-rouge">mini_valgrind</code>. You can use it like the regular Valgrind:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./mini_valgrind ./test
+</code></pre></div></div>
+<p>The output should look familiar!</p>
+<p>Note that we always build <code class="highlighter-rouge">./test</code> with debugging symbols (<code class="highlighter-rouge">gcc -g</code>), so <code class="highlighter-rouge">mini_valgrind</code> can find the line numbers corresponding to memory leaks.</p>
+<p>To debug <code class="highlighter-rouge">mini_valgrind</code> itself, you can use <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/gdb" class="fancy-link">gdb</a></code> like usual. Use <code class="highlighter-rouge">make debug</code> to generate a version of <code class="highlighter-rouge">mini_valgrind</code> with debugging symbols:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gdb --args ./mini_valgrind-debug ./test
+</code></pre></div></div>
+<h3 id="warning-printf" class="title-text">Warning: printf()</h3>
+<p>Be careful with <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code> in Mini Valgrind! By default, stdout is buffered, so <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code> calls <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code> internally to create a buffer.</p>
+<p>If you call <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code> inside of <code class="highlighter-rouge">mini_malloc</code>, it will allocate its buffer using the <em>real</em> <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code> (since calls to <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code> inside <code class="highlighter-rouge">mini_valgrind.c</code> use the real version), <strong>but then free it using</strong> <strong><em>your</em></strong> <code class="highlighter-rouge">mini_free</code> since the cleanup happens outside of <code class="highlighter-rouge">mini_valgrind.c</code>. As you can imagine, this results in unexpected behavior.</p>
+<p>Instead, you can use <code class="highlighter-rouge">fprintf(stderr, ...)</code>, which is unbuffered, or use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code>, but the easiest solution may be to turn off buffering for stdout:</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="warning-extra-free-call" class="title-text">Warning: extra free() call</h3>
+<p>Note that there will be some extra calls to your <code class="highlighter-rouge">mini_free</code> function at the end of the program.</p>
+<p>This is an unfortunate side effect of how we implement mini_valgrind internally. In mini_hacks.c, we call a cleanup function defined in the C library (<code class="highlighter-rouge">__libc_freeres</code>) at the end of the program, which calls <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/free" class="fancy-link">free</a></code> several times to deallocate any internal buffer created by the C library. Here is an example of what the backtrace looks like in gdb:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Breakpoint 1, mini_free (payload=0x0) at mini_valgrind.c:142
+(gdb) bt
+#0  mini_free (payload=0x0) at mini_valgrind.c:142
+#1  0x00007ffff7bd3d4a in free (ptr=0x0) at mini_hacks.c:193
+#2  0x00007ffff797c380 in __GI___libc_freeres () at set-freeres.c:42
+#3  0x00007ffff7bd44ba in finalize () at mini_hacks.c:334
+#4  0x00007ffff7bd3fa0 in print_leak_info () at mini_hacks.c:365
+...
+</code></pre></div></div>
+<p>This should not affect your implementation of <code class="highlighter-rouge">mini_free</code>. However, do be aware of the extra free calls when you’re debugging your program, just so that you’re not confused about where they’re coming from.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="example" class="title-text">Example<a class="anchor title-text" href="#example">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Here’s a basic test case to check your progress.</p>
+<p>Say you had the following in your <code class="highlighter-rouge">test.c</code> file:</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p><code class="highlighter-rouge">mini_valgrind</code>’s output should look like this (of course, your process ID and addresses might be different):</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>==25219== Mini-Valgrind
+==25219==
+==25219== LEAK REPORT:
+==25219==    Leak origin: main (test.c:5)
+==25219==    Leak size: 50 bytes
+==25219==    Leak memory address: 0x1009790
+==25219==
+==25219==    Leak origin: main (test.c:3)
+==25219==    Leak size: 30 bytes
+==25219==    Leak memory address: 0x10096f0
+==25219==
+==25219== Program made 0 bad call(s) to free or realloc.
+==25219==
+==25219== HEAP SUMMARY:
+==25219==    Total memory requested: 120 bytes
+==25219==    Total memory freed: 40 bytes
+==25219==    Total leak: 80 bytes
+</code></pre></div></div>
+<p>Notice that leaks are reported most-recent-first. This is because we insert new metadata at the head of the linked list.</p>
+<h3 id="other-programs" class="title-text">Other Programs</h3>
+<p>You can also run <code class="highlighter-rouge">mini_valgrind</code> on other programs, like <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/echo" class="fancy-link">echo</a></code>:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./mini_valgrind echo 'Hello, world!'
+==19506== Mini-Valgrind
+Hello, world!
+==19506==
+==19506== Program made 0 bad call(s) to free or realloc.
+==19506==
+==19506== HEAP SUMMARY:
+==19506==    Total memory requested: 1068 bytes
+==19506==    Total memory freed: 1068 bytes
+==19506==    No leaks, all memory freed. Congratulations!
+</code></pre></div></div>
+<p>It should work on most standard utilities, but just be aware that it won’t work on everything. You’ll notice it may generate different output than Valgrind or may even crash when run on complex software like <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/python" class="fancy-link">python</a></code>. <em>This is okay; writing a memory checker is hard!</em> You only need to implement what we’ve described above and in <code class="highlighter-rouge">mini_valgrind.h</code>.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="optional-fun-sentinel-value" class="title-text">Optional Fun: Sentinel Value!<a class="anchor title-text" href="#optional-fun-sentinel-value">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>This part of the assignment in this section is <strong>not graded</strong>. However, sentinel value is a pretty cool concept and we encourage you to try to implement it.</p>
+<p>So, suppose that our users of <code class="highlighter-rouge">mini_valgrind</code> are terrible at coding. They wrote past the end of their allocation (buffer overflow) and corrupted the memory beyond what’s allocated to them. Can we detect this kind of memory corruption and warn them? The answer is yes, by using sentinel value!</p>
+<p>Sentinel value is a chunck of <em>pre-defined bits</em> at the end of an allocated memory. In other word, each allocation would look like this:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[meta_data][---actual data---][sentinel_value]
+</code></pre></div></div>
+<p>On every operation, we would check that the sentinel value is still the same as it was pre-defined. If the sentinel value has changed, then we know for certain that the user has corrupted memory.</p>
+<p>In your <code class="highlighter-rouge">mini_valgrind</code>, you will use the <a href="https://en.wikipedia.org/wiki/Magic_number_(programming)" class="fancy-link wiki-link">magic number</a> <code class="highlighter-rouge">0xCAFEBABE</code> for sentinel value. <a href="http://www.artima.com/insidejvm/whyCAFEBABE.html" class="fancy-link wiki-link">(Why x0CAFEBABE?)</a></p>
+<p>Implementation:</p>
+<ul>
+  <li>Add the bits <code class="highlighter-rouge">0xCAFEBABE</code> to the end of every allocation. (Do you need to do it for <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/realloc" class="fancy-link">realloc</a></code>?)</li>
+  <li>Check if the sentinel value of a previously allocated buffer has changed in <code class="highlighter-rouge">mini_realloc</code> and <code class="highlighter-rouge">mini_free</code>.</li>
+  <li>If so, print out a warning to the user with <code class="highlighter-rouge">fprintf(stderr, ...)</code>. (Do not print to stdout!)</li>
+</ul>
+<p>If you want to test out your implementation, you can add the following code to your <code class="highlighter-rouge">test.c</code> and see if you get any warning when running <code class="highlighter-rouge">./mini_valgrind ./test</code>:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>char* ptr = malloc(10);
+*(ptr + 10) = 'a';
+free(ptr);
+</code></pre></div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="behind-the-scenes" class="title-text">Behind the Scenes<a class="anchor title-text" href="#behind-the-scenes">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>This section describes some details of how we’ve implemented <code class="highlighter-rouge">mini_valgrind</code>. You are encouraged, but not required, to understand this.</p>
+<p>We compile your <code class="highlighter-rouge">mini_</code> functions, along with some extra code from <code class="highlighter-rouge">mini_hacks.c</code>, into a <a href="https://en.wikipedia.org/wiki/Library_%28computing%29#Shared_libraries" class="fancy-link wiki-link"><em>shared object</em></a> called <code class="highlighter-rouge">mini_valgrind.so</code>.</p>
+<p><code class="highlighter-rouge">mini_hacks.c</code> has two main jobs:</p>
+<ul>
+  <li>Create wrappers around <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code> and the other functions to make sure they use your replacement functions when the user’s program calls them, while still letting you use the real versions within your code</li>
+  <li>Print out leak info at program exit</li>
+</ul>
+<p>The actual <code class="highlighter-rouge">./mini_valgrind</code> program is implemented in <code class="highlighter-rouge">mini_main.c</code>. When you run <code class="highlighter-rouge">./mini_valgrind ./test</code>, we use an environment variable called <a href="https://rafalcieslak.wordpress.com/2013/04/02/dynamic-linker-tricks-using-ld_preload-to-cheat-inject-features-and-investigate-programs/" class="fancy-link wiki-link"><code class="highlighter-rouge">LD_PRELOAD</code></a> to run the <code class="highlighter-rouge">./test</code> program using the code in <code class="highlighter-rouge">mini_valgrind.so</code>. Essentially, it replaces normal references to the built-in <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code> with references to our version.</p>
+<p><em>“But,”</em> you may ask, <em>“how do we call the real version of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code> if we’ve replaced it with our own version of it?”</em> The trick is a function called <a href="https://linux.die.net/man/3/dlsym" class="fancy-link wiki-link"><code class="highlighter-rouge">dlsym</code></a>, which allows us to bypass <code class="highlighter-rouge">LD_PRELOAD</code> and ask for a function pointer to the real <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code>. This is all handled within <code class="highlighter-rouge">mini_hacks.c</code>.</p>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="submission-instructions" class="title-text">Submission Instructions<a class="anchor title-text" href="#submission-instructions">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Please read details on <a href="/#academic-integrity" class="fancy-link wiki-link">Academic Integrity</a> fully. These are shared by all assignments in CS 241.</p>
+<p>We will be using GitHub as our hand-in system this semester. Our grading system will checkout your most recent (pre-deadline) commit for grading. Therefore, to hand in your code, all you have to do is commit and push to your Github repository.</p>
+<p>To check out the provided code for <code class="highlighter-rouge">mini_valgrind</code> from the class repository, go to your cs241 directory (the one you checked out for “know your tools”) and run:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git pull release master
+</code></pre></div></div>
+<p>If you run <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/ls" class="fancy-link">ls</a></code> you will now see a <code class="highlighter-rouge">mini_valgrind</code> folder, where you can find this assignment! To commit your changes (send them to us), type:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git add mini_valgrind
+git commit -m "mini_valgrind submission"
+git push origin master
+</code></pre></div></div>
+<p>Your repository directory can be viewed from a web browser from the following URL: 
+<a href="https://github-dev.cs.illinois.edu/cs241-fa18/NETID/tree/master/mini_valgrind" class="fancy-link wiki-link">https://github-dev.cs.illinois.edu/cs241-fa18/NETID/tree/master/mini_valgrind</a> where NETID is your University NetID. It is important to check that the files you expect to be graded are present and up to date in your remote git copy.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="assignment-feedback" class="title-text">Assignment Feedback<a class="anchor title-text" href="#assignment-feedback">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>We strive to provide the best assignments that we can for this course, and we would like your feedback on them!</p>
+<p>This is the form we will use to evaluate our assignments. We appreciate the time you take to give us your honest feedback and we promise to keep improving the course to make your experience in CS 241 the best it can be.</p>
+<p><a href="https://goo.gl/forms/hREf0ojFWumYfQF12" class="fancy-link wiki-link">https://goo.gl/forms/hREf0ojFWumYfQF12</a></p>
+</div></div></div>
+</div></div>
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_docs/mini_valgrind.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

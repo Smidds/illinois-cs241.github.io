@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Text Editor</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Text Editor
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/illinois-cs241/assignment-docs/blob/master//text_editor.md">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+              <div class="submission-wrapper">
+                
+                  <b>Entire Assignment</b> due <b>09/24/2018, 11:59 PM</b><br/>
+                  
+                    <b>Graded files:</b>
+                    <ul>
+                      
+                        <li>editor.c</li>
+                      
+                        <li>document.c</li>
+                      
+                    </ul>
+                  
+                
+              </div>
+            
+            
+              <div class="schedule-wrapper">
+                
+                  <b>AG Schedule</b>
+                  <br/>
+                  <b>Pre-deadline Runs</b>
+                    <ul>
+                      
+                        <li>09/19 10:00 PM</li>
+                      
+                        <li>09/21 10:00 PM</li>
+                      
+                        <li>09/23 10:00 PM</li>
+                      
+                    </ul>
+                
+              </div>
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_backstory" href="#backstory" class="fancy-link">Backstory</a></li>
+<li><a id="toc_overview" href="#overview" class="fancy-link">Overview</a></li>
+<li><a id="toc_features" href="#features" class="fancy-link">Features</a></li>
+<li><a id="toc_format-library" href="#format-library" class="fancy-link">Format Library</a></li>
+<li><a id="toc_document" href="#document" class="fancy-link">Document</a></li>
+<li><a id="toc_line-editor-mode" href="#line-editor-mode" class="fancy-link">Line Editor Mode</a></li>
+<li><a id="toc_text-user-interface-tui" href="#text-user-interface-tui" class="fancy-link">Text User Interface (TUI)</a></li>
+<li><a id="toc_location" href="#location" class="fancy-link">Location</a></li>
+<li><a id="toc_editor" href="#editor" class="fancy-link">Editor</a></li>
+<li><a id="toc_functionality" href="#functionality" class="fancy-link">Functionality</a></li>
+<li><a id="toc_managing-memory" href="#managing-memory" class="fancy-link">Managing Memory</a></li>
+<li><a id="toc_undefined-behavior" href="#undefined-behavior" class="fancy-link">Undefined Behavior</a></li>
+<li><a id="toc_testing" href="#testing" class="fancy-link">Testing</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+  <div class="pad"><div class="card">
+<div class="title"><h2 id="learning-objectives" class="title-text">Learning Objectives<a class="anchor title-text" href="#learning-objectives">#</a>
+</h2></div>
+  
+  
+
+
+  <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>
+    The learning objectives for Text Editor are: <br>
+    </p>
+<ul class="mdl-list">
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Writing a C program</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">File I/O, serializing/deserializing</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">String manipulation</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Leveraging a datastructure</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Writing an event-driven program</span>
+        </li>
+      
+    </ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="suggested-readings" class="title-text">Suggested Readings<a class="anchor title-text" href="#suggested-readings">#</a>
+</h2></div>
+  
+  
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>
+    We suggest you read the following from the
+    <a href="https://github.com/angrave/SystemProgramming/wiki" class="fancy-link wiki-link">wikibook</a>
+    before starting Text Editor: <br>
+    </p>
+<ul>
+      
+        <li>
+          <a href="/wikibook/c-programming-part-1-introduction.html#" target="_blank" class="fancy-link wiki-link">C Programming, Part 1: Introduction
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/c-programming-part-2-text-input-and-output.html#" target="_blank" class="fancy-link wiki-link">C Programming, Part 2: Text Input And Output
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/c-programming-part-3-common-gotchas.html#" target="_blank" class="fancy-link wiki-link">C Programming, Part 3: Common Gotchas
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/memory-part-1-heap-memory-introduction.html#" target="_blank" class="fancy-link wiki-link">Memory, Part 1: Heap Memory Introduction
+          </a>
+        </li>
+      
+    </ul>
+</div></div></div>
+</div></div>
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="backstory" class="title-text">Backstory<a class="anchor title-text" href="#backstory">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>It’s time to end the feud between vim, emacs and nano users (although everyone
+knows vim is the best). We’re going to be implementing a text editor that blows
+them all out of the water! Of course, a full-fledged text editor is a
+substantial project that’s usually open source, so you’ve got some
+“contributions” from the “open source community” (yours truly) and have been
+provided some of the components: namely, a vector library, an incomplete
+abstraction of a document, and a few different input methods (we’ll talk about
+those later).</p>
+<p>It’s your job to finish up the document abstraction and write the callbacks that
+actually edit the file.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="overview" class="title-text">Overview<a class="anchor title-text" href="#overview">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Your editor has two modes: a line editor mode (like <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/ed" class="fancy-link">ed</a></code>) and a text user
+interface (TUI) mode (like <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/vim" class="fancy-link">vim</a></code> or <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/nano" class="fancy-link">nano</a></code>). These are described in more detail
+below. Both of these modes make use of the same text-editing functions that you
+will be implementing. You should use the line editor for initial testing, and
+you can try the TUI once you have completed some work on the code.</p>
+<p>Your basic line editor can be run with:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./editor &lt;filename&gt;
+</code></pre></div></div>
+<p>For the TUI, add the <code class="highlighter-rouge">-n</code> flag:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./editor -n &lt;filename&gt;
+</code></pre></div></div>
+<p>The file will be loaded into a <code class="highlighter-rouge">document</code> object for manipulation using
+<code class="highlighter-rouge">document_create_from_file()</code>. Then, <code class="highlighter-rouge">editor_main.c</code> will get input from the
+user in a loop and call the appropriate functions in <code class="highlighter-rouge">editor.c</code>. You will need
+to fill in the functions in <code class="highlighter-rouge">editor.c</code>.</p>
+<p><strong>Important:</strong> Lines will be 1-indexed for this assignment! Characters within a
+line are still 0-indexed.</p>
+<p><strong>Important:</strong> Send all your debug printing to <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stderr" class="fancy-link">stderr</a></code> instead of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stdout" class="fancy-link">stdout</a></code>.</p>
+<p>Please keep the following in mind when implementing your text editor:</p>
+<ul>
+  <li>There is no limit on the number of lines.</li>
+  <li>There is no limit on the number of characters per line.</li>
+  <li>Some lines may be empty (you should treat these as empty strings, “”).</li>
+  <li>
+<em>Only</em> when the user gives the save command will the contents of the file on disk be modified.</li>
+  <li>All your editor operations should use the <code class="highlighter-rouge">document</code> library to modify the document. Don’t write directly to the file!</li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="features" class="title-text">Features<a class="anchor title-text" href="#features">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Make sure your editor can perform the following basic tasks:</p>
+<ul>
+  <li>Display the contents of a file.</li>
+  <li>Insert text into a file at a specified line number and character index.</li>
+  <li>Delete <em>n</em> characters of text from a file at a specified line number and character index.</li>
+  <li>Delete a line of text from a file.</li>
+  <li>Search: find the next occurrence of text in a file and return the location of the match.</li>
+  <li>Merge and split lines.</li>
+  <li>Save the file to disk.</li>
+  <li>Quit the editor.</li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="format-library" class="title-text">Format Library<a class="anchor title-text" href="#format-library">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>We have provided a format library that handles all printing to <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stdout" class="fancy-link">stdout</a></code> or
+<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stderr" class="fancy-link">stderr</a></code>.  This is to ensure that you do not lose points for not matching the
+format that the autograder expects.</p>
+<p>Please take a look at <code class="highlighter-rouge">format.c</code> and <code class="highlighter-rouge">format.h</code>. These files include all the
+error messages and printouts that you need. (There aren’t many for this MP, but
+later ones will have more.)</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="document" class="title-text">Document<a class="anchor title-text" href="#document">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>We have provided an incomplete abstraction of a document that uses the vector
+API from the Perilous Pointers.</p>
+<p>You only need to implement the functions <code class="highlighter-rouge">document_write_to_file</code>,
+<code class="highlighter-rouge">document_create_from_file</code>, and <code class="highlighter-rouge">document_insert_line</code>.</p>
+<p>Since you’re working with files, you should have basic notions of serialization
+and deserialization. <em>Serialization</em> is the process of converting the state of a
+data structure or object into a representation that can be stored (in this case,
+in a file) or transmitted. <em>Deserialization</em> is the reverse process, where a
+serialized representation is converted into the original data structure or
+object. These two processes are equal and opposite, and will cancel each other
+out if sequentially applied on something. That is, <code class="highlighter-rouge">deserialize(serialize(x)) ==
+x</code>.</p>
+<p>Make sure you’re completely clear on the difference between a vector and a
+document! Your document uses an <em>underlying</em> vector to represent the state of a
+file, and each entry in the vector corresponds to a single line in the file.
+This makes it much easier to manipulate individual lines.</p>
+<p>Recall that <a href="http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html#tag_03_206" class="fancy-link wiki-link">POSIX defines a
+line</a>
+as “A sequence of zero or more non-<code class="highlighter-rouge">&lt;newline&gt;</code> characters plus a terminating
+<code class="highlighter-rouge">&lt;newline&gt;</code> character”. When you’re working with the document, be careful how
+you handle newlines in the files you’re opening. Remember, serialization and
+deserialization are equal and opposite. Your document already provides an
+abstraction for lines of text. Do you need to add the newline characters to the
+strings you store?</p>
+<h3 id="valid-documents-and-inputs" class="title-text">Valid Documents and Inputs?</h3>
+<p>When opening documents, assume that the document will always be a document
+created by this text editor. That means it will always have valid characters.</p>
+<p>Note that we do print tabs as a single space. This is to prevent graphical
+glitches in the TUI mode.</p>
+<p>Remember! An empty or non-existent file can be a valid document!</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="line-editor-mode" class="title-text">Line Editor Mode<a class="anchor title-text" href="#line-editor-mode">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>This is what runs if you don’t add the -n flag. You <em>should</em> be doing some
+initial testing with this mode, as it is easier to debug with than the TUI.</p>
+<p>You have the following commands available with the line editor:</p>
+<ul>
+  <li>
+<code class="highlighter-rouge">s</code>:                                       Saves a file</li>
+  <li>
+<code class="highlighter-rouge">q</code>:                                       Quits the editor</li>
+  <li>
+<code class="highlighter-rouge">p [optional lineno]</code>:                     If no <code class="highlighter-rouge">lineno</code> is given, print the whole file; otherwise, print five lines centered around <code class="highlighter-rouge">lineno</code>
+</li>
+  <li>
+<code class="highlighter-rouge">p [lineno] [idx] [max_lines] [max_cols]</code>: Print at most <code class="highlighter-rouge">max_lines</code> lines starting from the <code class="highlighter-rouge">lineno</code>
+</li>
+  <li>
+<code class="highlighter-rouge">d [lineno]</code>:                              Deletes line at <code class="highlighter-rouge">lineno</code> (shifts all lines past <code class="highlighter-rouge">lineno</code> up by 1)</li>
+  <li>
+<code class="highlighter-rouge">d [lineno] [idx] [num_chars]</code>:            Deletes at most <code class="highlighter-rouge">num_chars</code> characters from line at lineno starting at character index <code class="highlighter-rouge">idx</code> (shifts all characters past <code class="highlighter-rouge">idx+num_chars</code> to the left)</li>
+  <li>
+<code class="highlighter-rouge">w [lineno] [string to insert]</code>:           Replaces line at <code class="highlighter-rouge">lineno</code> with <code class="highlighter-rouge">string to insert</code>
+</li>
+  <li>
+<code class="highlighter-rouge">a [lineno] [string to insert]</code>:           Appends <code class="highlighter-rouge">string to insert</code> to the line at lineno</li>
+  <li>
+<code class="highlighter-rouge">i [lineno] [idx] [string to insert]</code>:     Inserts <code class="highlighter-rouge">string to insert</code> to the line at <code class="highlighter-rouge">lineno</code> starting at the character index <code class="highlighter-rouge">idx</code>
+</li>
+  <li>
+<code class="highlighter-rouge">m [lineno]</code>:                              Merges line at <code class="highlighter-rouge">lineno</code> with lineast <code class="highlighter-rouge">lineno+1</code>
+</li>
+  <li>
+<code class="highlighter-rouge">sp [lineno] [idx]</code>:                       Splits a line at <code class="highlighter-rouge">lineno</code> from character index <code class="highlighter-rouge">idx</code> (All subsequent characters inserted on a new line below)</li>
+  <li>
+<code class="highlighter-rouge">f [lineno] [idx] [search string]</code>:        Searches for the next instance of the <code class="highlighter-rouge">search string</code> after line <code class="highlighter-rouge">lineno</code> and character index <code class="highlighter-rouge">idx</code>
+</li>
+</ul>
+<p>The line editor works by matching your input against a few regular expressions.
+You do not need to implement this; we have provided the code in <code class="highlighter-rouge">editor_main.c</code>.</p>
+<div class="pad"><div class="card">
+<h4 id="regular-expressions">Regular Expressions</h4>
+
+<p>This section is optional reading material! In case you wanted to know how our
+parser works, we use <a href="https://en.wikipedia.org/wiki/Regular_expression" class="fancy-link wiki-link">regular
+expressions</a> (regexes) are
+powerful tools that are used to describe regular languages. Although there are
+things regex can and can’t do (it can’t <a href="https://stackoverflow.com/a/1732454" class="fancy-link wiki-link">parse
+HTML</a> for instance), it is useful for
+searching for patterns in strings and input validation. vim, grep and a few
+other command-line utilities all use the POSIX regex syntax to allow users to
+search and perform other tasks. We can use it here to check for valid input
+strings.</p>
+
+<p>This is used in <code class="highlighter-rouge">editor_main.c</code>. To learn more about matching regex patterns in
+c try <code class="highlighter-rouge">man regex</code>. To learn more about POSIX regex syntax in general, see <code class="highlighter-rouge">man 7
+regex</code>.</p>
+
+</div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="text-user-interface-tui" class="title-text">Text User Interface (TUI)<a class="anchor title-text" href="#text-user-interface-tui">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Because you want to really beat the competition, you’ve gone ahead and decided
+to use a text user interface (or TUI for short). Don’t worry though, we’ve
+already done this part for you. All you have to do is make sure that the
+callbacks for the TUI (defined in <code class="highlighter-rouge">editor.c</code>) work perfectly.</p>
+<p>The TUI supports the following interaction:</p>
+<ul>
+  <li>Inserting text (just by typing)</li>
+  <li>Splitting a line (press Enter while in the middle of a line)</li>
+  <li>Merging a line (press Delete at the end of a line or Backspace at the starting of one)</li>
+  <li>Deleting text (Delete or Backspace)</li>
+  <li>Deleting a line (Ctrl+W)</li>
+  <li>Finding text in the file (Ctrl+F to search; read below to see how search should work)</li>
+  <li>Saving the file (Ctrl+X)</li>
+  <li>Exiting (Ctrl+A)</li>
+</ul>
+<p><em>Note:</em> You may be wondering why we use Ctrl+X instead of Ctrl+S to save. By
+default, Ctrl+S locks the terminal and Ctrl+Q unlocks it.</p>
+<p><em>Note:</em> On Mac keyboards, Delete and Backspace are respectively Fn+Delete and
+Delete.</p>
+<p><strong>Important:</strong> The TUI isn’t capable of using all of your editor’s features! For
+example, the TUI does not support deleting multiple characters at once. You
+still need to implement everything. We WILL be testing for ALL features.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="location" class="title-text">Location<a class="anchor title-text" href="#location">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>In order to keep track of the cursor position, we have provided a struct
+typedef’ed to <code class="highlighter-rouge">location</code> defined in editor.h as:</p>
+<pre><code class="language-C"><span class="k">typedef</span>
+</code></pre>
+<p>Some functions you will be implementing will take in a <code class="highlighter-rouge">location</code> argument to
+know where to edit the file.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="editor" class="title-text">Editor<a class="anchor title-text" href="#editor">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>We have defined and typedef’d a struct <code class="highlighter-rouge">editor</code> to keep track of various
+variables. Here is the definition from <code class="highlighter-rouge">editor.h</code>.</p>
+<pre><code class="language-C"><span class="k">typedef</span>
+</code></pre>
+<p>Most functions in <code class="highlighter-rouge">editor.c</code> that you will edit take in an <code class="highlighter-rouge">editor*</code>. This will
+allow you to access the underlying <code class="highlighter-rouge">document</code> and make use of the <code class="highlighter-rouge">sstring</code>
+library you implemented in the previous MP. We have provided the implementation
+of <code class="highlighter-rouge">sstring</code>.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="functionality" class="title-text">Functionality<a class="anchor title-text" href="#functionality">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The functions you will have to implement are listed and documented in
+<code class="highlighter-rouge">editor.h</code>, and <code class="highlighter-rouge">document.h</code>.</p>
+<p>This section explains what you need to implement for the editor portion of this
+MP in more detail.</p>
+<h3 id="display-contents" class="title-text">Display Contents</h3>
+<p>Your text editor should be able to print out the contents of the file that is
+loaded.</p>
+<p>Suppose we had a file <code class="highlighter-rouge">things_on_my_table.txt</code> which contained the following:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mug
+salt
+T.V. remote
+</code></pre></div></div>
+<p>Now, calling <code class="highlighter-rouge">handle_display_command()</code> with <code class="highlighter-rouge">start_line</code> and <code class="highlighter-rouge">max_lines</code> as 1
+would print out the following if <code class="highlighter-rouge">things_on_my_table.txt</code> was loaded as a
+document:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1    mug
+</code></pre></div></div>
+<p>However, calling <code class="highlighter-rouge">handle_display_command()</code> with <code class="highlighter-rouge">start_line</code> as 1 and
+<code class="highlighter-rouge">max_lines</code> as 5 would print out:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1    mug
+2    salt
+3    T.V. remote
+</code></pre></div></div>
+<p>Since there were fewer than five lines of text.</p>
+<p>If <code class="highlighter-rouge">max_lines == -1</code>, you should print from <code class="highlighter-rouge">start_line</code> to the end of the
+document.</p>
+<p>You can ignore the variables <code class="highlighter-rouge">start_col_index</code> and <code class="highlighter-rouge">max_cols</code> (these are used
+for handling the TUI display)—just be sure to pass them on to the appropriate
+function in <code class="highlighter-rouge">format.h</code>.</p>
+<p>Again, make sure to use <code class="highlighter-rouge">format.{c,h}</code> to print these lines out.</p>
+<p><em>Note:</em> This function could be called with ‘start_line’ as 0 for an empty
+document!</p>
+<div class="pad"><div class="card">
+<h4 id="errors">Errors</h4>
+
+<p>If the user asks you to print a document which is empty, call
+<code class="highlighter-rouge">print_document_empty_error()</code> in <code class="highlighter-rouge">format.{c,h}</code> to tell the user that they
+can’t do that. You can assume that all of your functions which depend on cursor
+locations are always given valid locations.</p>
+
+<h3 id="inserting-text" class="title-text">Inserting Text</h3>
+
+<p>Now, using the same <code class="highlighter-rouge">things_on_my_table.txt</code> file:</p>
+
+<p>If a user were to call <code class="highlighter-rouge">handle_insert_command()</code> with <code class="highlighter-rouge">line = "peanuts "</code> and
+<code class="highlighter-rouge">loc.line_no = 1</code> and <code class="highlighter-rouge">loc.idx = 1</code>, the result of the file would be:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1    mpeanuts ug
+2    salt
+3    T.V. remote
+</code></pre></div></div>
+
+<p>You can assume that <code class="highlighter-rouge">loc.line_no</code> is always greater than or equal to 1! (If you
+want to be really fancy, you can even add this in an assert!)</p>
+
+<p><em>Note:</em> If the line a user is inserting to is currently empty, that’s fine!</p>
+
+<p><em>Note:</em> If your editor is asked to insert to a line that does not exist yet,
+then it should fill in the gap with empty lines. (How can you use <code class="highlighter-rouge">document</code> to
+make this easy?) You must handle inserts at the end of a line (so that appending
+text is possible), but you do not need to handle inserts past the end of line.</p>
+
+<h3 id="writingappending-text" class="title-text">Writing/Appending Text</h3>
+
+<p>This overwrites/appends to any text that may already be on that line. If the
+line doesn’t exist, it will first create it (this is similar to how insert
+works).</p>
+
+<p>To make things more interesting, you will need to interpret <code class="highlighter-rouge">\</code> as an escape
+character. There is only one special escape sequence you need to recognize: <code class="highlighter-rouge">\</code>
+followed by a <code class="highlighter-rouge">n</code> for a newline. <code class="highlighter-rouge">\</code> followed by any other character (including
+the null byte) will be replaced with the second character. So <code class="highlighter-rouge">\n</code> will need to
+split the line, but <code class="highlighter-rouge">\\n</code> will insert the text <code class="highlighter-rouge">\n</code>. Likewise, <code class="highlighter-rouge">\d</code> will be
+replaced with the character <code class="highlighter-rouge">d</code>.</p>
+
+<p>For every <code class="highlighter-rouge">\n</code> (<code class="highlighter-rouge">\</code> followed by <code class="highlighter-rouge">n</code>) that you encounter, you will need to split
+the string there and then insert the remainder of the string on a line by
+itself. Note that there can be several <code class="highlighter-rouge">\n</code> on a single input line.</p>
+
+<p>Escaping characters is <strong>only</strong> necessary for the functions
+<code class="highlighter-rouge">handle_write_command</code> and <code class="highlighter-rouge">handle_append_command</code>. Insert does <strong>not</strong> need to
+implement handling escape characters.</p>
+
+<p>For example, using the line editor mode, suppose the input file is:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1       Hello
+2       Goodbye
+3       Hello again!
+4       Goodbye again!
+</code></pre></div></div>
+
+<p>and I use the command <code class="highlighter-rouge">w 3 Yes\nNo</code>, the file becomes:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1       Hello
+2       Goodbye
+3       Yes
+4       No
+5       Goodbye again!
+</code></pre></div></div>
+
+<p>Then, if I use <code class="highlighter-rouge">a 1 \nworld!\nHaha</code>, the file becomes:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1       Hello
+2       world!
+3       Haha
+4       Goodbye
+5       Yes
+6       No
+7       Goodbye again!
+</code></pre></div></div>
+
+<p>Then if I use <code class="highlighter-rouge">a 1 \\n \a\</code>, the file becomes:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1       Hello\n a
+2       world!
+3       Haha
+4       Goodbye
+5       Yes
+6       No
+7       Goodbye again!
+</code></pre></div></div>
+
+<h3 id="deleting-text" class="title-text">Deleting Text</h3>
+
+<p>There are two types of deletes: deleting characters and deleting lines.</p>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="deleting-characters">Deleting Characters</h4>
+
+<p>This function is to be implemented in <code class="highlighter-rouge">handle_delete_command</code>. The current
+location of the cursor is defined by the <code class="highlighter-rouge">location</code> argument <code class="highlighter-rouge">loc</code>. The function
+will delete <code class="highlighter-rouge">num_chars</code> characters at the specified line number from the
+specified character index until the end of the line.</p>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="deleting-lines">Deleting Lines</h4>
+
+<p>This function is to be implemented in <code class="highlighter-rouge">handle_delete_line</code>. This function takes
+in a <code class="highlighter-rouge">size_t</code> argument called <code class="highlighter-rouge">line_no</code> to specify the line number which should
+be deleted.</p>
+
+<h3 id="finding-text" class="title-text">Finding Text</h3>
+
+<p>Your text editor should be able to find the next occurrence of a string from the
+current cursor location. You will implement this in the function
+<code class="highlighter-rouge">handle_search_command</code>. The current location of the cursor is defined by the
+<code class="highlighter-rouge">location</code> argument <code class="highlighter-rouge">loc</code>. This function will return a <code class="highlighter-rouge">location</code> to inform the
+editor of the location of the results.</p>
+
+<p>Suppose we had the following file (already loaded into the editor):</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1    According to all known laws of aviation,
+2    there is no [w]ay that a bee should be
+3    bees beEs Bees bees
+</code></pre></div></div>
+
+<p>Assume that <code class="highlighter-rouge">[]</code> represents the position of your cursor</p>
+
+<p>If your user searches for the string “bee” then your cursor should move to the
+next instance of the string bee including and after the current character as
+shown below:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1    According to all known laws of aviation,
+2    there is no way that a [b]ee should be
+3    bees beEs Bees bees
+</code></pre></div></div>
+
+<p><em>Note:</em> the TUI automatically increments the character index by one so that the
+search function doesn’t match the same result twice. If you’re writing your own
+test cases and want it to act the same way as the TUI, you should handle this
+increment on your own. Your function in <code class="highlighter-rouge">editor.c</code> should <strong>not</strong> account for
+this.</p>
+
+<p>Searching for “bee” again:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1    According to all known laws of aviation,
+2    there is no way that a bee should be
+3    [b]ees beEs Bees bees
+</code></pre></div></div>
+
+<p>Note that the string only has to contain the search string. It’s okay if there
+are characters before or after the found position.</p>
+
+<p>Additionally, the search <strong>is</strong> case-sensitive, so searching for bee again:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1    According to all known laws of aviation,
+2    there is no way that a bee should be
+3    bees beEs Bees [b]ees
+</code></pre></div></div>
+
+<p>…will skip the two instances of “bee” with capital letters.</p>
+
+<p>Finally, the search wraps around the file. So, if we search for bee one more
+time:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1    According to all known laws of aviation,
+2    there is no way that a [b]ee should be
+3    bees beEs Bees bees
+</code></pre></div></div>
+
+<p>We’re back to the first instance of bee.</p>
+
+<p>If the search string is empty or not present in the file, return a <code class="highlighter-rouge">location</code>
+with <code class="highlighter-rouge">line_no</code> set to 0.</p>
+
+<p>The search string does not have to be a word by itself! For example if I was to
+search for the string <code class="highlighter-rouge">ana</code> in the following file:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1    B[a]nana
+</code></pre></div></div>
+
+<p>will have the above result. Searching for <code class="highlighter-rouge">ana</code> again:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1    Ban[a]na
+</code></pre></div></div>
+
+<p>Will just find the second instance of <code class="highlighter-rouge">ana</code>.</p>
+
+<p><em>Hint:</em> <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/strstr" class="fancy-link">strstr</a></code></p>
+
+<h3 id="merging-lines" class="title-text">Merging Lines</h3>
+
+<p>When a user enters a Backspace at the beginning of a line, then the previous
+line and the current line should merge. Likewise, when they enter Delete at the
+end of the line, the current line and the next line should merge.</p>
+
+<p>You must implement the function <code class="highlighter-rouge">handle_merge_line</code>. This function has a
+<code class="highlighter-rouge">location</code> as an argument and requires you to merge the line located at
+<code class="highlighter-rouge">line_no</code> with the line located at <code class="highlighter-rouge">line_no + 1</code>. (We will <strong>always</strong> call this
+function with a valid line number, such that <code class="highlighter-rouge">line_no</code> and <code class="highlighter-rouge">line_no + 1</code> both
+exist.)</p>
+
+<p>An example using the same lines as in the first example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1    mpeanutsug
+2    [s]alt
+3    T.V. remote
+</code></pre></div></div>
+
+<p>Inputing <code class="highlighter-rouge">m 1</code> or pressing backspace from the position specified by <code class="highlighter-rouge">[]</code> will
+merge the line:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1    mpeanutsug[s]alt
+2    T.V. remote
+</code></pre></div></div>
+
+<h3 id="splitting-lines" class="title-text">Splitting Lines</h3>
+
+<p>When a user inputs <code class="highlighter-rouge">sp [lineno] [idx]</code> or presses the Enter key anywhere in a
+line, the line should split.</p>
+
+<p>You must implement the function <code class="highlighter-rouge">handle_split_line</code>. This function has a
+<code class="highlighter-rouge">location</code> as an argument and requires you to split the line located at
+<code class="highlighter-rouge">loc.line_no</code> at the character index <code class="highlighter-rouge">loc.idx</code>.</p>
+
+<p>An example:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1    mpeanutsug[s]alt
+2    T.V. remote
+</code></pre></div></div>
+
+<p>Pressing enter from the position specified by <code class="highlighter-rouge">[]</code> will split the line:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1    mpeanutsug
+2    [s]alt
+3    T.V. remote
+</code></pre></div></div>
+
+<h3 id="saving-text" class="title-text">Saving Text</h3>
+
+<p>This should simply write the text to the file. Implement this in the function
+<code class="highlighter-rouge">handle_save_command</code>.</p>
+
+<h3 id="extending-the-tui" class="title-text">Extending the TUI</h3>
+
+<p>In order to make our text editor a real competitor with existing ones, we need
+to make sure that we have a good way of improving it and adding new features. An
+extensions system makes it easy for the community to do all this hard work
+<del>for</del> with us.</p>
+
+<p>Take a look at <code class="highlighter-rouge">exts/Instructions.md</code> for more information on how to make your
+own extension.</p>
+
+<p>For example, you could implement a copy/paste function for lines or words.</p>
+
+<p>This part will <strong>not</strong> be autograded, but is worth 4 points. Your lab TA will be
+grading your extensions. You will receive points for creativity and complexity.</p>
+
+</div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="managing-memory" class="title-text">Managing Memory<a class="anchor title-text" href="#managing-memory">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Remember, <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/man" class="fancy-link">man</a></code> is man’s best friend. Since you’re working with dynamic memory,
+there are quite a few functions you should be familiar with before you proceed.
+<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code>, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/free" class="fancy-link">free</a></code>, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/realloc" class="fancy-link">realloc</a></code>,  <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/calloc" class="fancy-link">calloc</a></code>, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/memmove" class="fancy-link">memmove</a></code> are your friends; don’t shy
+away!</p>
+<ul>
+  <li><code class="highlighter-rouge">man 3 malloc</code></li>
+  <li><code class="highlighter-rouge">man 3 free</code></li>
+  <li>…et cetera</li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="undefined-behavior" class="title-text">Undefined Behavior<a class="anchor title-text" href="#undefined-behavior">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p><em>Undefined behavior</em> is a scenario or edge case for which there is no
+documentation describing how the code should react. For example, man pages do
+not describe what happens when you feed <code class="highlighter-rouge">NULL</code> into <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/strcmp" class="fancy-link">strcmp</a></code>. Your open-source
+contributors will not answer questions like “What if my user wants an element
+past the end of the vector?”, because that is undefined behavior.</p>
+<p>So, for this MP, you should use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/assert" class="fancy-link">assert</a></code> statements to check that your user is
+passing valid input to your function before operating on the input. For example,
+if you were implementing <code class="highlighter-rouge">strcmp(const char *s1, const char *s2)</code>, then your
+code might look like this:</p>
+<pre><code class="language-C"><span class="cp">#include &lt;assert.h&gt;
+</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="testing" class="title-text">Testing<a class="anchor title-text" href="#testing">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>We have provided a file <code class="highlighter-rouge">editor_test.c</code> where you can programmatically test your
+editor. This compiles to <code class="highlighter-rouge">editor_test</code> and <code class="highlighter-rouge">editor_test-debug</code>. We <em>strongly</em>
+recommend testing by adding test cases to <code class="highlighter-rouge">editor_test.c</code> and running
+<code class="highlighter-rouge">editor_test</code> instead of just testing using <code class="highlighter-rouge">editor</code>, as this will make your
+life a lot easier as you can test very specific things faster.</p>
+<h3 id="line-editor-scripts" class="title-text">Line Editor Scripts</h3>
+<p>Here’s a feature you don’t find everywhere! (To be fair, you actually can do
+this and more with <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/sed" class="fancy-link">sed</a></code>.)</p>
+<p>Suppose we have a file with the following test:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1      Somebody once told the world was gonna roll
+2      I ain't the sharpest tool in the shed
+3      She was looking kinda dumb with her finger and her thumb
+4      According to all known laws of aviation
+5      In the shape of an L on her forehead
+</code></pre></div></div>
+<p>and I use the following commands:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>d 4
+a 1  me
+w 5 #I'mSorryForTheBadJoke
+s
+q
+</code></pre></div></div>
+<p>I should have the following:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1      Somebody once told the world was gonna roll me
+2      I ain't the sharpest tool in the shed
+3      She was looking kinda dumb with her finger and her thumb
+4      In the shape of an L on her forehead
+5      #I'mSorryForTheBadJoke
+</code></pre></div></div>
+<p>What if I wanted to save this process so that I can edit other files with the
+same error?</p>
+<p>You can! Just save the commands to a file <code class="highlighter-rouge">commands.txt</code>, containing:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>d 4
+a 1  me
+w 5 #I'mSorryForTheBadJoke
+s
+q
+</code></pre></div></div>
+<p>and then you can run it by using <code class="highlighter-rouge">cat commands.txt | ./editor [inputfile]</code></p>
+<p>This can be used to test the editor’s behavior quickly!</p>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="submission-instructions" class="title-text">Submission Instructions<a class="anchor title-text" href="#submission-instructions">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Please read details on <a href="/#academic-integrity" class="fancy-link wiki-link">Academic Integrity</a> fully. These are shared by all assignments in CS 241.</p>
+<p>We will be using GitHub as our hand-in system this semester. Our grading system will checkout your most recent (pre-deadline) commit for grading. Therefore, to hand in your code, all you have to do is commit and push to your Github repository.</p>
+<p>To check out the provided code for <code class="highlighter-rouge">text_editor</code> from the class repository, go to your cs241 directory (the one you checked out for “know your tools”) and run:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git pull release master
+</code></pre></div></div>
+<p>If you run <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/ls" class="fancy-link">ls</a></code> you will now see a <code class="highlighter-rouge">text_editor</code> folder, where you can find this assignment! To commit your changes (send them to us), type:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git add text_editor
+git commit -m "text_editor submission"
+git push origin master
+</code></pre></div></div>
+<p>Your repository directory can be viewed from a web browser from the following URL: 
+<a href="https://github-dev.cs.illinois.edu/cs241-fa18/NETID/tree/master/text_editor" class="fancy-link wiki-link">https://github-dev.cs.illinois.edu/cs241-fa18/NETID/tree/master/text_editor</a> where NETID is your University NetID. It is important to check that the files you expect to be graded are present and up to date in your remote git copy.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="assignment-feedback" class="title-text">Assignment Feedback<a class="anchor title-text" href="#assignment-feedback">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>We strive to provide the best assignments that we can for this course, and we would like your feedback on them!</p>
+<p>This is the form we will use to evaluate our assignments. We appreciate the time you take to give us your honest feedback and we promise to keep improving the course to make your experience in CS 241 the best it can be.</p>
+<p><a href="https://goo.gl/forms/hREf0ojFWumYfQF12" class="fancy-link wiki-link">https://goo.gl/forms/hREf0ojFWumYfQF12</a></p>
+</div></div></div>
+</div></div>
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_docs/text_editor.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

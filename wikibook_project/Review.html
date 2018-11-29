@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Review</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Review
+
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<ul>
+  <li>
+<a href="#review" class="fancy-link wiki-link">Review</a>
+    <ul>
+      <li>
+<a href="#c" class="fancy-link wiki-link">C</a>
+        <ul>
+          <li><a href="#memory-and-strings" class="fancy-link wiki-link">Memory and Strings</a></li>
+          <li><a href="#q1.1" class="fancy-link wiki-link">Q1.1</a></li>
+          <li><a href="#q-1.2" class="fancy-link wiki-link">Q 1.2</a></li>
+          <li><a href="#q-1.3" class="fancy-link wiki-link">Q 1.3</a></li>
+          <li><a href="#q-1.4" class="fancy-link wiki-link">Q 1.4</a></li>
+          <li><a href="#q-1.4-1" class="fancy-link wiki-link">Q 1.4</a></li>
+          <li><a href="#q-1.5" class="fancy-link wiki-link">Q 1.5</a></li>
+          <li><a href="#q-1.6" class="fancy-link wiki-link">Q 1.6</a></li>
+          <li><a href="#q-1.7" class="fancy-link wiki-link">Q 1.7</a></li>
+          <li><a href="#q-1.8" class="fancy-link wiki-link">Q 1.8</a></li>
+          <li><a href="#q-1.9" class="fancy-link wiki-link">Q 1.9</a></li>
+          <li><a href="#q-1.10" class="fancy-link wiki-link">Q 1.10</a></li>
+          <li><a href="#printing" class="fancy-link wiki-link">Printing</a></li>
+          <li><a href="#q-2.1" class="fancy-link wiki-link">Q 2.1</a></li>
+          <li><a href="#formatting-and-printing-to-a-file" class="fancy-link wiki-link">Formatting and Printing to a file</a></li>
+          <li><a href="#q-3.1" class="fancy-link wiki-link">Q 3.1</a></li>
+          <li><a href="#printing-to-a-string" class="fancy-link wiki-link">Printing to a string</a></li>
+          <li><a href="#q-4.1" class="fancy-link wiki-link">Q 4.1</a></li>
+          <li><a href="#input-parsing" class="fancy-link wiki-link">Input parsing</a></li>
+          <li><a href="#q-5.1" class="fancy-link wiki-link">Q 5.1</a></li>
+          <li><a href="#q-5.3" class="fancy-link wiki-link">Q 5.3</a></li>
+          <li><a href="#heap-memory" class="fancy-link wiki-link">Heap memory</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="#threading" class="fancy-link wiki-link">Threading</a>
+        <ul>
+          <li><a href="#q1" class="fancy-link wiki-link">Q1</a></li>
+          <li><a href="#q2" class="fancy-link wiki-link">Q2</a></li>
+          <li><a href="#q3" class="fancy-link wiki-link">Q3</a></li>
+          <li><a href="#q4" class="fancy-link wiki-link">Q4</a></li>
+          <li><a href="#q5" class="fancy-link wiki-link">Q5</a></li>
+          <li><a href="#q6" class="fancy-link wiki-link">Q6</a></li>
+          <li><a href="#q7" class="fancy-link wiki-link">Q7</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="#deadlock" class="fancy-link wiki-link">Deadlock</a>
+        <ul>
+          <li><a href="#q1-1" class="fancy-link wiki-link">Q1</a></li>
+          <li><a href="#q2-1" class="fancy-link wiki-link">Q2</a></li>
+          <li><a href="#q3-1" class="fancy-link wiki-link">Q3</a></li>
+          <li><a href="#q4-1" class="fancy-link wiki-link">Q4</a></li>
+          <li><a href="#q5-1" class="fancy-link wiki-link">Q5</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="#ipc" class="fancy-link wiki-link">IPC</a>
+        <ul>
+          <li><a href="#q1-2" class="fancy-link wiki-link">Q1</a></li>
+          <li><a href="#q2-2" class="fancy-link wiki-link">Q2</a></li>
+          <li><a href="#q3-2" class="fancy-link wiki-link">Q3</a></li>
+          <li><a href="#q4-2" class="fancy-link wiki-link">Q4</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="#processes" class="fancy-link wiki-link">Processes</a>
+        <ul>
+          <li><a href="#q1-3" class="fancy-link wiki-link">Q1</a></li>
+          <li><a href="#q2-3" class="fancy-link wiki-link">Q2</a></li>
+          <li><a href="#q3-advanced" class="fancy-link wiki-link">Q3 (Advanced)</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="#mapped-memory" class="fancy-link wiki-link">Mapped Memory</a>
+        <ul>
+          <li><a href="#q1-4" class="fancy-link wiki-link">Q1</a></li>
+          <li><a href="#q2-4" class="fancy-link wiki-link">Q2</a></li>
+          <li><a href="#q3-3" class="fancy-link wiki-link">Q3</a></li>
+          <li><a href="#q4-3" class="fancy-link wiki-link">Q4</a></li>
+          <li><a href="#q5-2" class="fancy-link wiki-link">Q5</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="#networking" class="fancy-link wiki-link">Networking</a>
+        <ul>
+          <li><a href="#q1-5" class="fancy-link wiki-link">Q1</a></li>
+          <li><a href="#q2-5" class="fancy-link wiki-link">Q2</a></li>
+          <li><a href="#q3-4" class="fancy-link wiki-link">Q3</a></li>
+          <li><a href="#q4-4" class="fancy-link wiki-link">Q4</a></li>
+          <li><a href="#q5-3" class="fancy-link wiki-link">Q5</a></li>
+          <li><a href="#q6-1" class="fancy-link wiki-link">Q6</a></li>
+          <li><a href="#q7-1" class="fancy-link wiki-link">Q7</a></li>
+          <li><a href="#q8" class="fancy-link wiki-link">Q8</a></li>
+          <li><a href="#q9" class="fancy-link wiki-link">Q9</a></li>
+          <li><a href="#q10" class="fancy-link wiki-link">Q10</a></li>
+          <li><a href="#q11" class="fancy-link wiki-link">Q11</a></li>
+          <li><a href="#q12" class="fancy-link wiki-link">Q12</a></li>
+          <li><a href="#q13" class="fancy-link wiki-link">Q13</a></li>
+          <li><a href="#q14" class="fancy-link wiki-link">Q14</a></li>
+          <li><a href="#q15" class="fancy-link wiki-link">Q15</a></li>
+          <li><a href="#q16" class="fancy-link wiki-link">Q16</a></li>
+          <li><a href="#q17" class="fancy-link wiki-link">Q17</a></li>
+          <li><a href="#q18" class="fancy-link wiki-link">Q18</a></li>
+          <li><a href="#q19" class="fancy-link wiki-link">Q19</a></li>
+          <li><a href="#q20" class="fancy-link wiki-link">Q20</a></li>
+          <li><a href="#q21" class="fancy-link wiki-link">Q21</a></li>
+          <li><a href="#q22" class="fancy-link wiki-link">Q22</a></li>
+          <li><a href="#q23" class="fancy-link wiki-link">Q23</a></li>
+          <li><a href="#q24" class="fancy-link wiki-link">Q24</a></li>
+          <li><a href="#q25" class="fancy-link wiki-link">Q25</a></li>
+          <li><a href="#q26" class="fancy-link wiki-link">Q26</a></li>
+          <li><a href="#q-2.1-1" class="fancy-link wiki-link">Q 2.1</a></li>
+          <li><a href="#q-2.2" class="fancy-link wiki-link">Q 2.2</a></li>
+          <li><a href="#q-2.3" class="fancy-link wiki-link">Q 2.3</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="#signals" class="fancy-link wiki-link">Signals</a>
+        <ul>
+          <li><a href="#give-the-names-of-two-signals-that-are-normally-generated-by-the-kernel" class="fancy-link wiki-link">Give the names of two signals that are normally generated by the kernel</a></li>
+          <li><a href="#give-the-name-of-a-signal-that-can-not-be-caught-by-a-signal" class="fancy-link wiki-link">Give the name of a signal that can not be caught by a signal</a></li>
+          <li><a href="#why-is-it-unsafe-to-call-any-function-something-that-it-is-not-signal-handler-safe-in-a-signal-handler" class="fancy-link wiki-link">Why is it unsafe to call any function (something that it is not signal handler safe) in a signal handler?</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>[1][] <span> </span></p>
+
+
+
+<p>A non-comprehensive list of topics is below.</p>
+
+<p><span>2</span></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CSP (critical section problems)
+HTTP
+SIGINT
+TCP
+TLB
+Virtual Memory
+arrays
+barrier
+c strings
+chmod
+client/server
+coffman conditions
+condition variables
+context switch
+deadlock
+dining philosophers
+epoll
+exit
+file I/O
+file system representation
+fork/exec/wait
+fprintf
+free
+heap allocator
+heap/stack
+inode vs name
+malloc
+mkfifo
+mmap
+mutexes
+network ports
+open/close
+operating system terms
+page fault
+page tables
+pipes
+pointer arithmetic
+pointers
+printing (printf)
+producer/consumer
+progress/mutex
+race conditions
+read/write
+reader/writer
+resource allocation graphs
+ring buffer
+scanf 
+buffering
+scheduling
+select
+semaphores
+signals
+sizeof
+stat
+stderr/stdout
+symlinks
+thread control (_create, _join, _exit)
+variable initializers
+variable scope
+vm thrashing
+wait macros
+write/read with errno, EINTR and partial data
+</code></pre></div></div>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="c" class="title-text">C<a class="anchor title-text" href="#c">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<h3 id="memory-and-strings" class="title-text">Memory and Strings</h3>
+<h3 id="q11" class="title-text">Q1.1</h3>
+<p>In the example below, which variables are guaranteed to print the value of zero?</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="q-12" class="title-text">Q 1.2</h3>
+<p>In the example below, which variables are guaranteed to print the value of zero?</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="q-13" class="title-text">Q 1.3</h3>
+<p>Explain the error in the following attempt to copy a string.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="q-14" class="title-text">Q 1.4</h3>
+<p>Why does the following attempt to copy a string sometimes work and sometimes fail?</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="q-14-1" class="title-text">Q 1.4</h3>
+<p>Explain the two errors in the following code that attempts to copy a string.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="q-15" class="title-text">Q 1.5</h3>
+<p>Which of the following is legal?</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="q-16" class="title-text">Q 1.6</h3>
+<p>Complete the function pointer typedef to declare a pointer to a function that takes a void* argument and returns a void*. Name your type ‘pthread_callback’</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="q-17" class="title-text">Q 1.7</h3>
+<p>In addition to the function arguments what else is stored on a thread’s stack?</p>
+<h3 id="q-18" class="title-text">Q 1.8</h3>
+<p>Implement a version of <code class="highlighter-rouge">char* strcat(char*dest, const char*src)</code> using only <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/strcpy" class="fancy-link">strcpy</a></code> <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/strlen" class="fancy-link">strlen</a></code> and pointer arithmetic</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="q-19" class="title-text">Q 1.9</h3>
+<p>Implement version of size_t strlen(const char*) using a loop and no function calls.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="q-110" class="title-text">Q 1.10</h3>
+<p>Identify the three bugs in the following implementation of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/strcpy" class="fancy-link">strcpy</a></code>.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="printing" class="title-text">Printing</h3>
+<h3 id="q-21" class="title-text">Q 2.1</h3>
+<p>Spot the two errors!</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="formatting-and-printing-to-a-file" class="title-text">Formatting and Printing to a file</h3>
+<h3 id="q-31" class="title-text">Q 3.1</h3>
+<p>Complete the following code to print to a file. Print the name, a comma and the score to the file ‘result.txt’</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="printing-to-a-string" class="title-text">Printing to a string</h3>
+<h3 id="q-41" class="title-text">Q 4.1</h3>
+<p>How would you print the values of variables a,mesg,val and ptr to a string? Print a as an integer, mesg as C string, val as a double val and ptr as a hexadecimal pointer. You may assume the mesg points to a short C string(&lt;50 characters). Bonus: How would you make this code more robust or able to cope with?</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="input-parsing" class="title-text">Input parsing</h3>
+<h3 id="q-51" class="title-text">Q 5.1</h3>
+<p>Why should you check the return value of sscanf and scanf? ## Q 5.2 Why is ‘gets’ dangerous?</p>
+<h3 id="q-53" class="title-text">Q 5.3</h3>
+<p>Write a complete program that uses <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/getline" class="fancy-link">getline</a></code>. Ensure your program has no memory leaks.</p>
+<h3 id="heap-memory" class="title-text">Heap memory</h3>
+<p>When would you use calloc not malloc? When would realloc be useful?</p>
+<p>(Todo - move this question to another page) What mistake did the programmer make in the following code? Is it possible to fix it i) using heap memory? ii) using global (static) memory?</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="threading" class="title-text">Threading<a class="anchor title-text" href="#threading">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<h3 id="q1" class="title-text">Q1</h3>
+<p>Is the following code thread-safe? Redesign the following code to be thread-safe. Hint: A mutex is unnecessary if the message memory is unique to each call.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="q2" class="title-text">Q2</h3>
+<p>Which one of the following does not cause a process to exit? * Returning from the pthread’s starting function in the last running thread. * The original thread returning from main. * Any thread causing a segmentation fault. * Any thread calling <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exit" class="fancy-link">exit</a></code>. * Calling <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_exit" class="fancy-link">pthread_exit</a></code> in the main thread with other threads still running.</p>
+<h3 id="q3" class="title-text">Q3</h3>
+<p>Write a mathematical expression for the number of “W” characters that will be printed by the following program. Assume a,b,c,d are small positive integers. Your answer may use a ‘min’ function that returns its lowest valued argument.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="q4" class="title-text">Q4</h3>
+<p>Complete the following code. The following code is supposed to print alternating <code class="highlighter-rouge">A</code> and <code class="highlighter-rouge">B</code>. It represents two threads that take turns to execute. Add condition variable calls to <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/func" class="fancy-link">func</a></code> so that the waiting thread does not need to continually check the <code class="highlighter-rouge">turn</code> variable. Q: Is pthread_cond_broadcast necessary or is pthread_cond_signal sufficient?</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="q5" class="title-text">Q5</h3>
+<p>Identify the critical sections in the given code. Add mutex locking to make the code thread safe. Add condition variable calls so that <code class="highlighter-rouge">total</code> never becomes negative or above 1000. Instead the call should block until it is safe to proceed. Explain why <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_broadcast" class="fancy-link">pthread_cond_broadcast</a></code> is necessary.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="q6" class="title-text">Q6</h3>
+<p>A non-threadsafe data structure has <code class="highlighter-rouge">size()</code> <code class="highlighter-rouge">enq</code> and <code class="highlighter-rouge">deq</code> methods. Use condition variable and mutex lock to complete the thread-safe, blocking versions.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="q7" class="title-text">Q7</h3>
+<p>Your startup offers path planning using latest traffic information. Your overpaid intern has created a non-threadsafe data structure with two functions: <code class="highlighter-rouge">shortest</code> (which uses but does not modify the graph) and <code class="highlighter-rouge">set_edge</code> (which modifies the graph).</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>For performance, multiple threads must be able to call <code class="highlighter-rouge">shortest</code> at the same time but the graph can only be modified by one thread when no threads other are executing inside <code class="highlighter-rouge">shortest</code> or <code class="highlighter-rouge">set_edge</code>.</p>
+<p>Use mutex lock and condition variables to implement a reader-writer solution. An incomplete attempt is shown below. Though this attempt is threadsafe (thus sufficient for demo day!), it does not allow multiple threads to calculate <code class="highlighter-rouge">shortest</code> path at the same time and will not have sufficient throughput.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<blockquote>
+  <p>Note thread-programming synchronization problems are on a separate wiki page. This page focuses on conceptual topics. Question numbers subject to change</p>
+</blockquote>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="deadlock" class="title-text">Deadlock<a class="anchor title-text" href="#deadlock">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<h3 id="q1-1" class="title-text">Q1</h3>
+<p>What do each of the Coffman conditions mean? (e.g. can you provide a definition of each one) * Hold and wait * Circular wait * No pre-emption * Mutual exclusion</p>
+<h3 id="q2-1" class="title-text">Q2</h3>
+<p>Give a real life example of breaking each Coffman condition in turn. A situation to consider: Painters, paint and paint brushes. Hold and wait Circular wait No pre-emption Mutual exclusion</p>
+<h3 id="q3-1" class="title-text">Q3</h3>
+<p>Identify when Dining Philosophers code causes a deadlock (or not). For example, if you saw the following code snippet which Coffman condition is not satisfied?</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="q4-1" class="title-text">Q4</h3>
+<p>How many processes are blocked?</p>
+<ul>
+  <li>
+    <p>P1 acquires R1</p>
+  </li>
+  <li>
+    <p>P2 acquires R2</p>
+  </li>
+  <li>
+    <p>P1 acquires R3</p>
+  </li>
+  <li>
+    <p>P2 waits for R3</p>
+  </li>
+  <li>
+    <p>P3 acquires R5</p>
+  </li>
+  <li>
+    <p>P1 acquires R4</p>
+  </li>
+  <li>
+    <p>P3 waits for R1</p>
+  </li>
+  <li>
+    <p>P4 waits for R5</p>
+  </li>
+  <li>
+    <p>P5 waits for R1</p>
+  </li>
+</ul>
+<h3 id="q5-1" class="title-text">Q5</h3>
+<p>How many of the following statements are true for the reader-writer problem?</p>
+<ul>
+  <li>
+    <p>There can be multiple active readers</p>
+  </li>
+  <li>
+    <p>There can be multiple active writers</p>
+  </li>
+  <li>
+    <p>When there is an active writer the number of active readers must be zero</p>
+  </li>
+  <li>
+    <p>If there is an active reader the number of active writers must be zero</p>
+  </li>
+  <li>
+    <p>A writer must wait until the current active readers have finished</p>
+  </li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="ipc" class="title-text">IPC<a class="anchor title-text" href="#ipc">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<h3 id="q1-2" class="title-text">Q1</h3>
+<p>What are the following and what is their purpose? * Translation Lookaside Buffer * Physical Address * Memory Management Unit * The dirty bit</p>
+<h3 id="q2-2" class="title-text">Q2</h3>
+<p>How do you determine how many bits are used in the page offset?</p>
+<h3 id="q3-2" class="title-text">Q3</h3>
+<p>20 ms after a context switch the TLB contains all logical addresses used by your numerical code which performs main memory access 100% of the time. What is the overhead (slowdown) of a two-level page table compared to a single-level page table?</p>
+<h3 id="q4-2" class="title-text">Q4</h3>
+<p>Explain why the TLB must be flushed when a context switch occurs (i.e. the CPU is assigned to work on a different process).</p>
+<blockquote>
+  <p>Question numbers subject to change</p>
+</blockquote>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="processes" class="title-text">Processes<a class="anchor title-text" href="#processes">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<h3 id="q1-3" class="title-text">Q1</h3>
+<p>Fill in the blanks to make the following program print 123456789. If <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/cat" class="fancy-link">cat</a></code> is given no arguments it simply prints its input until EOF. Bonus: Explain why the <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/close" class="fancy-link">close</a></code> call below is necessary.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="q2-3" class="title-text">Q2</h3>
+<p>Use POSIX calls <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code> <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pipe" class="fancy-link">pipe</a></code> <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/dup2" class="fancy-link">dup2</a></code> and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/close" class="fancy-link">close</a></code> to implement an autograding program. Capture the standard output of a child process into a pipe. The child process should <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code> the program <code class="highlighter-rouge">./test</code> with no additional arguments (other than the process name). In the parent process read from the pipe: Exit the parent process as soon as the captured output contains the ! character. Before exiting the parent process send SIGKILL to the child process. Exit 0 if the output contained a !. Otherwise if the child process exits causing the pipe write end to be closed, then exit with a value of 1. Be sure to close the unused ends of the pipe in the parent and child process</p>
+<h3 id="q3-advanced" class="title-text">Q3 (Advanced)</h3>
+<p>This advanced challenge uses pipes to get an “AI player” to play itself until the game is complete. The program <code class="highlighter-rouge">tictactoe</code> accepts a line of input - the sequence of turns made so far, prints the same sequence followed by another turn, and then exits. A turn is specified using two characters. For example “A1” and “C3” are two opposite corner positions. The string <code class="highlighter-rouge">B2A1A3</code> is a game of 3 turns/plys. A valid response is <code class="highlighter-rouge">B2A1A3C1</code> (the C1 response blocks the diagonal B2 A3 threat). The output line may also include a suffix <code class="highlighter-rouge">-I win</code> <code class="highlighter-rouge">-You win</code> <code class="highlighter-rouge">-invalid</code> or <code class="highlighter-rouge">-draw</code> Use pipes to control the input and output of each child process created. When the output contains a <code class="highlighter-rouge">-</code>, print the final output line (the entire game sequence and the result) and exit.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="mapped-memory" class="title-text">Mapped Memory<a class="anchor title-text" href="#mapped-memory">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<h3 id="q1-4" class="title-text">Q1</h3>
+<p>Write a function that uses fseek and ftell to replace the middle character of a file with an ‘X’</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="q2-4" class="title-text">Q2</h3>
+<p>In an <code class="highlighter-rouge">ext2</code> filesystem how many inodes are read from disk to access the first byte of the file <code class="highlighter-rouge">/dir1/subdirA/notes.txt</code> ? Assume the directory names and inode numbers in the root directory (but not the inodes themselves) are already in memory.</p>
+<h3 id="q3-3" class="title-text">Q3</h3>
+<p>In an <code class="highlighter-rouge">ext2</code> filesystem what is the minimum number of disk blocks that must be read from disk to access the first byte of the file <code class="highlighter-rouge">/dir1/subdirA/notes.txt</code> ? Assume the directory names and inode numbers in the root directory and all inodes are already in memory.</p>
+<h3 id="q4-3" class="title-text">Q4</h3>
+<p>In an <code class="highlighter-rouge">ext2</code> filesystem with 32 bit addresses and 4KB disk blocks, an inodes that can store 10 direct disk block numbers. What is the minimum file size required to require an single indirection table? ii) a double direction table?</p>
+<h3 id="q5-2" class="title-text">Q5</h3>
+<p>Fix the shell command <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/chmod" class="fancy-link">chmod</a></code> below to set the permission of a file <code class="highlighter-rouge">secret.txt</code> so that the owner can read,write,and execute permissions the group can read and everyone else has no access.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<ul>
+  <li>
+    <p><a href="http://angrave.github.io/SystemProgramming/networkingreviewquestions.html" class="fancy-link wiki-link">Wiki w/Interactive MC Questions</a></p>
+  </li>
+  <li>
+    <p>See</p>
+  </li>
+  <li>
+    <p>See</p>
+  </li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="networking" class="title-text">Networking<a class="anchor title-text" href="#networking">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<h3 id="q1-5" class="title-text">Q1</h3>
+<p>What is a socket?</p>
+<h3 id="q2-5" class="title-text">Q2</h3>
+<p>What is special about listening on port 1000 vs port 2000?</p>
+<ul>
+  <li>
+    <p>Port 2000 is twice as slow as port 1000</p>
+  </li>
+  <li>
+    <p>Port 2000 is twice as fast as port 1000</p>
+  </li>
+  <li>
+    <p>Port 1000 requires root privileges</p>
+  </li>
+  <li>
+    <p>Nothing</p>
+  </li>
+</ul>
+<h3 id="q3-4" class="title-text">Q3</h3>
+<p>Describe one significant difference between IPv4 and IPv6</p>
+<h3 id="q4-4" class="title-text">Q4</h3>
+<p>When and why would you use ntohs?</p>
+<h3 id="q5-3" class="title-text">Q5</h3>
+<p>If a host address is 32 bits which IP scheme am I most likely using? 128 bits?</p>
+<h3 id="q6-1" class="title-text">Q6</h3>
+<p>Which common network protocol is packet based and may not successfully deliver the data?</p>
+<h3 id="q7-1" class="title-text">Q7</h3>
+<p>Which common protocol is stream-based and will resend data if packets are lost?</p>
+<h3 id="q8" class="title-text">Q8</h3>
+<p>What is the SYN ACK ACK-SYN handshake?</p>
+<h3 id="q9" class="title-text">Q9</h3>
+<p>Which one of the following is NOT a feature of TCP? - Packet re-ordering - Flow control - Packet re-tranmission - Simple error detection - Encryption</p>
+<h3 id="q10" class="title-text">Q10</h3>
+<p>What protocol uses sequence numbers? What is their initial value? And why?</p>
+<h3 id="q11-1" class="title-text">Q11</h3>
+<p>What are the minimum network calls are required to build a TCP server? What is their correct order?</p>
+<h3 id="q12" class="title-text">Q12</h3>
+<p>What are the minimum network calls are required to build a TCP client? What is their correct order?</p>
+<h3 id="q13" class="title-text">Q13</h3>
+<p>When would you call bind on a TCP client?</p>
+<h3 id="q14" class="title-text">Q14</h3>
+<p>What is the purpose of socket bind listen accept ?</p>
+<h3 id="q15" class="title-text">Q15</h3>
+<p>Which of the above calls can block, waiting for a new client to connect?</p>
+<h3 id="q16" class="title-text">Q16</h3>
+<p>What is DNS? What does it do for you? Which of the CS241 network calls will use it for you?</p>
+<h3 id="q17" class="title-text">Q17</h3>
+<p>For getaddrinfo, how do you specify a server socket?</p>
+<h3 id="q18" class="title-text">Q18</h3>
+<p>Why may getaddrinfo generate network packets?</p>
+<h3 id="q19" class="title-text">Q19</h3>
+<p>Which network call specifies the size of the allowed backlog?</p>
+<h3 id="q20" class="title-text">Q20</h3>
+<p>Which network call returns a new file descriptor?</p>
+<h3 id="q21" class="title-text">Q21</h3>
+<p>When are passive sockets used?</p>
+<h3 id="q22" class="title-text">Q22</h3>
+<p>When is epoll a better choice than select? When is select a better choice than epoll?</p>
+<h3 id="q23" class="title-text">Q23</h3>
+<p>Will <code class="highlighter-rouge">write(fd, data, 5000)</code> always send 5000 bytes of data? When can it fail?</p>
+<h3 id="q24" class="title-text">Q24</h3>
+<p>How does Network Address Translation (NAT) work?</p>
+<h3 id="q25" class="title-text">Q25</h3>
+<p>@MCQ Assuming a network has a 20ms Transmit Time between Client and Server, how much time would it take to establish a TCP Connection? 20 ms 40 ms 100 ms 60 ms @ANS 3 Way Handshake @EXP @END</p>
+<h3 id="q26" class="title-text">Q26</h3>
+<p>What are some of the differences between HTTP 1.0 and HTTP 1.1? How many ms will it take to transmit 3 files from server to client if the network has a 20ms transmit time? How does the time taken differ between HTTP 1.0 and HTTP 1.1?</p>
+<h3 id="q-21-1" class="title-text">Q 2.1</h3>
+<p>Writing to a network socket may not send all of the bytes and may be interrupted due to a signal. Check the return value of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code> to implement <code class="highlighter-rouge">write_all</code> that will repeatedly call <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code> with any remaining data. If <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code> returns -1 then immediately return -1 unless the <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/errno" class="fancy-link">errno</a></code> is <code class="highlighter-rouge">EINTR</code> - in which case repeat the last <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code> attempt. You will need to use pointer arithmetic.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="q-22" class="title-text">Q 2.2</h3>
+<p>Implement a multithreaded TCP server that listens on port 2000. Each thread should read 128 bytes from the client file descriptor and echo it back to the client, before closing the connection and ending the thread.</p>
+<h3 id="q-23" class="title-text">Q 2.3</h3>
+<p>Implement a UDP server that listens on port 2000. Reserve a buffer of 200 bytes. Listen for an arriving packet. Valid packets are 200 bytes or less and start with four bytes 0x65 0x66 0x67 0x68. Ignore invalid packets. For valid packets add the value of the fifth byte as an unsigned value to a running total and print the total so far. If the running total is greater than 255 then exit.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="signals" class="title-text">Signals<a class="anchor title-text" href="#signals">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<h3 id="give-the-names-of-two-signals-that-are-normally-generated-by-the-kernel" class="title-text">Give the names of two signals that are normally generated by the kernel</h3>
+<h3 id="give-the-name-of-a-signal-that-can-not-be-caught-by-a-signal" class="title-text">Give the name of a signal that can not be caught by a signal</h3>
+<h3 id="why-is-it-unsafe-to-call-any-function-something-that-it-is-not-signal-handler-safe-in-a-signal-handler" class="title-text">Why is it unsafe to call any function (something that it is not signal handler safe) in a signal handler?</h3>
+<p>Coding Questions</p>
+<p>Write brief code that uses SIGACTION and a SIGNALSET to create a SIGALRM handler.</p>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook_project/Review.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

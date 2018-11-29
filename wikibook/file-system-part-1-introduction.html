@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>File System, Part 1: Introduction</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              File System, Part 1: Introduction
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/File-System,-Part-1:-Introduction">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_design-a-file-system-what-are-your-design-goals" href="#design-a-file-system-what-are-your-design-goals" class="fancy-link">Design a file system! What are your design goals?</a></li>
+<li><a id="toc_what-are---and-" href="#what-are---and-" class="fancy-link">What are <code class="highlighter-rouge">.</code>, <code class="highlighter-rouge">..</code>, and <code class="highlighter-rouge">...</code>?</a></li>
+<li><a id="toc_what-are-absolute-and-relative-paths" href="#what-are-absolute-and-relative-paths" class="fancy-link">What are absolute and relative paths?</a></li>
+<li><a id="toc_what-are-some-examples-of-relative-and-absolute-paths" href="#what-are-some-examples-of-relative-and-absolute-paths" class="fancy-link">What are some examples of relative and absolute paths?</a></li>
+<li><a id="toc_how-do-i-simplify-abc" href="#how-do-i-simplify-abc" class="fancy-link">How do I simplify <code class="highlighter-rouge">a/b/../c/./</code>?</a></li>
+<li><a id="toc_how-does-inode-store-the-file-contents" href="#how-does-inode-store-the-file-contents" class="fancy-link">How does inode store the file contents?</a></li>
+<li><a id="toc_why-make-disk-blocks-the-same-size-as-memory-pages" href="#why-make-disk-blocks-the-same-size-as-memory-pages" class="fancy-link">Why make disk blocks the same size as memory pages?</a></li>
+<li><a id="toc_what-information-do-we-want-to-store-for-each-file" href="#what-information-do-we-want-to-store-for-each-file" class="fancy-link">What information do we want to store for each file?</a></li>
+<li><a id="toc_what-are-the-traditional-permissions-user--group--other-permissions-for-a-file" href="#what-are-the-traditional-permissions-user--group--other-permissions-for-a-file" class="fancy-link">What are the traditional permissions: user – group – other permissions for a file?</a></li>
+<li><a id="toc_what-are-the-the-3-permission-bits-for-a-regular-file-for-each-role" href="#what-are-the-the-3-permission-bits-for-a-regular-file-for-each-role" class="fancy-link">What are the the 3 permission bits for a regular file for each role?</a></li>
+<li><a id="toc_what-do-644-755-mean" href="#what-do-644-755-mean" class="fancy-link">What do “644” “755” mean?</a></li>
+<li><a id="toc_how-many-pointers-can-you-store-in-each-indirection-table" href="#how-many-pointers-can-you-store-in-each-indirection-table" class="fancy-link">How many pointers can you store in each indirection table?</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="design-a-file-system-what-are-your-design-goals" class="title-text">Design a file system! What are your design goals?<a class="anchor title-text" href="#design-a-file-system-what-are-your-design-goals">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The design of a file system is difficult problem because there many high-level design goals that we’d like to satisfy. An incomplete list of ideal goals include:</p>
+<ul>
+  <li>Reliable and robust (even with hardware failures or incomplete writes due to power loss)</li>
+  <li>Access (security) controls</li>
+  <li>Accounting and quotas</li>
+  <li>Indexing and search</li>
+  <li>Versioning and backup capabilities</li>
+  <li>Encryption</li>
+  <li>Automatic compression</li>
+  <li>High performance (e.g. Caching in-memory)</li>
+  <li>Efficient use of storage de-duplication</li>
+</ul>
+<p>Not all filesystems natively support all of these goals. For example, many filesystems do not automatically compress rarely-used files</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-are---and-" class="title-text">What are <code class="highlighter-rouge">.</code>, <code class="highlighter-rouge">..</code>, and <code class="highlighter-rouge">...</code>?<a class="anchor title-text" href="#what-are---and-">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>In standard unix file systems:</p>
+<ul>
+  <li>
+<code class="highlighter-rouge">.</code> represents the current directory</li>
+  <li>
+<code class="highlighter-rouge">..</code> represents the parent directory</li>
+  <li>
+<code class="highlighter-rouge">...</code> is NOT a valid representation of any directory (this not the grandparent directory). It <em>could</em> however be the name of a file on disk.</li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-are-absolute-and-relative-paths" class="title-text">What are absolute and relative paths?<a class="anchor title-text" href="#what-are-absolute-and-relative-paths">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Absolute paths are paths that start from the ‘root node’ of your directory tree. Relative paths are paths that start from your current position in the tree.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-are-some-examples-of-relative-and-absolute-paths" class="title-text">What are some examples of relative and absolute paths?<a class="anchor title-text" href="#what-are-some-examples-of-relative-and-absolute-paths">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>If you start in your home directory (“~” for short), then <code class="highlighter-rouge">Desktop/cs241</code> would be a relative path. Its absolute path counterpart might be something like <code class="highlighter-rouge">/Users/[yourname]/Desktop/cs241</code>.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-simplify-abc" class="title-text">How do I simplify <code class="highlighter-rouge">a/b/../c/./</code>?<a class="anchor title-text" href="#how-do-i-simplify-abc">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Remember that <code class="highlighter-rouge">..</code> means ‘parent folder’ and that <code class="highlighter-rouge">.</code> means ‘current folder’.</p>
+<p>Example: <code class="highlighter-rouge">a/b/../c/./</code></p>
+<ul>
+  <li>Step 1: <code class="highlighter-rouge">cd a</code> (in a)</li>
+  <li>Step 2: <code class="highlighter-rouge">cd b</code> (in a/b)</li>
+  <li>Step 3: <code class="highlighter-rouge">cd ..</code> (in a, because .. represents ‘parent folder’)</li>
+  <li>Step 4: <code class="highlighter-rouge">cd c</code> (in a/c)</li>
+  <li>Step 5: <code class="highlighter-rouge">cd .</code> (in a/c, because . represents ‘current folder’)</li>
+</ul>
+<p>Thus, this path can be simplified to <code class="highlighter-rouge">a/c</code>.</p>
+<p>A filesystem is how information is organized on disk. Whenever you want to access a file, the filesystem dictates how the file is read. Here is a sample image of a filesystem.</p>
+<p><img src="http://tinf2.vub.ac.be/~dvermeir/manual/uintro/disk.gif" alt=""></p>
+<p>Whoa that’s a lot let’s break it down</p>
+<ul>
+  <li>Superblock: This block contains metadata about the filesystem, how large, last modified time, a journal, number of inodes and the first inode start, number of data block and the first data block start.</li>
+  <li>Inode: This is the key abstraction. An inode is a file.</li>
+  <li>Disk Blocks: These are where the data is stored. The actual contents of the file</li>
+</ul>
+</div></div></div>
+</div></div>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-does-inode-store-the-file-contents" class="title-text">How does inode store the file contents?<a class="anchor title-text" href="#how-does-inode-store-the-file-contents">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p><img src="https://classes.soe.ucsc.edu/cmps111/Fall08/inode_with_signatures.jpg" alt=""></p>
+<p>From <a href="http://en.wikipedia.org/wiki/Inode" class="fancy-link wiki-link">Wikipedia</a>:</p>
+<blockquote>
+  <p><em>In a Unix-style file system, an index node, informally referred to as an inode, is a data structure used to represent a filesystem object, which can be one of various things including a file or a directory. Each inode stores the attributes and disk block location(s) of the filesystem object’s data. Filesystem object attributes may include manipulation metadata (e.g. change, access, modify time), as well as owner and permission data (e.g. group-id, user-id, permissions).</em></p>
+</blockquote>
+<p>To read the first few bytes of the file, follow the first direct block pointer to the first direct block and read the first few bytes, writing is the same process. If you want to read the entire file, keep reading direct blocks until your size runs out (we will talk about indirect blocks in a bit)</p>
+<blockquote>
+  <p>“All problems in computer science can be solved by another level of indirection.” - David Wheeler</p>
+</blockquote>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="why-make-disk-blocks-the-same-size-as-memory-pages" class="title-text">Why make disk blocks the same size as memory pages?<a class="anchor title-text" href="#why-make-disk-blocks-the-same-size-as-memory-pages">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>To support virtual memory, so we can page stuff in and out of memory.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-information-do-we-want-to-store-for-each-file" class="title-text">What information do we want to store for each file?<a class="anchor title-text" href="#what-information-do-we-want-to-store-for-each-file">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>Filename</li>
+  <li>File size</li>
+  <li>Time created, last modified, last accessed</li>
+  <li>Permissions</li>
+  <li>Filepath</li>
+  <li>Checksum</li>
+  <li>File data (inode)</li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-are-the-traditional-permissions-user--group--other-permissions-for-a-file" class="title-text">What are the traditional permissions: user – group – other permissions for a file?<a class="anchor title-text" href="#what-are-the-traditional-permissions-user--group--other-permissions-for-a-file">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Some common file permissions include:</p>
+<ul>
+  <li>755: <code class="highlighter-rouge">rwx r-x r-x</code>
+</li>
+</ul>
+<p>user: <code class="highlighter-rouge">rwx</code>, group: <code class="highlighter-rouge">r-x</code>, others: <code class="highlighter-rouge">r-x</code></p>
+<p>User can read, write and execute. Group and others can only read and execute.</p>
+<ul>
+  <li>644: <code class="highlighter-rouge">rw- r-- r--</code>
+</li>
+</ul>
+<p>user: <code class="highlighter-rouge">rw-</code>, group: <code class="highlighter-rouge">r--</code>, others: <code class="highlighter-rouge">r--</code></p>
+<p>User can read and write. Group and others can only read.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-are-the-the-3-permission-bits-for-a-regular-file-for-each-role" class="title-text">What are the the 3 permission bits for a regular file for each role?<a class="anchor title-text" href="#what-are-the-the-3-permission-bits-for-a-regular-file-for-each-role">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>Read (most significant bit)</li>
+  <li>Write (2nd bit)</li>
+  <li>Execute (least significant bit)</li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-do-644-755-mean" class="title-text">What do “644” “755” mean?<a class="anchor title-text" href="#what-do-644-755-mean">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>These are examples of permissions in octal format (base 8). Each octal digit corresponds to a different role (user, group, world).</p>
+<p>We can read permissions in octal format as follows:</p>
+<ul>
+  <li>644 - R/W user permissions, R group permissions, R world permissions</li>
+  <li>755 - R/W/X user permissions, R/X group permissions, R/X world permissions</li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-many-pointers-can-you-store-in-each-indirection-table" class="title-text">How many pointers can you store in each indirection table?<a class="anchor title-text" href="#how-many-pointers-can-you-store-in-each-indirection-table">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>As a worked example, suppose we divide the disk into 4KB blocks and we want to address up to 2^32 blocks.</p>
+<p>The maximum disk size is 4KB *2^32 = 16TB  (remember 2^10 = 1024)</p>
+<p>A disk block can store 4KB / 4B (each pointer needs to be 32 bits) = 1024 pointers. Each pointer refers to a 4KB disk block - so you can refer up to 1024*4KB = 4MB of data</p>
+<p>For the same disk configuration, a double indirect block stores 1024 pointers to 1024 indirection tables. Thus a double-indirect block can refer up to 1024 * 4MB = 4GB of data.</p>
+<p>Similarly, a triple indirect block can refer up to 4TB of data.</p>
+<p><a href="/wikibook/file-system-part-2-files-are-inodes.html#" class="fancy-link wiki-link">Go to File System: Part 2</a></p>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/file-system-part-1-introduction.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

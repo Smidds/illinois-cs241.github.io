@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Networking, Part 1: Introduction</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Networking, Part 1: Introduction
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/Networking,-Part-1:-Introduction">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_what-is-ip4-ip6" href="#what-is-ip4-ip6" class="fancy-link">What is “IP4” “IP6”?</a></li>
+<li><a id="toc_theres-no-place-like-127001" href="#theres-no-place-like-127001" class="fancy-link">“There’s no place like 127.0.0.1”!</a></li>
+<li><a id="toc_-and--theres-no-place-like-00000001" href="#-and--theres-no-place-like-00000001" class="fancy-link">… and … “There’s no place like 0:0:0:0:0:0:0:1?”</a></li>
+<li><a id="toc_what-is-a-port" href="#what-is-a-port" class="fancy-link">What is a port?</a></li>
+<li><a id="toc_what-is-udp-when-is-it-used" href="#what-is-udp-when-is-it-used" class="fancy-link">What is UDP? When is it used?</a></li>
+<li><a id="toc_what-is-tcp-when-is-it-used" href="#what-is-tcp-when-is-it-used" class="fancy-link">What is TCP? When is it used?</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<p>Caveat: It should be obvious that  page is <em>not</em> a complete description of IP, UDP or TCP! Instead it is a short introduction and is sufficient so that we can build upon these concepts in later lectures.</p>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-ip4-ip6" class="title-text">What is “IP4” “IP6”?<a class="anchor title-text" href="#what-is-ip4-ip6">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The following is the “30 second” introduction to internet protocol (IP) - which is the primary way to send packets (“datagrams”) of information from one machine to another.</p>
+<p>“IP4”, or more precisely, “IPv4” is version 4 of the Internet Protocol that describes how to send packets of information across a network from one machine to another . Roughly 95% of all packets on the Internet today are IPv4 packets. A significant limitation of IPv4 is that source and destination addresses are limited to 32 bits (IPv4 was designed at a time when the idea of 4 billion devices connected to the same network was unthinkable - or at least not worth making the packet size larger)</p>
+<p>Each IPv4 packet includes a very small header - typically 20 bytes (more precisely, “octets”), that includes a source and destination address.</p>
+<p>Conceptually the source and destination addresses can be split into two: a network number (the upper bits) and the lower bits represent a particular host number on that network.</p>
+<p>A newer packet protocol “IPv6” solves many of the limitations of IPv4 (e.g. makes routing tables simpler and 128 bit addresses) however less than 5% of web traffic is IPv6 based.</p>
+<p>A machine can have an IPv6 address and an IPv4 address.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="theres-no-place-like-127001" class="title-text">“There’s no place like 127.0.0.1”!<a class="anchor title-text" href="#theres-no-place-like-127001">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>A special IPv4 address is <code class="highlighter-rouge">127.0.0.1</code> also known as localhost. Packets sent to 127.0.0.1 will never leave the machine; the address is specified to be the same machine.</p>
+<p>Notice that the 32 bits address is split into 4 octets i.e. each number in the dot notation can be 0-255 inclusive. However IPv4 addresses can also be written as an integer.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="-and--theres-no-place-like-00000001" class="title-text">… and … “There’s no place like 0:0:0:0:0:0:0:1?”<a class="anchor title-text" href="#-and--theres-no-place-like-00000001">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>The 128bit localhost address in IPv6 is <code class="highlighter-rouge">0:0:0:0:0:0:0:1</code> which can be written in its shortened form, <code class="highlighter-rouge">::1</code></p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-a-port" class="title-text">What is a port?<a class="anchor title-text" href="#what-is-a-port">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>To send a datagram (packet) to a host on the Internet using IPv4 (or IPv6) you need to specify the host address and a port. The port is an unsigned 16 bit number (i.e. the maximum port number is 65535).</p>
+<p>A process can listen for incoming packets on a particular port. However only processes with super-user (root) access can listen on ports &lt; 1024. Any process can listen on ports 1024 or higher.</p>
+<p>An often used port is port 80: Port 80 is used for unencrypted http requests (i.e. web pages).
+For example, if a web browser connects to http://www.bbc.com/, then it will be connecting to port 80.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-udp-when-is-it-used" class="title-text">What is UDP? When is it used?<a class="anchor title-text" href="#what-is-udp-when-is-it-used">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>UDP is a connectionless protocol that is built on top of IPv4 and IPv6. It’s very simple to use: Decide the destination address and port and send your data packet! However the network makes no guarantee about whether the packets will arrive.
+Packets (aka Datagrams) may be dropped if the network is congested. Packets may be duplicated or arrive out of order.</p>
+<p>Between two distant data-centers it’s typical to see 3% packet loss.</p>
+<p>A typical use case for UDP is when receiving up to date data is more important than receiving all of the data. For example, a game may send continuous updates of player positions. A streaming video signal may send picture updates using UDP</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-tcp-when-is-it-used" class="title-text">What is TCP? When is it used?<a class="anchor title-text" href="#what-is-tcp-when-is-it-used">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>TCP is a connection-based protocol that is built on top of IPv4 and IPv6 (and therefore can be described as “TCP/IP” or “TCP over IP”). TCP creates a <em>pipe</em> between two machines and abstracts away the low level packet-nature of the Internet: Thus, under most conditions, bytes sent from one machine will eventually arrive at the other end without duplication or data loss.</p>
+<p>TCP will automatically manage resending packets, ignoring duplicate packets, re-arranging out-of-order packets and changing the rate at which packets are sent.</p>
+<p>TCP’s three way handshake is known as SYN, SYN-ACK, and ACK. The diagram on this page helps with understanding the TCP handshake. <a href="http://www.inetdaemon.com/tutorials/internet/tcp/3-way_handshake.shtml" class="fancy-link wiki-link">TCP Handshake</a></p>
+<p>Most services on the Internet today (e.g. a web service) use TCP because it hides the complexity of lower, packet-level nature of the Internet.</p>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/networking-part-1-introduction.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

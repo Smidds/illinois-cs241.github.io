@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Getting Help</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Getting Help
+
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_peer-tutoring" href="#peer-tutoring" class="fancy-link">Peer Tutoring</a></li>
+<li><a id="toc_piazza-search-first-dont-post" href="#piazza-search-first-dont-post" class="fancy-link">Piazza: Search First. Don’t Post.</a></li>
+<li><a id="toc_cs-241-admin" href="#cs-241-admin" class="fancy-link">CS 241 Admin</a></li>
+<li><a id="toc_lawrence-angrave" href="#lawrence-angrave" class="fancy-link">Lawrence Angrave</a></li>
+<li><a id="toc_carl-evans" href="#carl-evans" class="fancy-link">Carl Evans</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="peer-tutoring" class="title-text">Peer Tutoring<a class="anchor title-text" href="#peer-tutoring">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>We hold peer tutoring sessions in the basement of Siebel in the computer labs. You can join by adding yourself onto the <a href="https://edu.cs.illinois.edu/queue/" class="fancy-link wiki-link">Queue</a> (the schedule can be found below).</p>
+<p>Please note that this is not CS 225, so <a href="./staff_hall_of_fame.html" class="fancy-link wiki-link">we</a> will not do your assignments. This is one of the last classes you will take before being thrown into 400-level courses, where the assignments are much harder, help is much more limited, and hand holding is negative.</p>
+<blockquote>
+  <p>Give a student the answer and you feed them for a day; teach a student to find their own answers and you feed them for a lifetime.</p>
+</blockquote>
+<p>These peer tutoring sessions will focus on diagnosing misconceptions and holes in your understanding of the problem. This is a fairly conceptual class where your understanding of the problem will directly impact how you can implement a solution. If you have made it this far into the CS curriculum simply be compiling lecture notes and documentation to code, then you are going to have to make some serious changes in your work ethics. Be prepared to be asked to explain what you think your program is doing. Odds are that what you think your code is doing is not equivalent to what it is doing.</p>
+<p>This department is scaling rapidly, which is great, since computer science is an incredible field of knowledge that will take our civilization to new frontiers. Unfortunately, the number of people on course staff does not scale as fast. This means that we can not sit next to you for 45 minutes to read 800 lines of your code; this is peer tutoring and not a dinner date. We will wear stopwatches and <a href="https://en.wikipedia.org/wiki/Round-robin_scheduling" class="fancy-link wiki-link">round robin</a> between the students on the queue.</p>
+<iframe src="https://calendar.google.com/calendar/embed?src=illinois.edu_rtpfqbnbvd071rcps8oougljis%40group.calendar.google.com&amp;ctz=America%2FChicago&amp;mode=WEEK&amp;wkst=2&amp;color=%232952A3&amp;bgcolor=%23FFFFFF" style=" border-width:0 " width="100%" height="800px" frameborder="0" scrolling="no"></iframe>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="piazza-search-first-dont-post" class="title-text">Piazza: Search First. Don’t Post.<a class="anchor title-text" href="#piazza-search-first-dont-post">#</a>
+</h2></div>
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<div class="pad"><div class="card">
+<h4 id="low-effort-questions">Low-Effort Questions</h4>
+
+<p>We <em>will not</em> accept “low effort questions”:</p>
+
+<ul>
+  <li>“My code doesn’t work, can someone look at my github?”</li>
+  <li>Questions that are already answered in a pinned post</li>
+  <li>Questions that are already answered in the docs</li>
+  <li>Questions that have already been answered many times before and can easily be found by searching</li>
+  <li>Questions that provide basically no information to go off of (Debugging? Tests? Valgrind? Anything?)</li>
+</ul>
+
+<p>If we find you asking too many of these low-effort questions, then we reserve the right to remove your Piazza privileges. Hopefully these steps will lead you to the answer you’re looking for, or at the very least help you find the answer yourself. Asking on Piazza should not be the first thing you do when you have a problem. You’re here to learn; we’re not going to give you the answer every time you ask.</p>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="debugging">Debugging</h4>
+
+<p>Have you run it in Valgrind? Are you testing simpler cases that might show where the problem is? How about adding print statements or using breakpoints in gdb to figure out if you’re actually getting to the code you think is running? Are you using the VM we provide to test the code? If you’re getting erratic behavior, make sure you’ve fixed everything Valgrind complains about, as what you do wrong in one place can affect a completely unrelated piece of code. If you ask a question, make sure that you’ve made some effort to find the problem. Be prepared to provide some Valgrind log.</p>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="documentation">Documentation</h4>
+
+<p>A lot of questions can be answered simply by looking at the MP spec, pinned errata posts, or looking through a man page. Don’t know where your specific question is answered? Use Ctrl+F with some keywords to search the page. Don’t know how to use a function? Read the man page. It provides detailed info on how to use a function, and can even list some examples. Also note man page section 7. It’s all explanations of different parts of the C library. There you can find how signal, epoll, and more work in practice.</p>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="google-is-your-friend">Google Is Your Friend</h4>
+
+<p>Most questions can simply be answered by searching Piazza, or Googling your question. The chances are that someone has had your exact problem, and someone has answered it (especially near a due date when most people have already finished). Even if you don’t find your exact answer, the questions you find can be close enough to what you’re looking for. Here are some tips on Googling: <a href="http://imgur.com/gallery/rNlQJuT" class="fancy-link wiki-link">How to be a Google Power User</a> and <a href="http://imgur.com/gallery/hkmIT" class="fancy-link wiki-link">How to get more out of Google</a>.</p>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="i-found-nothing-what-now">I Found Nothing. What Now?</h4>
+
+<p>If you are truly lost, can’t find an answer in the docs, or in other questions, or the wide expanse of the internet, ask your question!</p>
+
+<ul>
+  <li>What’s the problem you’re having? (And give an example)</li>
+  <li>What have you tried? Have you tested your code?</li>
+  <li>What does Valgrind say? How about a gdb backtrace?</li>
+  <li>If you need to show code, don’t take a screenshot. Copy it into a pre tag (“code” on the rich editor bar)</li>
+</ul>
+
+</div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="cs-241-admin" class="title-text">CS 241 Admin<a class="anchor title-text" href="#cs-241-admin">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Jillian is our class admin, and she is in charge of all administrative items (e.g. exam sickness, DRES, 1% issues). If you feel your issue falls under those definitions, then please email her at <a href="mailto:cs241admin@illinois.edu" class="fancy-link wiki-link">cs241admin@illinois.edu</a> and explain your scenario.</p>
+<p>Note: We do not provide attendance misses for labs (this is not negotiable), especially for something that is 100% in your control like “I have an interview.”</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="lawrence-angrave" class="title-text">Lawrence Angrave<a class="anchor title-text" href="#lawrence-angrave">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Lawrence Angrave can often be found on the second floor of Siebel in or near SC2217. His office hours Tuesdays 11:30-12:30. He’s also able to answer quick questions before or after lecture.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="carl-evans" class="title-text">Carl Evans<a class="anchor title-text" href="#carl-evans">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Carl Evans has also taught this course. His office is on the third floor of Siebel 3209.</p></div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_pages/help.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

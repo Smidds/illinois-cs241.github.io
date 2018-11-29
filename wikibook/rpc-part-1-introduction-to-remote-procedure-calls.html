@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>RPC, Part 1: Introduction to Remote Procedure Calls</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              RPC, Part 1: Introduction to Remote Procedure Calls
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/RPC,-Part-1:-Introduction-to-Remote-Procedure-Calls">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_what-is-rpc" href="#what-is-rpc" class="fancy-link">What is RPC?</a></li>
+<li><a id="toc_what-is-privilege-separation" href="#what-is-privilege-separation" class="fancy-link">What is Privilege Separation?</a></li>
+<li><a id="toc_what-is-stub-code-what-is-marshalling" href="#what-is-stub-code-what-is-marshalling" class="fancy-link">What is stub code? What is marshalling?</a></li>
+<li><a id="toc_what-is-server-stub-code-what-is-unmarshalling" href="#what-is-server-stub-code-what-is-unmarshalling" class="fancy-link">What is server stub code? What is unmarshalling?</a></li>
+<li><a id="toc_how-do-you-send-an-int-float-a-struct--a-linked-list-a-graph" href="#how-do-you-send-an-int-float-a-struct--a-linked-list-a-graph" class="fancy-link">How do you send an int? float? a struct?  A linked list? A graph?</a></li>
+<li><a id="toc_what-is-an-idl-interface-description-language" href="#what-is-an-idl-interface-description-language" class="fancy-link">What is an IDL (Interface Description Language)?</a></li>
+<li><a id="toc_complexity-and-challenges-of-rpc-vs-local-calls" href="#complexity-and-challenges-of-rpc-vs-local-calls" class="fancy-link">Complexity and challenges of RPC vs local calls?</a></li>
+<li><a id="toc_transferring-large-amounts-of-structured-data" href="#transferring-large-amounts-of-structured-data" class="fancy-link">Transferring large amounts of structured data</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-rpc" class="title-text">What is RPC?<a class="anchor title-text" href="#what-is-rpc">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Remote Procedure Call. RPC is the idea that we can execute a procedure (function) on a different machine. In practice the procedure may execute on the same machine, however it may be in a different context - for example under a different user with different permissions and different lifecycle.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-privilege-separation" class="title-text">What is Privilege Separation?<a class="anchor title-text" href="#what-is-privilege-separation">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>The remote code will execute under a different user and with different privileges from the caller. In practice the remote call may execute with more or fewer privileges than the caller. This in principle can be used to improve the security of a system (by ensuring components operate with least privilege). Unfortunately, security concerns need to be carefully assessed to ensure that RPC mechanisms cannot be subverted to perform unwanted actions. For example, an RPC implementation may implicitly trust any connected client to perform any action, rather than a subset of actions on a subset of the data.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-stub-code-what-is-marshalling" class="title-text">What is stub code? What is marshalling?<a class="anchor title-text" href="#what-is-stub-code-what-is-marshalling">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The stub code is the necessary code to hide the complexity of performing a remote procedure call. One of the roles of the stub code is to <em>marshall</em> the necessary data into a format that can be sent as a byte stream to a remote server.</p>
+<pre><code class="language-C"><span class="c1">// On the outside 'getHiscore' looks like a normal function call</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-server-stub-code-what-is-unmarshalling" class="title-text">What is server stub code? What is unmarshalling?<a class="anchor title-text" href="#what-is-server-stub-code-what-is-unmarshalling">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>The server stub code will receive the request, unmarshall the request into a valid in-memory data, call the underlying implementation, and send the result back to the caller.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-you-send-an-int-float-a-struct--a-linked-list-a-graph" class="title-text">How do you send an int? float? a struct?  A linked list? A graph?<a class="anchor title-text" href="#how-do-you-send-an-int-float-a-struct--a-linked-list-a-graph">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>To implement RPC you need to decide (and document) which conventions you will use to serialize the data into a byte sequence. Even a simple integer has several common choices:</p>
+<ul>
+  <li>Signed or unsigned?</li>
+  <li>ASCII</li>
+  <li>Fixed number of bytes or variable depending on magnitude</li>
+  <li>Little or Big endian binary format?</li>
+</ul>
+<p>To marshall a struct, decide which fields need to be serialized. It may not be necessary to send all data items (for example, some items may be irrelevant to the specific RPC or can be re-computed by the server from the other data items present).</p>
+<p>To marshall a linked list it is unnecessary to send the link pointers- just stream the values. As part of unmarshalling the server can recreate a linked list structure from the byte sequence.</p>
+<p>By starting at the head node/vertex, a simple tree can be recursively visited to create a serialized version of the data. A cyclic graph will usually require additional memory to ensure that each edge and vertex is processed exactly once.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-an-idl-interface-description-language" class="title-text">What is an IDL (Interface Description Language)?<a class="anchor title-text" href="#what-is-an-idl-interface-description-language">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Writing stub code by hand is painful, tedious, error prone, difficult to maintain and difficult to reverse engineer the wire protocol from the implemented code. A better approach is specify the data objects, messages and services and automatically generate the client and server code.</p>
+<p>A modern example of an Interface Description Language is Google’s Protocol Buffer .proto files.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="complexity-and-challenges-of-rpc-vs-local-calls" class="title-text">Complexity and challenges of RPC vs local calls?<a class="anchor title-text" href="#complexity-and-challenges-of-rpc-vs-local-calls">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Remote Procedure Calls are significantly slower (10x to 100x) and more complex than local calls. An RPC must marshall data into a wire-compatible format. This may require multiple passes through the data structure, temporary memory allocation and transformation of the data representation.</p>
+<p>Robust RPC stub code must intelligently handle network failures and versioning. For example, a server may have to process requests from clients that are still running an early version of the stub code.</p>
+<p>A secure RPC will need to implement additional security checks (including authentication and authorization), validate data and encrypt communication between the client and host.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="transferring-large-amounts-of-structured-data" class="title-text">Transferring large amounts of structured data<a class="anchor title-text" href="#transferring-large-amounts-of-structured-data">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Let’s examine three methods of transferring data using 3 different formats - JSON, XML and Google Protocol Buffers. JSON and XML are text-based protocols. Examples of JSON and XML messages are below.</p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;ticket&gt;&lt;price</span> <span class="na">currency=</span><span class="s">'dollar'</span><span class="nt">&gt;</span>10<span class="nt">&lt;/price&gt;&lt;vendor&gt;</span>travelocity<span class="nt">&lt;/vendor&gt;&lt;/ticket&gt;</span>
+</code></pre></div></div>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span> <span class="s1">'currency'</span><span class="p">:</span><span class="s1">'dollar'</span> <span class="p">,</span> <span class="s1">'vendor'</span><span class="p">:</span><span class="s1">'travelocity'</span><span class="p">,</span> <span class="s1">'price'</span><span class="p">:</span><span class="s1">'10'</span> <span class="p">}</span>
+</code></pre></div></div>
+<p>Google Protocol Buffers is an open-source efficient binary protocol that places a strong emphasis on high throughput with low CPU overhead and minimal memory copying. Implementations exist for multiple languages including Go, Python, C++ and C. This means client and server stub code in multiple languages can be generated from the .proto specification file to marshall data to and from a binary stream.</p>
+<p>Google Protocol Buffers reduces the versioning problem by ignoring unknown fields that are present in a message. See the introduction to Protocol Buffers for more information.</p>
+<p>[[https://developers.google.com/protocol-buffers/docs/overview]]</p>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/rpc-part-1-introduction-to-remote-procedure-calls.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

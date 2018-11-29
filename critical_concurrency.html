@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Critical Concurrency</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Critical Concurrency
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/illinois-cs241/assignment-docs/blob/master//critical_concurrency.md">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+              <div class="submission-wrapper">
+                
+                  <b>Entire Assignment</b> due <b>10/10 11:59pm</b><br/>
+                  
+                    <b>Graded files:</b>
+                    <ul>
+                      
+                        <li>barrier.c</li>
+                      
+                        <li>queue.c</li>
+                      
+                        <li>semamore.c</li>
+                      
+                    </ul>
+                  
+                
+              </div>
+            
+            
+              <div class="schedule-wrapper">
+                
+                  <b>AG Schedule</b>
+                  <br/>
+                  <b>Pre-deadline Runs</b>
+                    <ul>
+                      
+                        <li>10/05 10:00 PM</li>
+                      
+                        <li>10/07 10:00 PM</li>
+                      
+                        <li>10/09 10:00 PM</li>
+                      
+                    </ul>
+                
+              </div>
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_overview" href="#overview" class="fancy-link">Overview</a></li>
+<li><a id="toc_rendezvous-ungraded" href="#rendezvous-ungraded" class="fancy-link">Rendezvous (UNGRADED)</a></li>
+<li><a id="toc_semamorec" href="#semamorec" class="fancy-link">semamore.c</a></li>
+<li><a id="toc_barrierc" href="#barrierc" class="fancy-link">barrier.c</a></li>
+<li><a id="toc_queuec" href="#queuec" class="fancy-link">queue.c</a></li>
+<li><a id="toc_testing" href="#testing" class="fancy-link">Testing</a></li>
+<li><a id="toc_helpful-hints-and-notes" href="#helpful-hints-and-notes" class="fancy-link">Helpful Hints and Notes</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+  <div class="pad"><div class="card">
+<div class="title"><h2 id="learning-objectives" class="title-text">Learning Objectives<a class="anchor title-text" href="#learning-objectives">#</a>
+</h2></div>
+  
+  
+
+
+  <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>
+    The learning objectives for Critical Concurrency are: <br>
+    </p>
+<ul class="mdl-list">
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Synchronization Primitives</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Common Patterns in Multi-Threaded Programs</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Thread-Safe Datastructures and Their Design</span>
+        </li>
+      
+    </ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="suggested-readings" class="title-text">Suggested Readings<a class="anchor title-text" href="#suggested-readings">#</a>
+</h2></div>
+  
+  
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>
+    We suggest you read the following from the
+    <a href="https://github.com/angrave/SystemProgramming/wiki" class="fancy-link wiki-link">wikibook</a>
+    before starting Critical Concurrency: <br>
+    </p>
+<ul>
+      
+        <li>
+          <a href="/wikibook/synchronization-part-1-mutex-locks.html#" target="_blank" class="fancy-link wiki-link">Synchronization, Part 1: Mutex Locks
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/synchronization-part-2-counting-semaphores.html#" target="_blank" class="fancy-link wiki-link">Synchronization, Part 2: Counting Semaphores
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/synchronization-part-3-working-with-mutexes-and-semaphores.html#" target="_blank" class="fancy-link wiki-link">Synchronization, Part 3: Working with Mutexes And Semaphores
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/synchronization-part-4-the-critical-section-problem.html#" target="_blank" class="fancy-link wiki-link">Synchronization, Part 4: The Critical Section Problem
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/synchronization-part-5-condition-variables.html#" target="_blank" class="fancy-link wiki-link">Synchronization, Part 5: Condition Variables
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/synchronization-part-6-implementing-a-barrier.html#" target="_blank" class="fancy-link wiki-link">Synchronization, Part 6: Implementing a barrier
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/deadlock-part-1-resource-allocation-graph.html#" target="_blank" class="fancy-link wiki-link">Deadlock, Part 1: Resource Allocation Graph
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/deadlock-part-2-deadlock-conditions.html#" target="_blank" class="fancy-link wiki-link">Deadlock, Part 2: Deadlock Conditions
+          </a>
+        </li>
+      
+    </ul>
+</div></div></div>
+</div></div>
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="overview" class="title-text">Overview<a class="anchor title-text" href="#overview">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>There are four main components to this lab, three of which are graded. These are Rendezvous (not graded), Semamore, Barrier, and Thread-safe Queue. Each of these represent very common synchronization problem (or slight twists on them) that will do you well to become familiar with.</p>
+<p>Good luck!</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="rendezvous-ungraded" class="title-text">Rendezvous (UNGRADED)<a class="anchor title-text" href="#rendezvous-ungraded">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>This is a problem for you to think about. We have provided a worked solution to this problem but PLEASE try to solve this problem before looking at the solution!</p>
+<p>Problem description:</p>
+<p>Given two threads, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/a" class="fancy-link">a</a></code> and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/b" class="fancy-link">b</a></code>, and the fact that both have to run two tasks (<code class="highlighter-rouge">a1</code>, <code class="highlighter-rouge">a2</code>, <code class="highlighter-rouge">b1</code>, <code class="highlighter-rouge">b2</code>), how do you get both <code class="highlighter-rouge">a1</code> and b1 to run before either <code class="highlighter-rouge">a2</code> and <code class="highlighter-rouge">b2</code>? In <code class="highlighter-rouge">rendezvous.c</code>, you need to modify the two functions (<code class="highlighter-rouge">modifyB_printA</code> &amp; <code class="highlighter-rouge">modifyA_printB</code>) using semaphores so that both quotes <code class="highlighter-rouge">A</code> and <code class="highlighter-rouge">B</code> are modified before being printed.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="semamorec" class="title-text">semamore.c<a class="anchor title-text" href="#semamorec">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>NOTE: A semamore is <strong>NOT</strong> a real thing! It is simply a made up clever name! This means you can’t use them in future assignments (unless you re-implement it).</p>
+<p>A normal semaphore blocks when the value within the semaphore reaches 0. A semamore blocks when it reaches 0, but also blocks when it reaches some maximum value. You can think of a semamore as a top-bounded semaphore. In semamore.c, you are given four functions to work on, <code class="highlighter-rouge">semm_init</code>, <code class="highlighter-rouge">semm_wait</code>, <code class="highlighter-rouge">semm_post</code>, <code class="highlighter-rouge">semm_destroy</code>. <code class="highlighter-rouge">semm_post</code> is the important difference. When <code class="highlighter-rouge">semm_post</code> reaches <code class="highlighter-rouge">max_val</code> (as defined in the semamore struct in semamore.h), it blocks.</p>
+<p>There are four functions in total you will be writing:</p>
+<ul>
+  <li><code class="highlighter-rouge">void semm_init(Semamore *s, int value, int max_val);</code></li>
+  <li><code class="highlighter-rouge">void semm_wait(Semamore *s);</code></li>
+  <li><code class="highlighter-rouge">void semm_post(Semamore *s);</code></li>
+  <li><code class="highlighter-rouge">void semm_destroy(Semamore *s);</code></li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="barrierc" class="title-text">barrier.c<a class="anchor title-text" href="#barrierc">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>In rendezvous you saw an example of an one-time-use barrier.  Now, you get to build code to support a reusable barrier.  At the cost of being redundant, a reusable barrier is one that can get used more than once.  Say you have threads executing code in a for loop and you want them to stay in sync.  That is, each thread should be on the i’th iteration of the loop when every other thread is on the i’th iteration.  With a reusable barrier, you can stop threads from going to the i+1’th iteration until all of them have finished the i’th.</p>
+<p>Note that most barrier implementations (including the pthread library barrier) are “reusable”, but never say so.  This is because it simply does not make sense to have a “not-reusable” barrier.  Thus, we are only iterating to you that the barrier your build should be reusable so that you understand what  it means.</p>
+<p>You can find more info in the <a href="/wikibook/synchronization-part-6-implementing-a-barrier.html#" class="fancy-link wiki-link">WIKI</a></p>
+<p>Your goal is to implement the functions</p>
+<ul>
+  <li><code class="highlighter-rouge">int barrier_destroy(barrier_t *barrier);</code></li>
+  <li><code class="highlighter-rouge">int barrier_init(barrier_t *barrier, unsigned num_threads);</code></li>
+  <li><code class="highlighter-rouge">int barrier_wait(barrier_t *barrier);</code></li>
+</ul>
+<p>so that a <code class="highlighter-rouge">barrier_t</code> using these functions is a working reusable barrier.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="queuec" class="title-text">queue.c<a class="anchor title-text" href="#queuec">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p><strong>NOTE: Do not use semaphores or your semamore here.</strong></p>
+<p>Your task is to build a thread safe queue, that also may or may not be bounded, by implementing the functions in queue.c. The maxSize of the queue can be set to either a positive number or a non-positive number. If positive, your queue will block if the user tries to push when the queue is full. If not positive, your queue should never block upon a push (the queue does not have a max size). If your queue is empty then you should block on a pull. You should make use of the node struct to store and retrieve information. In the end, your queue implementation should be able to handle concurrent calls from multiple threads. <code class="highlighter-rouge">queue_create</code> and <code class="highlighter-rouge">queue_destroy</code> will not be called by multiple threads.</p>
+<p>The queue is completely independent of the data that the user feeds it. The queue should make use of the constructors and destructors provided by the user to handle data.</p>
+<p>Your goal is to implement the functions</p>
+<ul>
+  <li><code class="highlighter-rouge">queue* queue_create (ssize_t max_size, copy_constructor_type copy_constructor, destructor_type destructor);</code></li>
+  <li><code class="highlighter-rouge">void queue_destroy (queue* this);</code></li>
+  <li><code class="highlighter-rouge">void queue_push (queue* this, void* element);</code></li>
+  <li><code class="highlighter-rouge">void* queue_pull (queue* this);</code></li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="testing" class="title-text">Testing<a class="anchor title-text" href="#testing">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p><strong>Testing is ungraded, but highly recommended</strong></p>
+<p>Since the implementation of your semamore is quite close to an actual semaphore, please test this on your own in a variety of ways. Be careful of race conditions! They can be hard to find!  We’ve given you a <code class="highlighter-rouge">semamore_tests.c</code> file to write tests in.</p>
+<p>For <code class="highlighter-rouge">barrier_test.c</code> we have provided you with a simple test case.  Feel free to expand on it, as it is not exhaustive/perfect.  Learning how to use the barrier is just as important as writing it, since you will be using barriers on the Password Cracker MP :)</p>
+<p>For <code class="highlighter-rouge">queue_test.c</code> we would like you to write tests yourself.  Learning to write tests for multi-threaded code is very important.  You will also be using this queue in the Password Cracker MP :)  (we will give you a working version; you will not be penalized on the MP for not successfully completing the lab)</p>
+<h3 id="thread-sanitizer" class="title-text">Thread Sanitizer</h3>
+<p>We have another target executed by typing <code class="highlighter-rouge">make tsan</code>. This compiles your code with Thread Sanitizer.</p>
+<p>ThreadSantizer is a race condition detection tool. See <a href="/wikibook/c-programming-part-5-debugging.html#tsan" class="fancy-link wiki-link">this page</a> for more information.</p>
+<p><strong>We will be using ThreadSanitizer to grade your code! If the autograder detects a data race, you won’t automatically get 0 points, but a few points will be deducted.</strong></p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="helpful-hints-and-notes" class="title-text">Helpful Hints and Notes<a class="anchor title-text" href="#helpful-hints-and-notes">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<ul>
+  <li>Make sure you thoroughly test your code! Race conditions can be hard to spot!</li>
+  <li>Attempting to visualize your code or diagram it in certain cases can sometimes be a huge aid and is highly recommended!</li>
+</ul>
+<p>** In any of <code class="highlighter-rouge">semamore.c</code>, <code class="highlighter-rouge">barrier.c</code>, or <code class="highlighter-rouge">queue.c</code> you may not use semaphores or pthread_barriers **</p>
+<p><strong>ANYTHING not specified in these docs is considered undefined behavior and we will not test it</strong>
+For example, calling queue_push(NULL, NULL) can do whatever you want it to. We will not test it.</p>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="submission-instructions" class="title-text">Submission Instructions<a class="anchor title-text" href="#submission-instructions">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Please read details on <a href="/#academic-integrity" class="fancy-link wiki-link">Academic Integrity</a> fully. These are shared by all assignments in CS 241.</p>
+<p>We will be using GitHub as our hand-in system this semester. Our grading system will checkout your most recent (pre-deadline) commit for grading. Therefore, to hand in your code, all you have to do is commit and push to your Github repository.</p>
+<p>To check out the provided code for <code class="highlighter-rouge">critical_concurrency</code> from the class repository, go to your cs241 directory (the one you checked out for “know your tools”) and run:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git pull release master
+</code></pre></div></div>
+<p>If you run <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/ls" class="fancy-link">ls</a></code> you will now see a <code class="highlighter-rouge">critical_concurrency</code> folder, where you can find this assignment! To commit your changes (send them to us), type:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git add critical_concurrency
+git commit -m "critical_concurrency submission"
+git push origin master
+</code></pre></div></div>
+<p>Your repository directory can be viewed from a web browser from the following URL: 
+<a href="https://github-dev.cs.illinois.edu/cs241-fa18/NETID/tree/master/critical_concurrency" class="fancy-link wiki-link">https://github-dev.cs.illinois.edu/cs241-fa18/NETID/tree/master/critical_concurrency</a> where NETID is your University NetID. It is important to check that the files you expect to be graded are present and up to date in your remote git copy.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="assignment-feedback" class="title-text">Assignment Feedback<a class="anchor title-text" href="#assignment-feedback">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>We strive to provide the best assignments that we can for this course, and we would like your feedback on them!</p>
+<p>This is the form we will use to evaluate our assignments. We appreciate the time you take to give us your honest feedback and we promise to keep improving the course to make your experience in CS 241 the best it can be.</p>
+<p><a href="https://goo.gl/forms/hREf0ojFWumYfQF12" class="fancy-link wiki-link">https://goo.gl/forms/hREf0ojFWumYfQF12</a></p>
+</div></div></div>
+</div></div>
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_docs/critical_concurrency.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

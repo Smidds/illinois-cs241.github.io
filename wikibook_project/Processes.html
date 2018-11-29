@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Processes</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Processes
+
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<ul>
+  <li>
+<a href="#processes" class="fancy-link wiki-link">Processes</a>
+    <ul>
+      <li><a href="#processes" class="fancy-link wiki-link">Processes</a></li>
+      <li>
+<a href="#process-contents" class="fancy-link wiki-link">Process Contents</a>
+        <ul>
+          <li><a href="#memory-layout" class="fancy-link wiki-link">Memory Layout</a></li>
+          <li><a href="#process-id-pid" class="fancy-link wiki-link">Other Contents</a></li>
+          <li><a href="#a-word-of-warning" class="fancy-link wiki-link">A word of warning</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="#intro-to-fork" class="fancy-link wiki-link">Intro to Fork</a>
+        <ul>
+          <li><a href="#what-does-fork-do" class="fancy-link wiki-link">What does fork do?</a></li>
+          <li><a href="#what-is-a-fork-bomb" class="fancy-link wiki-link">What is a fork bomb ?</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="#waiting-and-execing" class="fancy-link wiki-link">Waiting and Execing</a>
+        <ul>
+          <li><a href="#zombies-and-orphans" class="fancy-link wiki-link">Zombies and Orphans</a></li>
+          <li><a href="#how-can-i-asynchronously-wait-for-my-child-using-sigchld" class="fancy-link wiki-link">How can I asynchronously wait for my child using SIGCHLD?</a></li>
+          <li><a href="#exit-statuses" class="fancy-link wiki-link">Exit statuses</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="#exec" class="fancy-link wiki-link">exec</a>
+        <ul>
+          <li><a href="#differencessimilarities-between-child-processes" class="fancy-link wiki-link">Differences/Similarities Between Child Processes</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="#the-fork-exec-wait-pattern" class="fancy-link wiki-link">The fork-exec-wait Pattern</a>
+        <ul>
+          <li><a href="#so-what-are-environment-variables" class="fancy-link wiki-link">So what are environment variables?</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="#how-can-i-find-out-more" class="fancy-link wiki-link">Further Reading</a>
+        <ul>
+          <li><a href="#topics" class="fancy-link wiki-link">Topics</a></li>
+        </ul>
+      </li>
+      <li><a href="#questionsexercises" class="fancy-link wiki-link">Questions/Exercises</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p>[1][] <span> </span></p>
+
+
+
+<p>In the beginning, there is a kernel. The operating system kernel is a special piece of software. This is the piece of software that is loaded up before all of your other programs even consider getting booted up. What the kernel does is the following, abbreviated</p>
+
+<ol>
+  <li>
+    <p>The operating system executes ROM or read only code</p>
+  </li>
+  <li>
+    <p>The operating system then executes a <span><code class="highlighter-rouge">boot_loader</code></span> or <span><code class="highlighter-rouge">EFI</code></span> extensions nowadays</p>
+  </li>
+  <li>
+    <p>The boot_loader loads your kernels</p>
+  </li>
+  <li>
+    <p>Your kernel executes <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/init" class="fancy-link">init</a></code></span> to <a href="https://en.wikipedia.org/wiki/Bootstrapping" class="fancy-link wiki-link">bootstrap</a> itself from nothing</p>
+  </li>
+  <li>
+    <p>The kernel executes start up scripts</p>
+  </li>
+  <li>
+    <p>The kernel executes userland scripts, and you get to use your computer!</p>
+  </li>
+</ol>
+
+<p>You don’t need to know the specifics of the booting process, but there it is. When you are executing in user space the kernel provides some important operations that programs don’t have to worry about.</p>
+
+<ul>
+  <li>
+    <p>Scheduling Processes and threads</p>
+  </li>
+  <li>
+    <p>Handling synchronization primitives</p>
+  </li>
+  <li>
+    <p>Providing System Calls like <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code></span> or <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/read" class="fancy-link">read</a></code></span></p>
+  </li>
+  <li>
+    <p>Manages virtual memory and low level binary devices like <span><code class="highlighter-rouge">usb</code></span> drivers</p>
+  </li>
+  <li>
+    <p>Handles reading and understanding a filesystem</p>
+  </li>
+  <li>
+    <p>Handles communicating over networks</p>
+  </li>
+  <li>
+    <p>Handles communications with other processes</p>
+  </li>
+  <li>
+    <p>Dynamically linking libraries</p>
+  </li>
+</ul>
+
+<p>The kernel handles all of this stuff in kernel mode. Kernel mode gets you greater power, like executing extra CPU instructions but at the cost of one failure crashes your entire computer – ouch. That is what you are going to interacting with in this class. One of the things that you have already become familiar with is that the kernel gives you file descriptors when you open text files. Here is a zine from Julia Evans that details it a bit.</p>
+
+<p><img src="https://raw.githubusercontent.com/illinois-cs241/wikibook-project/master/https://drawings.jvns.ca/drawings/file-descriptors.svg" alt="File Descriptors"></p>
+
+<p>As the little zine shows, the Kernel keeps track of the file descriptors and what they point to. We will see later that file descriptors need not point to actual files and the OS keeps track of them for you. Also, notice that between processes file descriptors may be reused but inside of a process they are unique. File descriptors also have a notion of position. You can read a file on disk completely because the OS keeps track of the position in the file, and that belongs to your process as well.</p>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="processes-1" class="title-text">Processes<a class="anchor title-text" href="#processes-1">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>A process an instance of a computer program that may be running. Processes have a lot of things at their disposal. At the start of each program you get one process, but each program can make more processes. In fact, your operating system starts up with only one process and all other processes are forked off of that – all of that is done under the hood when booting up. A program consists of</p>
+<ul>
+  <li>
+    <p>A binary format: This tells the operating system which set of bits in the binary are what – which part is executable, which parts are constants, which libraries to include etc.</p>
+  </li>
+  <li>
+    <p>A set of machine instructions</p>
+  </li>
+  <li>
+    <p>A number denoting which instruction to start from</p>
+  </li>
+  <li>
+    <p>Constants</p>
+  </li>
+  <li>
+    <p>Libraries to link and where to fill in the address of those libraries</p>
+  </li>
+</ul>
+<p>When your operating system starts on a linux machine, there is a process called <span><code class="highlighter-rouge">init.d</code></span> that gets created. That process is a special one handling signals, interrupts, and a persistence module for certain kernel elements. Whenever you want to make a new process, you call <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code></span> and use <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code></span> to load another program.</p>
+<p>Processes are very powerful but they are isolated! That means that by default, no process can communicate with another process. This is very important because if you have a large system (let’s say EWS) then you want some processes to have higher privileges (monitoring, admin) than your average user, and one certainly doesn’t want the average user to be able to bring down the entire system either on purpose or accidentally by modifying a process.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>On two different terminals, as you would guess they would both print out 1 not 2. Even if we changed the code to do something really hacky, there would be no way to change another process’ state (okay maybe <a href="https://en.wikipedia.org/wiki/Dirty_COW" class="fancy-link wiki-link">dirty cow</a> or meltdown but that is getting a little too in depth).</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="process-contents" class="title-text">Process Contents<a class="anchor title-text" href="#process-contents">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<h3 id="memory-layout" class="title-text">Memory Layout</h3>
+<p>When a process starts, it gets its own address space. Meaning that each process gets :</p>
+<ul>
+  <li>
+    <p><strong>A Stack</strong>. The stack is the place where automatic variable and function call return addresses are stored. Every time a new variable is declared, the program moves the stack pointer down to reserve space for the variable. This segment of the stack is Writable but not executable. If the stack grows too far – meaning that it either grows beyond a preset boundary or intersects the heap – you will get a stackoverflow most likely resulting in a SEGFAULT or something similar. <strong>The stack is statically allocated by default meaning that there is only a certain amount of space to which one can write</strong></p>
+  </li>
+  <li>
+    <p><strong>A Heap</strong>. The heap is an expanding region of memory. If you want to allocate a large object, it goes here. The heap starts at the top of the text segment and grows upward (meaning sometimes when you call <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code></span> that it asks the operating system to push the heap boundary upward). This area is also Writable but not Executable. One can run out of heap memory if the system is constrained or if you run out of addresses (more common on a 32bit system).</p>
+  </li>
+  <li>
+    <p><strong>A Data Segment</strong> This contains all of your globals. This section starts at the end of the text segment and is static in size because the amount of globals is known at compile time. There are two areas to the data usually the <strong>IBSS</strong> and the <strong>UBSS</strong> which stand for the initialized basic service set and the uninitialized data segment respectively. This section is Writable but not Executable and there isn’t anything else too fancy here.</p>
+  </li>
+  <li>
+    <p><strong>A Text Segment</strong>. This is, arguably, the most important section of the address. This is where all your code is stored. Since assembly compiles to 1’s and 0’s, this is where the 1’s and 0’s get stored. The program counter moves through this segment executing instructions and moving down the next instruction. It is important to note that this is the only Executable section of the code. If you try to change the code while it’s running, most likely you will segfault (there are ways around it but just assume that it segfaults). * Why doesn’t it start at zero? It is outside the <a href="https://en.wikipedia.org/wiki/Address_space_layout_randomization" class="fancy-link wiki-link">scope</a> of this class but it is for security.</p>
+  </li>
+</ul>
+<h3 id="other-contents" class="title-text">Other Contents</h3>
+<p>To keep track of all these processes, your operating system gives each process a number and that process is called the PID, process ID. Processes also have a <span><code class="highlighter-rouge">ppid</code></span> which is short for parent process id. Every process has a parent, that parent could be <span><code class="highlighter-rouge">init.d</code></span></p>
+<p>Processes could also contain</p>
+<ul>
+  <li>
+    <p>Running State - Whether a process is getting ready, running, stopped, terminated etc.</p>
+  </li>
+  <li>
+    <p>File Descriptors - List of mappings from integers to real devices (files, usb sticks, sockets)</p>
+  </li>
+  <li>
+    <p>Permissions - What <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/user" class="fancy-link">user</a></code></span> the file is running on and what <span><code class="highlighter-rouge">group</code></span> the process belongs to. The process can then only do this admissible to the <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/user" class="fancy-link">user</a></code></span> or <span><code class="highlighter-rouge">group</code></span> like opening a file that the <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/user" class="fancy-link">user</a></code></span> has made exclusives. There are tricks to make a program not be the user who started the program i.e. <span><code class="highlighter-rouge">sudo</code></span> takes a program that a <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/user" class="fancy-link">user</a></code></span> starts and executes it as <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/root" class="fancy-link">root</a></code></span>.</p>
+  </li>
+  <li>
+    <p>Arguments - a list of strings that tell your program what parameters to run under * Environment List - a list of strings in the form <span><code class="highlighter-rouge">NAME=VALUE</code></span> that one can modify.</p>
+  </li>
+</ul>
+<h3 id="a-word-of-warning" class="title-text">A word of warning</h3>
+<p>Process forking is a powerful and dangerous tool. If you mess up and cause a fork bomb, <strong>you can bring down the entire system</strong>. To reduce the chances of this, limit your maximum number of processes to a small number e.g 40 by typing <span><code class="highlighter-rouge">ulimit -u 40</code></span> into a command line. Note, this limit is only for the user, which means if you fork bomb, then you won’t be able to kill all of the processes you just created since calling <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/killall" class="fancy-link">killall</a></code></span> requires your shell to <span><code class="highlighter-rouge">fork()</code></span> … ironic right? One solution is to spawn another shell instance as another user (for example root) before hand and kill processes from there. Another is to use the built in <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code></span> command to kill all the user processes (careful you only have one shot at this). Finally you could reboot the system, but you only have one shot at this with the exec function. When testing fork() code, ensure that you have either root and/or physical access to the machine involved. If you must work on fork () code remotely, remember that <strong>kill -9 -1</strong> will save you in the event of an emergency.</p>
+<p>TL;DR: Fork can be <strong>extremely</strong> dangerous if you aren’t prepared for it. <strong>You have been warned.</strong></p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="intro-to-fork" class="title-text">Intro to Fork<a class="anchor title-text" href="#intro-to-fork">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<h3 id="what-does-fork-do" class="title-text">What does fork do?</h3>
+<p>The <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code></span> system call clones the current process to create a new process. It creates a new process (the child process) by duplicating the state of the existing process with a few minor differences. The child process does not start from main. Instead it executes the next line after the <span><code class="highlighter-rouge">fork()</code></span> just as the parent process does. Just as a side remark, in older UNIX systems, the entire address space of the parent process was directly copied (regardless of whether the resource was modified or not). These days, kernel performs <a href="https://en.wikipedia.org/wiki/Copy-on-write" class="fancy-link wiki-link">copy-on-write</a>, which saves a lot of resources, while being very time efficient. Here’s a very simple example…</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>The following program may print out 42 twice - but the <span><code class="highlighter-rouge">fork()</code></span> is after the <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code></span>!? Why?</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>The <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code></span> line <em>is</em> executed only once however notice that the printed contents is not flushed to standard out. There’s no newline printed, we didn’t call <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fflush" class="fancy-link">fflush</a></code></span>, or change the buffering mode. The output text is therefore still in process memory waiting to be sent. When <span><code class="highlighter-rouge">fork()</code></span> is executed the entire process memory is duplicated including the buffer. Thus the child process starts with a non-empty output buffer which will be flushed when the program exits.</p>
+<p>To write code that is different for the parent and child process, check the return value of <span><code class="highlighter-rouge">fork()</code></span>. If fork() returns -1, that implies something went wrong in the process of creating a new child. One should check the value stored in <em>errno</em> to determine what kind of error occurred; commons one include EAGAIN and ENOMEM (check <a href="http://www-numi.fnal.gov/offline_software/srt_public_context/WebDocs/Errors/unix_system_errors.html" class="fancy-link wiki-link">this page</a> to get a description of the errors). Similarly, a return value of 0 indicates that we are in the child process, while a positive integer shows that we are in parent process. The positive value returned by fork() gives as the process id (<em>pid</em>) of the child.</p>
+<p>One way to remember which is which is that the child process can find its parent - the original process that was duplicated - by calling <span><code class="highlighter-rouge">getppid()</code></span> - so does not need any additional return information from <span><code class="highlighter-rouge">fork()</code></span>. The parent process however can only find out the id of the new child process from the return value of <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code></span>:</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>A slightly silly example is shown below. What will it print? Try it with multiple arguments to your program.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>The amazing parallel apparent-O(N) <em>sleepsort</em> is today’s silly winner. First published on <a href="https://dis.4chan.org/read/prog/1295544154" class="fancy-link wiki-link">4chan in 2011</a>. A version of this awful but amusing sorting algorithm is shown below.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Note: The algorithm isn’t actually O(N) because of how the system scheduler works. Though there are parallel algorithms that run in O(log(N)) per process, this is sadly not one of them.</p>
+<h3 id="what-is-a-fork-bomb-" class="title-text">What is a fork bomb ?</h3>
+<p>A ‘fork bomb’ is when you attempt to create an infinite number of processes. This will often bring a system to a near-standstill as it attempts to allocate CPU time and memory to a very large number of processes that are ready to run. Comment: System administrators don’t like fork-bombs and may set upper limits on the number of processes each user can have or may revoke login rights because it creates a disturbance in the force for other users’ programs. You can also limit the number of child processes created by using <span><code class="highlighter-rouge">setrlimit()</code></span>. fork bombs are not necessarily malicious - they occasionally occur due to student coding errors. Angrave suggests that the Matrix trilogy, where the machine and man finally work together to defeat the multiplying Agent-Smith, was a cinematic plot based on an AI-driven fork-bomb.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>There may even be subtle forkbombs that occur when you are being careless while coding.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>We misspelled <span><code class="highlighter-rouge">ehco</code></span>, so we can’t <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code></span> it. What does this mean? Instead of creating 10 processes we just created 2<strong>10 processes, fork bombing our machine. How could we prevent this? Put an exit right after exec so in case exec fails we won’t end up fork bombing our machine.</strong></p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="waiting-and-execing" class="title-text">Waiting and Execing<a class="anchor title-text" href="#waiting-and-execing">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>If the parent process waits for the child to finish, <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/waitpid" class="fancy-link">waitpid</a></code></span> (or <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/wait" class="fancy-link">wait</a></code></span>).</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="zombies-and-orphans" class="title-text">Zombies and Orphans</h3>
+<p>You don’t always need to wait for your children! Your parent process can continue to execute code without having to wait for the child process. Note in practice background processes can also be disconnected from the parent’s input and output streams by calling <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/close" class="fancy-link">close</a></code></span> on the open file descriptors before calling exec. However child processes that finish before their parent finishes can become zombies.</p>
+<p>If a parent dies without waiting on its children, a process can orphan its children. Once a parent process completes, any of its children will be assigned to “init” - the first process with pid of 1. Thus these children would see getppid() return a value of 1. These orphans will eventually finish and for a brief moment become a zombie. Fortunately, the init process automatically waits for all of its children, thus removing these zombies from the system.</p>
+<p>But if the parent is a long running process, the child becomes a zombie. When a child finishes (or terminates) it still takes up a slot in the kernel process table. Furthermore, they still contain information about the process that got terminated, such as process id, exit status, etc. (i.e. a skeleton of the original process still remains). Only when the child has been ‘waited on’ will the slot be available and the remaining information can be accessed by the parent. A long running program could create many zombies by continually creating processes and never <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/wait" class="fancy-link">wait</a></code></span>-ing for them. If you never wait eventually there would be insufficient space in the kernel process table to create a new processes. Thus <span><code class="highlighter-rouge">fork()</code></span> would fail and could make the system difficult / impossible to use - for example just logging in requires a new process! To prevent zombies, Wait on your child!</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Note we assume that the only reason to get a SIGCHLD event is that a child has finished (this is not quite true - see man page for more details). A robust implementation would also check for interrupted status and include the above in a loop. Read on for a discussion of a more robust implementation.</p>
+<h3 id="how-can-i-asynchronously-wait-for-my-child-using-sigchld" class="title-text">How can I asynchronously wait for my child using SIGCHLD?</h3>
+<p>Warning: This section uses signals which we have not yet fully introduced. The parent gets the signal SIGCHLD when a child completes, so the signal handler can wait on the process. A slightly simplified version is shown below.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>The above example however misses a couple of subtle points: * More than one child may have finished but the parent will only get one SIGCHLD signal (signals are not queued) * SIGCHLD signals can be sent for other reasons (e.g. a child process is temporarily stopped)</p>
+<p>A more robust code to reap zombies is shown below.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="exit-statuses" class="title-text">Exit statuses</h3>
+<p>To find the return value of <span><code class="highlighter-rouge">main()</code></span> or value included in <span><code class="highlighter-rouge">exit()</code></span>), Use the <code class="highlighter-rouge">Wait macros</code> - typically you will use <span><code class="highlighter-rouge">WIFEXITED</code></span> and <span><code class="highlighter-rouge">WEXITSTATUS</code></span> . See <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/wait" class="fancy-link">wait</a></code></span>/<span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/waitpid" class="fancy-link">waitpid</a></code></span> man page for more information.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>A process can only have 256 return values, the rest of the bits are informational, this is done by bit shifting. But, The kernel has an internal way of keeping track of signaled, exited, or stopped. That API is abstracted so that that the kernel developers are free to change at will. Remember that these macros only make sense if the precondition is met. Meaning that a process’ exit status won’t be defined if the process isn’t signaled. The macros will not do the checking for you, so it’s up to the programmer to make sure the logic checks out. As an example above, you should use the <span><code class="highlighter-rouge">WIFSTOPPED</code></span> to check if a process was stopped and then the <span><code class="highlighter-rouge">WSTOPSIG</code></span> to find the signal that stopped it. As such there is no need to memorize the following, this is just a high level overview of how information is stored inside the status variables. From <span><code class="highlighter-rouge">sys/wait.h</code></span> of an old Berkeley kernel:</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>There is an untold convention about exit codes. If the process exited normally and everything was successful, then a zero should be returned. Beyond that, there isn’t too many conventions except the ones that you place on yourself. If you know how the program you spawn is going to interact, you may be able to make more sense of the 256 error codes. You could in fact write your program to return <code class="highlighter-rouge">1</code> if the program went to stage 1 (like writing to a file) <code class="highlighter-rouge">2</code> if it did something else etc… But none of the unix programs are designed to follow that for simplicity sake.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="exec" class="title-text">exec<a class="anchor title-text" href="#exec">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>To make the child process execute another program, use one of the <a href="http://man7.org/linux/man-pages/man3/exec.3.html" class="fancy-link wiki-link"><span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code></span></a> functions after forking. The <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code></span> set of functions replaces the process image with the the process image of what is being called. This means that any lines of code after the <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code></span> call are replaced. Any other work you want the child process to do should be done before the <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code></span> call. The <a href="https://en.wikipedia.org/wiki/Exec_(system_call)#C_language_prototypes" class="fancy-link wiki-link">Wikipedia article</a> does a great job helping you make sense of the names of the exec family. The naming schemes can be shortened mnemonically.</p>
+<blockquote>
+  <p>e – An array of pointers to environment variables is explicitly passed to the new process image.</p>
+
+  <p>l – Command-line arguments are passed individually (a list) to the function.</p>
+
+  <p>p – Uses the PATH environment variable to find the file named in the file argument to be executed.</p>
+
+  <p>v – Command-line arguments are passed to the function as an array (vector) of pointers.</p>
+</blockquote>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>There’s no error checking in the above code (we assume close,open,chdir etc works as expected). * open: will use the lowest available file descriptor (i.e. 1) ; so standard out now goes to the log file. * chdir : Change the current directory to /usr/include * execl : Replace the program image with /bin/ls and call its main() method * perror : We don’t expect to get here - if we did then exec failed.</p>
+<p><span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/system" class="fancy-link">system</a></code></span> pre-packs the above code. Here is how to use it:</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>The <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/system" class="fancy-link">system</a></code></span> call will fork, execute the command passed by parameter and the original parent process will wait for this to finish. This also means that <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/system" class="fancy-link">system</a></code></span> is a blocking call: The parent process can’t continue until the process started by <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/system" class="fancy-link">system</a></code></span> exits. This may or may not be useful. Also, <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/system" class="fancy-link">system</a></code></span> actually creates a shell which is then given the string, which is more overhead than just using <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code></span> directly. The standard shell will use the <span><code class="highlighter-rouge">PATH</code></span> environment variable to search for a filename that matches the command. Using system will usually be sufficient for many simple run-this-command problems but can quickly become limiting for more complex or subtle problems, and it hides the mechanics of the fork-exec-wait pattern so we encourage you to learn and use <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code></span> <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code></span> and <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/waitpid" class="fancy-link">waitpid</a></code></span> instead.</p>
+<h3 id="differencessimilarities-between-child-processes" class="title-text">Differences/Similarities Between Child Processes</h3>
+<p>Key differences include:</p>
+<ul>
+  <li>
+    <p>The process id returned by <span><code class="highlighter-rouge">getpid()</code></span>. The parent process id returned by <span><code class="highlighter-rouge">getppid()</code></span>.</p>
+  </li>
+  <li>
+    <p>The parent is notified via a signal, SIGCHLD, when the child process finishes but not vice versa.</p>
+  </li>
+  <li>
+    <p>The child does not inherit pending signals or timer alarms. For a complete list see the <a href="http://man7.org/linux/man-pages/man2/fork.2.html" class="fancy-link wiki-link">fork man page</a></p>
+  </li>
+  <li>
+    <p>The child has its own set of environment variables</p>
+  </li>
+</ul>
+<p>Key smiliraties include:</p>
+<ul>
+  <li>
+    <p>Both processes use the same underlying kernel file descriptor. For example if one process rewinds the random access position back to the beginning of the file, then both processes are affected. Both child and parent should <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/close" class="fancy-link">close</a></code></span> (or <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fclose" class="fancy-link">fclose</a></code></span>) their file descriptors or file handle respectively.</p>
+  </li>
+  <li>
+    <p>Since we have copy on write, read-only memory addresses are shared between processes</p>
+  </li>
+  <li>
+    <p>If you set up certain regions of memory, they are shared between processes.</p>
+  </li>
+  <li>
+    <p>Signal handlers are inherited but can be changed</p>
+  </li>
+  <li>
+    <p>Current working directory is inherited but can be changed</p>
+  </li>
+  <li>
+    <p>Environment variables are inherited but can be changed</p>
+  </li>
+</ul>
+<p><a href="http://linux.die.net/man/2/fork" class="fancy-link wiki-link">fork man page</a></p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="the-fork-exec-wait-pattern" class="title-text">The fork-exec-wait Pattern<a class="anchor title-text" href="#the-fork-exec-wait-pattern">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>A common programming pattern is to call <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code></span> followed by <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code></span> and <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/wait" class="fancy-link">wait</a></code></span>. The original process calls fork, which creates a child process. The child process then uses exec to start execution of a new program. Meanwhile the parent uses <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/wait" class="fancy-link">wait</a></code></span> (or <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/waitpid" class="fancy-link">waitpid</a></code></span>) to wait for the child process to finish.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="so-what-are-environment-variables" class="title-text">So what are environment variables?</h3>
+<p>Environment variables are variables that the system keeps for all processes to use. Your system has these set up right now! In Bash, you can check some of these</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>How would you get these in C/C++? You can use the <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/getenv" class="fancy-link">getenv</a></code></span> and <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/setenv" class="fancy-link">setenv</a></code></span> function</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="further-reading" class="title-text">Further Reading<a class="anchor title-text" href="#further-reading">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Read the man pages!</p>
+<ul>
+  <li>
+    <p><a href="http://man7.org/linux/man-pages/man2/fork.2.html" class="fancy-link wiki-link">fork</a></p>
+  </li>
+  <li>
+    <p><a href="http://man7.org/linux/man-pages/man3/exec.3.html" class="fancy-link wiki-link">exec</a></p>
+  </li>
+  <li>
+    <p><a href="http://man7.org/linux/man-pages/man2/wait.2.html" class="fancy-link wiki-link">wait</a></p>
+  </li>
+</ul>
+<h3 id="topics" class="title-text">Topics</h3>
+<ul>
+  <li>
+    <p>Correct use of fork, exec and waitpid</p>
+  </li>
+  <li>
+    <p>Using exec with a path</p>
+  </li>
+  <li>
+    <p>Understanding what fork and exec and waitpid do. E.g. how to use their return values.</p>
+  </li>
+  <li>
+    <p>SIGKILL vs SIGSTOP vs SIGINT.</p>
+  </li>
+  <li>
+    <p>What signal is sent when you press CTRL-C</p>
+  </li>
+  <li>
+    <p>Using kill from the shell or the kill POSIX call.</p>
+  </li>
+  <li>
+    <p>Process memory isolation.</p>
+  </li>
+  <li>
+    <p>Process memory layout (where is the heap, stack etc; invalid memory addresses).</p>
+  </li>
+  <li>
+    <p>What is a fork bomb, zombie and orphan? How to create/remove them.</p>
+  </li>
+  <li>
+    <p>getpid vs getppid</p>
+  </li>
+  <li>
+    <p>How to use the WAIT exit status macros WIFEXITED etc.</p>
+  </li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="questionsexercises" class="title-text">Questions/Exercises<a class="anchor title-text" href="#questionsexercises">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>
+    <p>What is the difference between execs with a p and without a p? What does the operating system</p>
+  </li>
+  <li>
+    <p>How do you pass in command line arguments to <span><code class="highlighter-rouge">execl*</code></span>? How about <span><code class="highlighter-rouge">execv*</code></span>? What should be the first command line argument by convention?</p>
+  </li>
+  <li>
+    <p>How do you know if <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code></span> or <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code></span> failed?</p>
+  </li>
+  <li>
+    <p>What is the <span><code class="highlighter-rouge">int status</code></span> pointer passed into wait? When does wait fail?</p>
+  </li>
+  <li>
+    <p>What are some differences between <span><code class="highlighter-rouge">SIGKILL</code></span>, <span><code class="highlighter-rouge">SIGSTOP</code></span>, <span><code class="highlighter-rouge">SIGCONT</code></span>, <span><code class="highlighter-rouge">SIGINT</code></span>? What are the default behaviors? Which ones can you set up a signal handler for?</p>
+  </li>
+  <li>
+    <p>What signal is sent when you press <span><code class="highlighter-rouge">CTRL-C</code></span>?</p>
+  </li>
+  <li>
+    <p>My terminal is anchored to PID = 1337 and has just become unresponsive. Write me the terminal command and the C code to send <span><code class="highlighter-rouge">SIGQUIT</code></span> to it.</p>
+  </li>
+  <li>
+    <p>Can one process alter another processes memory through normal means? Why?</p>
+  </li>
+  <li>
+    <p>Where is the heap, stack, data, and text segment? Which segments can you write to? What are invalid memory addresses?</p>
+  </li>
+  <li>
+    <p>Code me up a fork bomb in C (please don’t run it).</p>
+  </li>
+  <li>
+    <p>What is an orphan? How does it become a zombie? How do I be a good parent?</p>
+  </li>
+  <li>
+    <p>Don’t you hate it when your parents tell you that you can’t do something? Write me a program that sends <span><code class="highlighter-rouge">SIGSTOP</code></span> to your parent.</p>
+  </li>
+  <li>
+    <p>Write a function that fork exec waits an executable, and using the wait macros tells me if the process exited normally or if it was signaled. If the process exited normally, then print that with the return value. If not, then print the signal number that caused the process to terminate.</p>
+  </li>
+</ul></div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook_project/Processes.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

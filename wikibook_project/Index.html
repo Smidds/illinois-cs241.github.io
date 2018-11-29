@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Home</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Home
+
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+
+<p><strong>NOTE: Do <em>not</em> edit this. This is automatically updated from the tex source. If you see a typo please make a change or a github issue in the main repo, thanks!</strong></p>
+
+<p>Welcome to Angrave’s crowd-sourced System Programming wiki-book!
+This wiki is being built by students and faculty from the University of Illinois and is a crowd-source authoring experiment by Lawrence Angrave from CS @ Illinois.</p>
+
+<p>This book is an introduction to programming in C, and system programming (processes, threads, synchronization, networking and more!). We assume you’ve already had some programming experience, in an earlier computer science course.</p>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="1-introduction" class="title-text">1. <a href="./Introduction" class="fancy-link wiki-link">Introduction</a><a class="anchor title-text" href="#1-introduction">#</a>
+</h2></div>
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="2-background" class="title-text">2. <a href="./Background" class="fancy-link wiki-link">Background</a><a class="anchor title-text" href="#2-background">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ol>
+  <li><a href="./Background#systems-architecture" class="fancy-link wiki-link">Systems Architecture</a></li>
+  <li><a href="./Background#the-hitchhiker%E2%80%99s-guide-to-debugging-c-programs" class="fancy-link wiki-link">The Hitchhiker’s Guide to Debugging C Programs</a></li>
+  <li><a href="./Background#valgrind" class="fancy-link wiki-link">Valgrind</a></li>
+  <li><a href="./Background#gdb" class="fancy-link wiki-link">GDB</a></li>
+  <li><a href="./Background#homework-0" class="fancy-link wiki-link">Homework 0</a></li>
+  <li><a href="./Background#uiuc-specific-guidlines" class="fancy-link wiki-link">UIUC Specific Guidlines</a></li>
+</ol></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="3-c-programming-language" class="title-text">3. <a href="./Introc" class="fancy-link wiki-link">C Programming Language</a><a class="anchor title-text" href="#3-c-programming-language">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ol>
+  <li><a href="./Introc#history-of-c" class="fancy-link wiki-link">History of C</a></li>
+  <li><a href="./Introc#features" class="fancy-link wiki-link">Features</a></li>
+  <li><a href="./Introc#crash-course-intro-to-c" class="fancy-link wiki-link">Crash course intro to C</a></li>
+  <li><a href="./Introc#preprocessor" class="fancy-link wiki-link">Preprocessor</a></li>
+  <li><a href="./Introc#language-facilities" class="fancy-link wiki-link">Language Facilities</a></li>
+  <li><a href="./Introc#common-c-functions" class="fancy-link wiki-link">Common C Functions</a></li>
+  <li><a href="./Introc#system-calls" class="fancy-link wiki-link">System Calls</a></li>
+  <li><a href="./Introc#c-memory-model" class="fancy-link wiki-link">C Memory Model</a></li>
+  <li><a href="./Introc#pointers" class="fancy-link wiki-link">Pointers</a></li>
+  <li><a href="./Introc#shell" class="fancy-link wiki-link">Shell</a></li>
+  <li><a href="./Introc#common-bugs" class="fancy-link wiki-link">Common Bugs</a></li>
+  <li><a href="./Introc#logic-and-program-flow-mistakes" class="fancy-link wiki-link">Logic and Program flow mistakes</a></li>
+  <li><a href="./Introc#topics" class="fancy-link wiki-link">Topics</a></li>
+  <li><a href="./Introc#questions/exercises" class="fancy-link wiki-link">Questions/Exercises</a></li>
+</ol></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="4-processes" class="title-text">4. <a href="./Processes" class="fancy-link wiki-link">Processes</a><a class="anchor title-text" href="#4-processes">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ol>
+  <li><a href="./Processes#processes" class="fancy-link wiki-link">Processes</a></li>
+  <li><a href="./Processes#process-contents" class="fancy-link wiki-link">Process Contents</a></li>
+  <li><a href="./Processes#intro-to-fork" class="fancy-link wiki-link">Intro to Fork</a></li>
+  <li><a href="./Processes#waiting-and-execing" class="fancy-link wiki-link">Waiting and Execing</a></li>
+  <li><a href="./Processes#exec" class="fancy-link wiki-link">exec</a></li>
+  <li><a href="./Processes#the-fork-exec-wait-pattern" class="fancy-link wiki-link">The fork-exec-wait Pattern</a></li>
+  <li><a href="./Processes#further-reading" class="fancy-link wiki-link">Further Reading</a></li>
+  <li><a href="./Processes#questions/exercises" class="fancy-link wiki-link">Questions/Exercises</a></li>
+</ol></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="5-memory-allocators" class="title-text">5. <a href="./Malloc" class="fancy-link wiki-link">Memory Allocators</a><a class="anchor title-text" href="#5-memory-allocators">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ol>
+  <li><a href="./Malloc#introduction" class="fancy-link wiki-link">Introduction</a></li>
+  <li><a href="./Malloc#c-memory-allocation-functions" class="fancy-link wiki-link">C Memory Allocation Functions</a></li>
+  <li><a href="./Malloc#intro-to-allocating" class="fancy-link wiki-link">Intro to Allocating</a></li>
+  <li><a href="./Malloc#memory-allocator-tutorial" class="fancy-link wiki-link">Memory Allocator Tutorial</a></li>
+  <li><a href="./Malloc#case-study:-buddy-allocator-(an-example-of-a-segregated-list)" class="fancy-link wiki-link">Case study: Buddy Allocator (an example of a segregated list)</a></li>
+  <li><a href="./Malloc#further-reading" class="fancy-link wiki-link">Further Reading</a></li>
+  <li><a href="./Malloc#topics" class="fancy-link wiki-link">Topics</a></li>
+  <li><a href="./Malloc#questions/exercises" class="fancy-link wiki-link">Questions/Exercises</a></li>
+</ol></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="6-threads" class="title-text">6. <a href="./Threads" class="fancy-link wiki-link">Threads</a><a class="anchor title-text" href="#6-threads">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ol>
+  <li><a href="./Threads#processes-vs-threads" class="fancy-link wiki-link">Processes vs threads</a></li>
+  <li><a href="./Threads#thread-internals" class="fancy-link wiki-link">Thread Internals</a></li>
+  <li><a href="./Threads#simple-usage" class="fancy-link wiki-link">Simple Usage</a></li>
+  <li><a href="./Threads#pthread-functions" class="fancy-link wiki-link">Pthread Functions</a></li>
+  <li><a href="./Threads#race-conditions" class="fancy-link wiki-link">Race Conditions</a></li>
+  <li><a href="./Threads#topics" class="fancy-link wiki-link">Topics</a></li>
+  <li><a href="./Threads#questions" class="fancy-link wiki-link">Questions</a></li>
+</ol></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="7-synchronization" class="title-text">7. <a href="./Synchronization" class="fancy-link wiki-link">Synchronization</a><a class="anchor title-text" href="#7-synchronization">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ol>
+  <li><a href="./Synchronization#mutex" class="fancy-link wiki-link">Mutex</a></li>
+  <li><a href="./Synchronization#semaphores" class="fancy-link wiki-link">Semaphores</a></li>
+  <li><a href="./Synchronization#condition-variables" class="fancy-link wiki-link">Condition Variables</a></li>
+  <li><a href="./Synchronization#thread-safe-data-structures" class="fancy-link wiki-link">Thread Safe Data Structures</a></li>
+  <li><a href="./Synchronization#candidate-solutions" class="fancy-link wiki-link">Candidate Solutions</a></li>
+  <li><a href="./Synchronization#working-solutions" class="fancy-link wiki-link">Working Solutions</a></li>
+  <li><a href="./Synchronization#implementing-counting-semaphore" class="fancy-link wiki-link">Implementing Counting Semaphore</a></li>
+  <li><a href="./Synchronization#ring-buffer" class="fancy-link wiki-link">Ring Buffer</a></li>
+  <li><a href="./Synchronization#process-synchronization" class="fancy-link wiki-link">Process Synchronization</a></li>
+  <li><a href="./Synchronization#external-resources" class="fancy-link wiki-link">External Resources</a></li>
+  <li><a href="./Synchronization#topics" class="fancy-link wiki-link">Topics</a></li>
+  <li><a href="./Synchronization#questions" class="fancy-link wiki-link">Questions</a></li>
+</ol></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="8-deadlock" class="title-text">8. <a href="./Deadlock" class="fancy-link wiki-link">Deadlock</a><a class="anchor title-text" href="#8-deadlock">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ol>
+  <li><a href="./Deadlock#resource-allocation-graphs" class="fancy-link wiki-link">Resource Allocation Graphs</a></li>
+  <li><a href="./Deadlock#coffman-conditions" class="fancy-link wiki-link">Coffman conditions</a></li>
+  <li><a href="./Deadlock#approaches-to-solving-deadlock" class="fancy-link wiki-link">Approaches to solving deadlock</a></li>
+  <li><a href="./Deadlock#dining-philosophers" class="fancy-link wiki-link">Dining Philosophers</a></li>
+  <li><a href="./Deadlock#viable-solutions" class="fancy-link wiki-link">Viable Solutions</a></li>
+  <li><a href="./Deadlock#topics" class="fancy-link wiki-link">Topics</a></li>
+  <li><a href="./Deadlock#questions" class="fancy-link wiki-link">Questions</a></li>
+</ol></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="9-scheduling" class="title-text">9. <a href="./Scheduling" class="fancy-link wiki-link">Scheduling</a><a class="anchor title-text" href="#9-scheduling">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ol>
+  <li><a href="./Scheduling#measurements" class="fancy-link wiki-link">Measurements</a></li>
+  <li><a href="./Scheduling#measures-of-efficiency" class="fancy-link wiki-link">Measures of Efficiency</a></li>
+  <li><a href="./Scheduling#scheduling-algorithms" class="fancy-link wiki-link">Scheduling Algorithms</a></li>
+  <li><a href="./Scheduling#topics" class="fancy-link wiki-link">Topics</a></li>
+  <li><a href="./Scheduling#questions" class="fancy-link wiki-link">Questions</a></li>
+</ol></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="10-interprocess-communication" class="title-text">10. <a href="./Ipc" class="fancy-link wiki-link">Interprocess Communication</a><a class="anchor title-text" href="#10-interprocess-communication">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ol>
+  <li><a href="./Ipc#mmu-and-translating-addresses" class="fancy-link wiki-link">MMU and Translating Addresses</a></li>
+  <li><a href="./Ipc#advanced-frames-and-page-protections" class="fancy-link wiki-link">Advanced Frames and Page Protections</a></li>
+  <li><a href="./Ipc#pipes" class="fancy-link wiki-link">Pipes</a></li>
+  <li><a href="./Ipc#named-pipes" class="fancy-link wiki-link">Named Pipes</a></li>
+</ol></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="11-networking" class="title-text">11. <a href="./Networking" class="fancy-link wiki-link">Networking</a><a class="anchor title-text" href="#11-networking">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ol>
+  <li><a href="./Networking#the-osi-model" class="fancy-link wiki-link">The OSI Model</a></li>
+  <li><a href="./Networking#layer-3:-the-internet-protocol" class="fancy-link wiki-link">Layer 3: The Internet Protocol</a></li>
+  <li><a href="./Networking#layer-4:-tcp-and-client" class="fancy-link wiki-link">Layer 4: TCP and Client</a></li>
+  <li><a href="./Networking#layer-4:-tcp-server" class="fancy-link wiki-link">Layer 4: TCP Server</a></li>
+  <li><a href="./Networking#layer-4:-udp" class="fancy-link wiki-link">Layer 4: UDP</a></li>
+  <li><a href="./Networking#layer-7:-http" class="fancy-link wiki-link">Layer 7: HTTP</a></li>
+  <li><a href="./Networking#nonblocking-io" class="fancy-link wiki-link">Nonblocking IO</a></li>
+  <li><a href="./Networking#remote-procedure-calls" class="fancy-link wiki-link">Remote Procedure Calls</a></li>
+  <li><a href="./Networking#topics" class="fancy-link wiki-link">Topics</a></li>
+  <li><a href="./Networking#questions" class="fancy-link wiki-link">Questions</a></li>
+</ol></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="12-filesystems" class="title-text">12. <a href="./Filesystems" class="fancy-link wiki-link">Filesystems</a><a class="anchor title-text" href="#12-filesystems">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ol>
+  <li><a href="./Filesystems#what-is-a-filesystem?" class="fancy-link wiki-link">What is a filesystem?</a></li>
+  <li><a href="./Filesystems#storing-data-on-disk" class="fancy-link wiki-link">Storing data on disk</a></li>
+  <li><a href="./Filesystems#permissions-and-bits" class="fancy-link wiki-link">Permissions and bits</a></li>
+  <li><a href="./Filesystems#virtual-filesystems-and-other-filesystems" class="fancy-link wiki-link">Virtual filesystems and other filesystems</a></li>
+  <li><a href="./Filesystems#memory-mapped-io" class="fancy-link wiki-link">Memory Mapped IO</a></li>
+  <li><a href="./Filesystems#reliable-single-disk-filesystems" class="fancy-link wiki-link">Reliable Single Disk Filesystems</a></li>
+  <li><a href="./Filesystems#simple-filesystem-model" class="fancy-link wiki-link">Simple Filesystem Model</a></li>
+  <li><a href="./Filesystems#topics" class="fancy-link wiki-link">Topics</a></li>
+  <li><a href="./Filesystems#questions" class="fancy-link wiki-link">Questions</a></li>
+</ol></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="13-signals" class="title-text">13. <a href="./Signals" class="fancy-link wiki-link">Signals</a><a class="anchor title-text" href="#13-signals">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ol>
+  <li><a href="./Signals#the-deep-dive-of-signals" class="fancy-link wiki-link">The Deep Dive of Signals</a></li>
+  <li><a href="./Signals#sending-signals" class="fancy-link wiki-link">Sending Signals</a></li>
+  <li><a href="./Signals#handling-signals" class="fancy-link wiki-link">Handling Signals</a></li>
+  <li><a href="./Signals#signal-disposition" class="fancy-link wiki-link">Signal Disposition</a></li>
+  <li><a href="./Signals#disposition-in-child-processes-(no-threads)" class="fancy-link wiki-link">Disposition in Child Processes (No Threads)</a></li>
+  <li><a href="./Signals#signals-in-a-multithreaded-program" class="fancy-link wiki-link">Signals in a multithreaded program</a></li>
+  <li><a href="./Signals#topics" class="fancy-link wiki-link">Topics</a></li>
+  <li><a href="./Signals#questions" class="fancy-link wiki-link">Questions</a></li>
+</ol></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="14-review" class="title-text">14. <a href="./Review" class="fancy-link wiki-link">Review</a><a class="anchor title-text" href="#14-review">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ol>
+  <li><a href="./Review#c" class="fancy-link wiki-link">C</a></li>
+  <li><a href="./Review#threading" class="fancy-link wiki-link">Threading</a></li>
+  <li><a href="./Review#deadlock" class="fancy-link wiki-link">Deadlock</a></li>
+  <li><a href="./Review#ipc" class="fancy-link wiki-link">IPC</a></li>
+  <li><a href="./Review#processes" class="fancy-link wiki-link">Processes</a></li>
+  <li><a href="./Review#mapped-memory" class="fancy-link wiki-link">Mapped Memory</a></li>
+  <li><a href="./Review#networking" class="fancy-link wiki-link">Networking</a></li>
+  <li><a href="./Review#signals" class="fancy-link wiki-link">Signals</a></li>
+</ol></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="15-appendix" class="title-text">15. <a href="./Appendix" class="fancy-link wiki-link">Appendix</a><a class="anchor title-text" href="#15-appendix">#</a>
+</h2></div>
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ol>
+  <li><a href="./Appendix#shell" class="fancy-link wiki-link">Shell</a></li>
+  <li><a href="./Appendix#stack-smashing" class="fancy-link wiki-link">Stack Smashing</a></li>
+  <li><a href="./Appendix#assorted-man-pages" class="fancy-link wiki-link">Assorted Man Pages</a></li>
+  <li><a href="./Appendix#system-programming-jokes" class="fancy-link wiki-link">System Programming Jokes</a></li>
+</ol></div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook_project/Index.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

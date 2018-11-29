@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Forking, Part 1: Introduction</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Forking, Part 1: Introduction
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/Forking,-Part-1:-Introduction">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_a-word-of-warning" href="#a-word-of-warning" class="fancy-link">A word of warning</a></li>
+<li><a id="toc_what-does-fork-do" href="#what-does-fork-do" class="fancy-link">What does fork do?</a></li>
+<li><a id="toc_what-is-the-simplest-fork-example" href="#what-is-the-simplest-fork-example" class="fancy-link">What is the simplest <code class="highlighter-rouge">fork()</code> example?</a></li>
+<li><a id="toc_why-does-this-example-print-42-twice" href="#why-does-this-example-print-42-twice" class="fancy-link">Why does this example print 42 twice?</a></li>
+<li><a id="toc_how-do-you-write-code-that-is-different-for-the-parent-and-child-process" href="#how-do-you-write-code-that-is-different-for-the-parent-and-child-process" class="fancy-link">How do you write code that is different for the parent and child process?</a></li>
+<li><a id="toc_what-is-a-fork-bomb-" href="#what-is-a-fork-bomb-" class="fancy-link">What is a fork bomb ?</a></li>
+<li><a id="toc_how-does-the-parent-process-wait-for-the-child-to-finish" href="#how-does-the-parent-process-wait-for-the-child-to-finish" class="fancy-link">How does the parent process wait for the child to finish?</a></li>
+<li><a id="toc_can-i-make-the-child-process-execute-another-program" href="#can-i-make-the-child-process-execute-another-program" class="fancy-link">Can I make the child process execute another program?</a></li>
+<li><a id="toc_a-simpler-way-to-execute-another-program" href="#a-simpler-way-to-execute-another-program" class="fancy-link">A simpler way to execute another program</a></li>
+<li><a id="toc_what-is-the-silliest-fork-example" href="#what-is-the-silliest-fork-example" class="fancy-link">What is the silliest fork example?</a></li>
+<li><a id="toc_what-is-different-in-the-child-process-than-the-parent-process" href="#what-is-different-in-the-child-process-than-the-parent-process" class="fancy-link">What is different in the child process than the parent process?</a></li>
+<li><a id="toc_how-can-i-find-out-more" href="#how-can-i-find-out-more" class="fancy-link">How can I find out more?</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="a-word-of-warning" class="title-text">A word of warning<a class="anchor title-text" href="#a-word-of-warning">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Process forking is a very powerful (and very dangerous) tool. If you mess up and cause a fork bomb (explained later on this page), <strong>you can bring down the entire system</strong>. To reduce the chances of this, limit your maximum number of processes to a small number e.g
+ 40 by typing <code class="highlighter-rouge">ulimit -u 40</code> into a command line. Note that this limit is only for the user, which means if you fork bomb, then you won’t be able to kill all of the processes you just created since calling <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/killall" class="fancy-link">killall</a></code> requires your shell to fork() … <a href="https://imgur.com/gallery/wefaH" class="fancy-link wiki-link">ironic</a> right? So what can we do about this. One solution is to spawn another shell instance as another user (for example root) before hand and kill processes from there. Another is to use the built in <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code> command to kill all the user processes (careful you only have one shot at this). Finally you could reboot the system :)</p>
+<p>When testing fork() code, ensure that you have either root and/or physical access to the machine involved. If you must work on fork () code remotely, remember that <strong>kill -9 -1</strong> will save you in the event of an emergency.</p>
+<p>TL;DR: Fork can be <strong>extremely</strong> dangerous if you aren’t prepared for it. <strong>You have been warned.</strong></p>
+</div></div></div>
+</div></div>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-does-fork-do" class="title-text">What does fork do?<a class="anchor title-text" href="#what-does-fork-do">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code> system call clones the current process to create a new process. It creates a new process (the child process) by duplicating the state of the existing process with a few minor differences (discussed below). The child process does not start from main. Instead it returns from <code class="highlighter-rouge">fork()</code> just as the parent process does.</p>
+<p>Just as a side remark, in older UNIX systems, the entire address space of the parent process was directly copied (regardless of whether the resource was modified or not). These days, kernel performs <a href="https://en.wikipedia.org/wiki/Copy-on-write" class="fancy-link wiki-link">copy-on-write</a>, which saves a lot of resources, while being very time efficient.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-the-simplest-fork-example" class="title-text">What is the simplest <code class="highlighter-rouge">fork()</code> example?<a class="anchor title-text" href="#what-is-the-simplest-fork-example">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Here’s a very simple example…</p>
+<pre><code class="language-C"><span class="n">printf</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="why-does-this-example-print-42-twice" class="title-text">Why does this example print 42 twice?<a class="anchor title-text" href="#why-does-this-example-print-42-twice">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The following program prints out 42 twice - but the <code class="highlighter-rouge">fork()</code> is after the <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code>!? Why?</p>
+<pre><code class="language-C"><span class="cp">#include &lt;unistd.h&gt; </span>
+</code></pre>
+<p>The <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code> line <em>is</em> executed only once however notice that the printed contents is not flushed to standard out (there’s no newline printed, we didn’t call <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fflush" class="fancy-link">fflush</a></code>, or change the buffering mode).
+The output text is therefore still in process memory waiting to be sent.
+When <code class="highlighter-rouge">fork()</code> is executed the entire process memory is duplicated including the buffer. Thus the child process starts with a non-empty output buffer which will be flushed when the program exits.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-you-write-code-that-is-different-for-the-parent-and-child-process" class="title-text">How do you write code that is different for the parent and child process?<a class="anchor title-text" href="#how-do-you-write-code-that-is-different-for-the-parent-and-child-process">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Check the return value of <code class="highlighter-rouge">fork()</code>.</p>
+<p>If fork() returns -1, that implies something went wrong in the process of creating a new child. One should check the value stored in <em>errno</em> to determine what kind of error occurred; commons one include EAGAIN and ENOMEM (check <a href="http://www-numi.fnal.gov/offline_software/srt_public_context/WebDocs/Errors/unix_system_errors.html" class="fancy-link wiki-link">this page</a> to get a description of the errors).</p>
+<p>Similarly, a return value of 0 indicates that we are in the child process, while a positive integer shows that we are in parent process. The positive value returned by fork() gives as the process id (<em>pid</em>) of the child.</p>
+<p>Here’s one way to remember which is which:</p>
+<p>The child process can find its parent - the original process that was duplicated -  by calling <code class="highlighter-rouge">getppid()</code> - so does not need any additional return information from <code class="highlighter-rouge">fork()</code>. The parent process however can only find out the id of the new child process from the return value of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code>:</p>
+<pre><code class="language-C"><span class="n">pid_t</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-a-fork-bomb-" class="title-text">What is a fork bomb ?<a class="anchor title-text" href="#what-is-a-fork-bomb-">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>A ‘fork bomb’ is when you attempt to create an infinite number of processes. A simple example is shown below:</p>
+<pre><code class="language-C"><span class="k">while</span>
+</code></pre>
+<p>This will often bring a system to a near-standstill as it attempts to allocate CPU time and memory to a very large number of processes that are ready to run. Comment: System administrators don’t like fork-bombs and may set upper limits on the number of processes each user can have or may revoke login rights because it creates a disturbance in the force for other users’ programs. You can also limit the number of child processes created by using <code class="highlighter-rouge">setrlimit()</code>.</p>
+<p>fork bombs are not necessarily malicious - they occasionally occur due to student coding errors.</p>
+<p>Angrave suggests that the Matrix trilogy, where the machine and man finally work together to defeat the multiplying Agent-Smith, was a cinematic plot based on an AI-driven fork-bomb.</p>
+</div></div></div>
+</div></div>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-does-the-parent-process-wait-for-the-child-to-finish" class="title-text">How does the parent process wait for the child to finish?<a class="anchor title-text" href="#how-does-the-parent-process-wait-for-the-child-to-finish">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/waitpid" class="fancy-link">waitpid</a></code> (or <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/wait" class="fancy-link">wait</a></code>).</p>
+<pre><code class="language-C"><span class="n">pid_t</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="can-i-make-the-child-process-execute-another-program" class="title-text">Can I make the child process execute another program?<a class="anchor title-text" href="#can-i-make-the-child-process-execute-another-program">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Yes. Use one of the <a href="http://man7.org/linux/man-pages/man3/exec.3.html" class="fancy-link wiki-link"><code class="highlighter-rouge">exec</code></a> functions after forking. The <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code> set of functions replaces the process image with the the process image of what is being called. This means that any lines of code after the <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code> call are replaced. Any other work you want the child process to do should be done before the <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code> call.</p>
+<p>The <a href="https://en.wikipedia.org/wiki/Exec_(system_call)#C_language_prototypes" class="fancy-link wiki-link">Wikipedia article</a> does a great job helping you make sense of the names of the exec family.</p>
+<p>The naming schemes can be shortened like this</p>
+<blockquote>
+  <p>The base of each is exec (execute), followed by one or more letters:</p>
+
+  <p>e – An array of pointers to environment variables is explicitly passed to the new process image.</p>
+
+  <p>l – Command-line arguments are passed individually (a list) to the function.</p>
+
+  <p>p – Uses the PATH environment variable to find the file named in the file argument to be executed.</p>
+
+  <p>v – Command-line arguments are passed to the function as an array (vector) of pointers.</p>
+</blockquote>
+<pre><code class="language-C"><span class="cp">#include &lt;unistd.h&gt;
+#include &lt;sys/types.h&gt; 
+#include &lt;sys/wait.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="a-simpler-way-to-execute-another-program" class="title-text">A simpler way to execute another program<a class="anchor title-text" href="#a-simpler-way-to-execute-another-program">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/system" class="fancy-link">system</a></code>. Here is how to use it:</p>
+<pre><code class="language-C"><span class="cp">#include &lt;unistd.h&gt;
+#include &lt;stdlib.h&gt;
+</span>
+</code></pre>
+<p>The <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/system" class="fancy-link">system</a></code> call will fork, execute the command passed by parameter and the original parent process will wait for this to finish. This also means that <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/system" class="fancy-link">system</a></code> is a blocking call: The parent process can’t continue until the process started by <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/system" class="fancy-link">system</a></code> exits. This may or may not be useful. Also, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/system" class="fancy-link">system</a></code> actually creates a shell which is then given the string, which is more overhead than just using <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code> directly. The standard shell will use the <code class="highlighter-rouge">PATH</code> environment variable to search for a filename that matches the command. Using system will usually be sufficient for many simple run-this-command problems but can quickly become limiting for more complex or subtle problems, and it hides the mechanics of the fork-exec-wait pattern so we encourage you to learn and use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code> <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code> and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/waitpid" class="fancy-link">waitpid</a></code> instead.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-the-silliest-fork-example" class="title-text">What is the silliest fork example?<a class="anchor title-text" href="#what-is-the-silliest-fork-example">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>A slightly silly example is shown below. What will it print? Try it with multiple arguments to your program.</p>
+<pre><code class="language-C"><span class="cp">#include &lt;unistd.h&gt;
+#include &lt;stdio.h&gt;
+</span>
+</code></pre>
+<p>The amazing parallel apparent-O(N) <em>sleepsort</em> is today’s silly winner. First published on <a href="https://dis.4chan.org/read/prog/1295544154" class="fancy-link wiki-link">4chan in 2011 </a>. A version of this awful but amusing sorting algorithm is shown below.</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>Note: The algorithm isn’t actually O(N) because of how the system scheduler works. Though there are parallel algorithms that run in O(log(N)) per process, this is sadly not one of them.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-different-in-the-child-process-than-the-parent-process" class="title-text">What is different in the child process than the parent process?<a class="anchor title-text" href="#what-is-different-in-the-child-process-than-the-parent-process">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The key differences include:</p>
+<ul>
+  <li>The process id returned by <code class="highlighter-rouge">getpid()</code>. The parent process id returned by <code class="highlighter-rouge">getppid()</code>.</li>
+  <li>The parent is notified via a signal, SIGCHLD, when the child process finishes but not vice versa.</li>
+  <li>The child does not inherit pending signals or timer alarms.
+For a complete list see the <a href="http://man7.org/linux/man-pages/man2/fork.2.html" class="fancy-link wiki-link">fork man page</a>
+</li>
+</ul>
+<p>Yes! In fact both processes use the same underlying kernel file descriptor. For example if one process rewinds the random access position back to the beginning of the file, then both processes are affected.</p>
+<p>Both child and parent should <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/close" class="fancy-link">close</a></code> (or <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fclose" class="fancy-link">fclose</a></code>) their file descriptors or file handle respectively.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-can-i-find-out-more" class="title-text">How can I find out more?<a class="anchor title-text" href="#how-can-i-find-out-more">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Read the man pages!</p>
+<ul>
+  <li><a href="http://man7.org/linux/man-pages/man2/fork.2.html" class="fancy-link wiki-link">fork</a></li>
+  <li><a href="http://man7.org/linux/man-pages/man3/exec.3.html" class="fancy-link wiki-link">exec</a></li>
+  <li><a href="http://man7.org/linux/man-pages/man2/wait.2.html" class="fancy-link wiki-link">wait</a></li>
+</ul>
+<div align="center">
+<a href="/wikibook/processes-part-1-introduction.html#" class="fancy-link wiki-link">
+Back: Processes, Part 1: Introduction
+</a> |
+<a href="/wikibook/forking-part-2-fork-exec-wait.html#" class="fancy-link wiki-link">
+Next: Forking, Part 2: Fork, Exec, Wait
+</a>
+</div>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/forking-part-1-introduction.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

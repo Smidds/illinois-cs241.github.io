@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Teaching Threads</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Teaching Threads
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/illinois-cs241/assignment-docs/blob/master//teaching_threads.md">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+              <div class="submission-wrapper">
+                
+                  <b>Entire Assignment</b> due <b>10/03/2018, 11:59 PM</b><br/>
+                  
+                    <b>Graded files:</b>
+                    <ul>
+                      
+                        <li>par_reduce.c</li>
+                      
+                    </ul>
+                  
+                
+              </div>
+            
+            
+              <div class="schedule-wrapper">
+                
+                  <b>AG Schedule</b>
+                  <br/>
+                  <b>Pre-deadline Runs</b>
+                    <ul>
+                      
+                        <li>09/28 10:00 PM</li>
+                      
+                        <li>09/30 10:00 PM</li>
+                      
+                        <li>10/02 10:00 PM</li>
+                      
+                    </ul>
+                
+              </div>
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_reduce" href="#reduce" class="fancy-link">reduce()</a></li>
+<li><a id="toc_par_reduce" href="#par_reduce" class="fancy-link">par_reduce()</a></li>
+<li><a id="toc_testing-your-code" href="#testing-your-code" class="fancy-link">Testing your code</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+  <div class="pad"><div class="card">
+<div class="title"><h2 id="learning-objectives" class="title-text">Learning Objectives<a class="anchor title-text" href="#learning-objectives">#</a>
+</h2></div>
+  
+  
+
+
+  <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>
+    The learning objectives for Teaching Threads are: <br>
+    </p>
+<ul class="mdl-list">
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Introduction to pthreads</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Introduction to concurrency</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Introduction to synchronization</span>
+        </li>
+      
+    </ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="suggested-readings" class="title-text">Suggested Readings<a class="anchor title-text" href="#suggested-readings">#</a>
+</h2></div>
+  
+  
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>
+    We suggest you read the following from the
+    <a href="https://github.com/angrave/SystemProgramming/wiki" class="fancy-link wiki-link">wikibook</a>
+    before starting Teaching Threads: <br>
+    </p>
+<ul>
+      
+        <li>
+          <a href="/wikibook/pthreads-part-1-introduction.html#" target="_blank" class="fancy-link wiki-link">Pthreads, Part 1: Introduction
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/pthreads-part-2-usage-in-practice.html#" target="_blank" class="fancy-link wiki-link">Pthreads, Part 2: Usage in Practice
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/pthreads-part-3-parallel-problems-(bonus).html#" target="_blank" class="fancy-link wiki-link">Pthreads, Part 3: Parallel Problems (Bonus)
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/synchronization-part-1-mutex-locks.html#" target="_blank" class="fancy-link wiki-link">Synchronization, Part 1: Mutex Locks
+          </a>
+        </li>
+      
+    </ul>
+</div></div></div>
+</div></div>
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="reduce" class="title-text">reduce()<a class="anchor title-text" href="#reduce">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>In functional programming, there is an operation called <a href="https://en.wikipedia.org/wiki/Fold_(higher-order_function%5C)" class="fancy-link wiki-link"><em>reduce</em></a>. <code class="highlighter-rouge">reduce</code> takes three parameters: an input list, a function to apply to the elements of that list, and an initial value (or base case). The function takes two inputs and returns a value. It is first applied to the base case and the first element, and from then on, the function is repeatedly applied to the cumulative result and the next element. <code class="highlighter-rouge">reduce</code> then returns the “reduced” value of the entire list. Depending on which direction this is applied, this is sometimes called a <em>left-fold</em> or <em>right-fold</em>. In this problem, the functions are associative, so it does not matter.</p>
+<p>Here’s a concrete example. Say we have the input list <code class="highlighter-rouge">[1, 2, 3]</code>, a callback function <code class="highlighter-rouge">int add(int elem1, int elem2)</code> which takes two numbers and returns their sum, and a base case of 0. If we call <code class="highlighter-rouge">reduce</code>, the resulting value would be <code class="highlighter-rouge">add(add(add(0, 1), 2), 3) = 6</code>.</p>
+<p>In C code, it looks something like this (you can find this in <code class="highlighter-rouge">reduce.c</code>):</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Notice that this is basically a for-loop on the list. There are no fancy algorithms we can use to improve runtime, since the callback function is essentially a black box. So, how can we make it faster? Parallelism to the rescue!</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="par_reduce" class="title-text">par_reduce()<a class="anchor title-text" href="#par_reduce">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Since we guarantee that all the given functions are commutative and associative, <code class="highlighter-rouge">reduce</code> becomes <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel" class="fancy-link wiki-link">embarrassingly parallel</a>, which means that:</p>
+<ul>
+  <li>it is easy to divide the problem into subproblems, and</li>
+  <li>none of the subproblems depend on each other.</li>
+</ul>
+<p>Given an input list <code class="highlighter-rouge">[1, 2, 3, 4, 5, 6]</code> and <code class="highlighter-rouge">add()</code>, we can meet the requirements for “embarrassingly parallel” by doing the following with 2 threads:</p>
+<ul>
+  <li>Thread 1: evaluate <code class="highlighter-rouge">reduce([1, 2, 3])</code>
+</li>
+  <li>Thread 2: evaluate <code class="highlighter-rouge">reduce([4, 5, 6])</code>
+</li>
+  <li>Thread 1: write <code class="highlighter-rouge">reduce([1, 2, 3])</code> into index 0 of the new list</li>
+  <li>Thread 2: write <code class="highlighter-rouge">reduce([4, 5, 6])</code> into index 1 of the new list</li>
+  <li>Join the threads</li>
+  <li>Main thread: evaluate <code class="highlighter-rouge">reduce(new_list)</code> = <code class="highlighter-rouge">reduce([6, 15])</code>
+</li>
+</ul>
+<p>Finally, we should have our answer of 21. Notice that the size of the list in the last call in the main thread is exactly the number of threads used, because we have one result from each thread. In this case, the final list is of size 2.</p>
+<p>Also, note that none of these subproblems depend on each other to evaluate due to our guarantees on the associative property, so they can safely be done concurrently.</p>
+<p>Now, it would be unfortunate if someone had to manually figure out the assignment of jobs to each thread every time some aspect of the problem changed, such as the size of the input list, the callback function, the number of threads, or the base case. To alleviate that, we are providing our users with a nice <code class="highlighter-rouge">par_reduce()</code> function that takes in an input list, callback function, base case, and the number of threads (not including the main thread). The end goal is that <code class="highlighter-rouge">par_reduce()</code> does exactly what <code class="highlighter-rouge">reduce()</code> does (in the case that the given functions are associative) except in parallel, with multiple threads. To the user, it’s the same old <code class="highlighter-rouge">reduce()</code> function—just faster!</p>
+<p>For this lab, you are responsible for implementing <code class="highlighter-rouge">par_reduce()</code> in <code class="highlighter-rouge">par_reduce.c</code>.</p>
+<p>Some food for thought:</p>
+<ul>
+  <li>What does <code class="highlighter-rouge">int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine) (void *), void *arg);</code> do?
+    <ul>
+      <li>What are <code class="highlighter-rouge">start_routine</code> and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/arg" class="fancy-link">arg</a></code>?</li>
+    </ul>
+  </li>
+  <li>What information does each thread need to know in order to do its job?</li>
+  <li>How would you divide the problem among your threads?</li>
+  <li>What does <code class="highlighter-rouge">int pthread_join(pthread_t thread, void **retval);</code> do?
+    <ul>
+      <li>What is <code class="highlighter-rouge">retval</code>?</li>
+    </ul>
+  </li>
+  <li>How can you make sure to always spawn the least number of threads?
+    <ul>
+      <li>You have an example above where the length of the list is greater than the number of threads, what about the opposite scenario?</li>
+    </ul>
+  </li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="testing-your-code" class="title-text">Testing your code<a class="anchor title-text" href="#testing-your-code">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>We have provided a makefile that will compile your code along with our framework. We recommend that you read through <code class="highlighter-rouge">main.c</code> so that you understand how we are calling your <code class="highlighter-rouge">par_reduce</code> in <code class="highlighter-rouge">par_reduce.c</code>.</p>
+<p>After running <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/make" class="fancy-link">make</a></code>, you can run the executable as follows:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./par_reduce &lt;reducer_name&gt; &lt;list_len&gt; &lt;num_threads&gt;
+</code></pre></div></div>
+<ul>
+  <li>
+<code class="highlighter-rouge">&lt;reducer_name&gt;</code> is one of the following: “add”, “multiply”, or “slow”.
+    <ul>
+      <li>“add” adds every element with a base case of 0.</li>
+      <li>“mult” multiplies every element with a base case of 1.</li>
+      <li>“slow” doesn’t perform any computation, but sleeps a small amount each time it is called. You may notice that add and multiply might get slower the more threads you use–this is because starting new threads takes time, and sometimes the extra time needed to spawn new threads exceeds the time saved in computation, especially for extremely quick ones like addition. So, we’ve given you a “slow” reducer that will let you test to make sure that running with <code class="highlighter-rouge">n</code> threads will take around <code class="highlighter-rouge">1/n</code> time.</li>
+    </ul>
+  </li>
+  <li>
+<code class="highlighter-rouge">&lt;list_len&gt;</code> is the number of elements in the list of random integers we’ll pass to your par_reduce.</li>
+  <li>
+<code class="highlighter-rouge">&lt;num_threads&gt;</code> is the number of threads to use.</li>
+</ul>
+<p>You can also run <code class="highlighter-rouge">make debug</code> and run the debugging executable with the same arguments:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./par_reduce-debug &lt;reducer_name&gt; &lt;list_len&gt; &lt;num_threads&gt;
+</code></pre></div></div>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="submission-instructions" class="title-text">Submission Instructions<a class="anchor title-text" href="#submission-instructions">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Please read details on <a href="/#academic-integrity" class="fancy-link wiki-link">Academic Integrity</a> fully. These are shared by all assignments in CS 241.</p>
+<p>We will be using GitHub as our hand-in system this semester. Our grading system will checkout your most recent (pre-deadline) commit for grading. Therefore, to hand in your code, all you have to do is commit and push to your Github repository.</p>
+<p>To check out the provided code for <code class="highlighter-rouge">teaching_threads</code> from the class repository, go to your cs241 directory (the one you checked out for “know your tools”) and run:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git pull release master
+</code></pre></div></div>
+<p>If you run <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/ls" class="fancy-link">ls</a></code> you will now see a <code class="highlighter-rouge">teaching_threads</code> folder, where you can find this assignment! To commit your changes (send them to us), type:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git add teaching_threads
+git commit -m "teaching_threads submission"
+git push origin master
+</code></pre></div></div>
+<p>Your repository directory can be viewed from a web browser from the following URL: 
+<a href="https://github-dev.cs.illinois.edu/cs241-fa18/NETID/tree/master/teaching_threads" class="fancy-link wiki-link">https://github-dev.cs.illinois.edu/cs241-fa18/NETID/tree/master/teaching_threads</a> where NETID is your University NetID. It is important to check that the files you expect to be graded are present and up to date in your remote git copy.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="assignment-feedback" class="title-text">Assignment Feedback<a class="anchor title-text" href="#assignment-feedback">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>We strive to provide the best assignments that we can for this course, and we would like your feedback on them!</p>
+<p>This is the form we will use to evaluate our assignments. We appreciate the time you take to give us your honest feedback and we promise to keep improving the course to make your experience in CS 241 the best it can be.</p>
+<p><a href="https://goo.gl/forms/hREf0ojFWumYfQF12" class="fancy-link wiki-link">https://goo.gl/forms/hREf0ojFWumYfQF12</a></p>
+</div></div></div>
+</div></div>
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_docs/teaching_threads.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

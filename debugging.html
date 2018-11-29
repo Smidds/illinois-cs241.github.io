@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Debugging Guide</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Debugging Guide
+
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_git" href="#git" class="fancy-link">Git</a></li>
+<li><a id="toc_make-commands" href="#make-commands" class="fancy-link">Make Commands</a></li>
+<li><a id="toc_starting-to-debug---valgrind" href="#starting-to-debug---valgrind" class="fancy-link">Starting to debug - Valgrind</a></li>
+<li><a id="toc_gdb" href="#gdb" class="fancy-link">GDB</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+  <div class="pad"><div class="card">
+<div class="title"><h2 id="learning-objectives" class="title-text">Learning Objectives<a class="anchor title-text" href="#learning-objectives">#</a>
+</h2></div>
+  
+  
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>
+    The learning objectives for Debugging Guide are: <br>
+    </p>
+<ul class="mdl-list">
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Learning how to debug 241 Code</span>
+        </li>
+      
+    </ul>
+</div></div></div>
+</div></div>
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="git" class="title-text">Git<a class="anchor title-text" href="#git">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>What is <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/git" class="fancy-link">git</a></code>? Git is a version control system. What that means is git stores the entire history of a directory. We refer to the directory as a repository. So what do you need to know is a few things.</p>
+<p>The first thing is you need to go to <a href="https://edu.cs.illinois.edu/create-ghe-repo/cs-/fa18/" class="fancy-link wiki-link">the repo creator url</a> and make yourself a 241 github repository. If you haven’t already signed into enterprise github, make sure to do so otherwise your repository won’t be created for you.</p>
+<p>After that, that means your repository is created on the server. Git is a decentralized version control system, meaning that you’ll need to get a repository onto your VM. We can do this with a clone.</p>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span> git clone https://github-dev.cs.illinois.edu/cs241-fa18/&lt;netid&gt;.git
+</code></pre></div></div>
+<p>This will create a local repsitory. The workflow is you make a change on your local repository, add the changes to a current commit, actually commit, and push the changes to the server.</p>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span> <span class="c"># edit the file, maybe using vim</span>
+<span class="gp">$</span> git add &lt;file&gt;
+<span class="gp">$</span> git commit <span class="nt">-m</span> <span class="s2">"Committing my file"</span>
+<span class="gp">$</span> git push origin master
+</code></pre></div></div>
+<h3 id="git-good" class="title-text">Git Good</h3>
+<p>Now to explain git well, you need to understand that git for our purposes will look like a linked list.</p>
+<p><img src="./images/git_history.png" alt="Git linked list commits"></p>
+<p>You will always be at the head of master, and you will do the edit-add-commit-push loop. We have a separate branch on github that we push feedback to under <code class="highlighter-rouge">_feedback</code> which you can view on github website. The markdown file will have information on the test cases and results (like standard out).</p>
+<p>Every so often git can break. Here are a list of commands you probably won’t need to fix your repo</p>
+<ul>
+  <li>git-cherry-pick</li>
+  <li>git-pack</li>
+  <li>git-gc</li>
+  <li>git-clean</li>
+  <li>git-rebase</li>
+  <li>git-stash/git-apply/git-pop</li>
+  <li>git-branch</li>
+</ul>
+<p>In addition if you are currently on a branch, and you don’t see either</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git status
+On branch master
+Your branch is up-to-date with 'origin/master'.
+nothing to commit, working directory clean
+</code></pre></div></div>
+<p>or</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git status
+On branch master
+Your branch is up-to-date with 'origin/master'.
+Changes not staged for commit:
+  (use "git add &lt;file&gt;..." to update what will be committed)
+  (use "git checkout -- &lt;file&gt;..." to discard changes in working directory)
+
+        modified:   &lt;FILE&gt;
+        ...
+
+no changes added to commit (use "git add" and/or "git commit -a")
+</code></pre></div></div>
+<p>And something like</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git status
+HEAD detached at 4bc4426
+nothing to commit, working directory clean
+</code></pre></div></div>
+<p>Don’t panic, but your repository may be in an unworkable state. If you aren’t nearing a deadline, come in to office hours or ask your question on Piazza, and we’d be happy to help. In an emergency scenario, delete your repository and re-clone (you’ll have to add the <code class="highlighter-rouge">release</code> as above). <strong>This will lose any local uncommitted changes. Make sure to copy any files you were working on outside the directory, remove and copy them back in</strong></p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="make-commands" class="title-text">Make Commands<a class="anchor title-text" href="#make-commands">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<h3 id="make" class="title-text">Make</h3>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">make
+</span></code></pre></div></div>
+<p>Will make all of the targets, or all the assignments.</p>
+<h3 id="make-clean" class="title-text">Make clean</h3>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">make clean
+</span></code></pre></div></div>
+<p>to make sure there aren’t any leftover object files. This will force recompilation of all the files as well</p>
+<h3 id="make-debug" class="title-text">Make Debug</h3>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">make debug
+</span></code></pre></div></div>
+<p>To generate a debug build. A debug build has things like variable names and line numbers which are super helpful for debugging. It will generate a file with <code class="highlighter-rouge">executable_name-debug</code>. When we get to multithreading assignments you can <code class="highlighter-rouge">make tsan</code> in order to get thread sanitization as well.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="starting-to-debug---valgrind" class="title-text">Starting to debug - Valgrind<a class="anchor title-text" href="#starting-to-debug---valgrind">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>To test for memory errors, try</p>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span> valgrind ./secure_move-debug files/final.txt files/final_test.txt
+</code></pre></div></div>
+<p>Valgrind will give you helpful output like the line number and stack trace where a memory error occured as well as where that memory was allocated.</p>
+<p>Using the test cases that you failed, design a test that would make the code fail and run valgrind on it to see where the error is.</p>
+<p>The most likely options you will need to know for valgrind</p>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span> valgrind <span class="nt">--leak-check</span><span class="o">=</span>full ...
+</code></pre></div></div>
+<p>Which will check for leaks from all process/possible leaks and anything in between.</p>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span> valgrind <span class="nt">--leak-check</span><span class="o">=</span>full <span class="nt">--show-leak-kinds</span><span class="o">=</span>all ...
+</code></pre></div></div>
+<p>This will trace anything still reachable at the end of the program and report if you’re cleanup method didn’t clean everything up.</p>
+<p>More about valgrind is below.</p>
+<ul>
+  <li><a href="http://valgrind.org/docs/manual/QuickStart.html" class="fancy-link wiki-link">Valgrind</a></li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="gdb" class="title-text">GDB<a class="anchor title-text" href="#gdb">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>In this course, you will need to know how to use GDB</p>
+<p>Consider the simple program (you may be able to spot the bug already)</p>
+<pre><code class="language-C"><span class="cp">#include &lt;stdio.h&gt;
+</span>
+</code></pre>
+<p>Let’s say that we have a problem with our program. How can we use gdb to debug? First we ought to load GDB.</p>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span> gdb <span class="nt">--args</span> ./main
+<span class="gp">(gdb) layout src;</span> <span class="c">#if you want an GUI type</span>
+<span class="go">(gdb) run
+(gdb)
+</span></code></pre></div></div>
+<p>Hey that doesn’t look right.</p>
+<p>Want to take a look at the source?</p>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">(gdb) l
+</span><span class="gp">1	#</span>include &lt;stdio.h&gt;
+<span class="go">2	
+</span><span class="gp">3	double convert_to_radians(int deg);</span>
+<span class="go">4	
+5	int main(){
+</span><span class="gp">6		for (int deg = 0;</span> deg <span class="o">&gt;</span> 360<span class="p">;</span> ++deg<span class="o">){</span>
+<span class="gp">7			double radians = convert_to_radians(deg);</span>
+<span class="gp">8			printf("%d. %f\n", deg, radians);</span>
+<span class="go">9		}
+</span><span class="gp">10	    return 0;</span>
+<span class="gp">(gdb) break 7 #</span> <span class="nb">break</span> &lt;file&gt;:line or <span class="nb">break</span> &lt;file&gt;:function
+<span class="go">(gdb) run
+(gdb)
+</span></code></pre></div></div>
+<p>Huh the breakpoint didn’t even trigger, meaning the code never got to that point. That’s because of the comparison! Okay flip the sign it should work now right?</p>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">(gdb) run
+350. 60.000000
+351. 60.000000
+352. 60.000000
+353. 60.000000
+354. 60.000000
+355. 61.000000
+356. 61.000000
+357. 61.000000
+358. 61.000000
+359. 61.000000
+</span></code></pre></div></div>
+<p>Well doesn’t look like it. Let’s see what is wrong.</p>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">(gdb) break 14 if deg == 359 #</span> Let<span class="s1">'s check the last iteration only
+</span><span class="go">(gdb) run
+</span><span class="c">...
+</span><span class="gp">(gdb) print/x deg #</span> print the hex value of degree
+<span class="gp">$</span>1 <span class="o">=</span> 0x167
+<span class="go">(gdb) print (31415/1000)
+</span><span class="gp">$</span>2 <span class="o">=</span> 0x31
+<span class="go">(gdb) print (31415/1000.0)
+</span><span class="gp">$</span>3 <span class="o">=</span> 201.749
+<span class="go">(gdb) print (31415.0/10000.0)
+</span><span class="gp">$</span>4 <span class="o">=</span> 3.1414999999999999
+</code></pre></div></div>
+<p>It looks like we make a casting error as well! We can change it and our program is fixed!</p>
+<p>These are just the most basic things that you can do with the tools. We highly recommend that you read tutorials on these tools to effectively use them through out this course. Here are just a couple of promising links:</p>
+<ul>
+  <li><a href="https://www.youtube.com/watch?v=PorfLSr3DDI" class="fancy-link wiki-link">CppCon 2015: Greg Law “Give me 15 minutes &amp; I’ll change your view of GDB”</a></li>
+  <li><a href="https://www.cs.umd.edu/~srhuang/teaching/cmsc212/gdb-tutorial-handout.pdf" class="fancy-link wiki-link">GDB</a></li>
+</ul>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_tutorials/debugging.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

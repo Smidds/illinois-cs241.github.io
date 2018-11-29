@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>File System, Part 7: Scalable and Reliable Filesystems</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              File System, Part 7: Scalable and Reliable Filesystems
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/File-System,-Part-7:-Scalable-and-Reliable-Filesystems">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_how-and-why-does-the-kernel-cache-the-filesystem" href="#how-and-why-does-the-kernel-cache-the-filesystem" class="fancy-link">How and why does the kernel cache the filesystem?</a></li>
+<li><a id="toc_my-data-is-important-can-i-force-the-disk-writes-to-be-saved-to-the-physical-media-and-wait-for-it-to-complete" href="#my-data-is-important-can-i-force-the-disk-writes-to-be-saved-to-the-physical-media-and-wait-for-it-to-complete" class="fancy-link">My data is important! Can I force the disk writes to be saved to the physical media and wait for it to complete?</a></li>
+<li><a id="toc_what-if-my-disk-fails-in-the-middle-of-an-important-operation" href="#what-if-my-disk-fails-in-the-middle-of-an-important-operation" class="fancy-link">What if my disk fails in the middle of an important operation?</a></li>
+<li><a id="toc_how-likely-is-a-disk-failure" href="#how-likely-is-a-disk-failure" class="fancy-link">How likely is a disk failure?</a></li>
+<li><a id="toc_how-do-i-protect-my-data-from-disk-failure" href="#how-do-i-protect-my-data-from-disk-failure" class="fancy-link">How do I protect my data from disk failure?</a></li>
+<li><a id="toc_what-is-raid-3" href="#what-is-raid-3" class="fancy-link">What is RAID-3?</a></li>
+<li><a id="toc_how-secure-is-raid-3-to-data-loss" href="#how-secure-is-raid-3-to-data-loss" class="fancy-link">How secure is RAID-3 to data-loss?</a></li>
+<li><a id="toc_what-is-raid-5" href="#what-is-raid-5" class="fancy-link">What is RAID-5?</a></li>
+<li><a id="toc_distributed-storage" href="#distributed-storage" class="fancy-link">Distributed storage</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-and-why-does-the-kernel-cache-the-filesystem" class="title-text">How and why does the kernel cache the filesystem?<a class="anchor title-text" href="#how-and-why-does-the-kernel-cache-the-filesystem">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Most filesystems cache significant amounts of disk data in physical memory.
+Linux, in this respect, is particularly extreme: All unused memory is used as a giant disk cache.</p>
+<p>The disk cache can have significant impact on overall system performance because disk I/O is slow. This is especially true for random access requests on spinning disks where the disk read-write latency is dominated by the seek time required to move the read-write disk head to the correct position.</p>
+<p>For efficiency, the kernel caches recently used disk blocks. 
+For writing we have to choose a trade-off between performance and reliability: Disk writes can also be cached (“Write-back cache”) where modified disk blocks are stored in memory until evicted. Alternatively a ‘write-through cache’ policy can be employed where disk writes are sent immediately to the disk. The latter is safer (as filesystem modifications are quickly stored to persistent media) but slower than a write-back cache; If writes are cached then they can be delayed and efficiently scheduled based on the physical position of each disk block.</p>
+<p>Note this is a simplified description because solid state drives (SSDs) can be used as a secondary write-back cache.</p>
+<p>Both solid state disks (SSD) and spinning disks have improved performance when reading or writing sequential data. Thus operating system can often use a read-ahead strategy to amortize the read-request costs (e.g. time cost for a spinning disk) and request several contiguous disk blocks per request. By issuing an I/O request for the next disk block before the user application requires the next disk block, the apparent disk I/O latency can be reduced.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="my-data-is-important-can-i-force-the-disk-writes-to-be-saved-to-the-physical-media-and-wait-for-it-to-complete" class="title-text">My data is important! Can I force the disk writes to be saved to the physical media and wait for it to complete?<a class="anchor title-text" href="#my-data-is-important-can-i-force-the-disk-writes-to-be-saved-to-the-physical-media-and-wait-for-it-to-complete">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Yes (almost). Call <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sync" class="fancy-link">sync</a></code> to request that a filesystem changes be written (flushed) to disk.
+However, not all operating systems honor this request and even if the data is evicted from the kernel buffers the disk firmware use an internal on-disk cache or may not yet have finished changing the physical media.</p>
+<p>Note you can also request that all changes associated with a particular file descriptor are flushed to disk using <code class="highlighter-rouge">fsync(int fd)</code></p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-if-my-disk-fails-in-the-middle-of-an-important-operation" class="title-text">What if my disk fails in the middle of an important operation?<a class="anchor title-text" href="#what-if-my-disk-fails-in-the-middle-of-an-important-operation">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Don’t worry most modern file systems do something called <strong>journalling</strong> that work around this. What the file system does is before it completes a potentially expensive operation, is that it writes what it is going to do down in a journal. In the case of a crash or failure, one can step through the journal and see which files are corrupt and fix them. This is a way to salvage hard disks in cases there is critical data and there is no apparent backup.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-likely-is-a-disk-failure" class="title-text">How likely is a disk failure?<a class="anchor title-text" href="#how-likely-is-a-disk-failure">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Disk failures are measured using “Mean-Time-Failure”. For large arrays, the mean failure time can be surprisingly short. For example if the MTTF(single disk) = 30,000 hours, then the MTTF(100 disks)= 30000/100=300 hours  ie about 12 days!</p></div></div></div>
+</div></div>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-protect-my-data-from-disk-failure" class="title-text">How do I protect my data from disk failure?<a class="anchor title-text" href="#how-do-i-protect-my-data-from-disk-failure">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Easy! Store the data twice! This is the main principle of a “RAID-1” disk array. RAID is short for redundant array of inexpensive disks. By duplicating the writes to a disk with writes to another (backup disk) there are exactly two copies of the data. If one disk fails, the other disk serves as the only copy until it can be re-cloned. Reading data is faster (since data can be requested from either disk) but writes are potentially twice as slow (now two write commands need to be issued for every disk block write) and, compared to using a single disk, the cost of storage per byte has doubled.</p>
+<p>Another common RAID scheme is RAID-0, meaning that a file could be split up amoung two disks, but if any one of the disks fail then the files are irrecoverable. This has the benefit of halving write times because one part of the file could be writing to hard disk one and another part to hard disk two.</p>
+<p>It is also common to combine these systems. If you have a lot of hard disks, consider RAID-10. This is where you have two systems of RAID-1, but the systems are hooked up in RAID-0 to each other. This means you would get roughly the same speed from the slowdowns but now any one disk can fail and you can recover that disk. (If two disks from opposing raid partitions fail there is a chance that recover can happen though we don’t could on it most of the time).</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-raid-3" class="title-text">What is RAID-3?<a class="anchor title-text" href="#what-is-raid-3">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>RAID-3 uses parity codes instead of mirroring the data. For each N-bits written we will write one extra bit, the ‘Parity bit’ that ensures the total number of 1s written is even.  The parity bit is written to an additional disk. If any one disk (including the parity disk) is lost, then its contents can still be computed using the contents of the other disks.</p>
+<p><img src="http://devnull.typepad.com/.a/6a00e551c39e1c88340133ed18ed66970b-pi" alt=""></p>
+<p>One disadvantage of RAID-3 is that whenever a disk block is written, the parity block will always be written too. This means that there is effectively a bottleneck in a separate disk. In practice, this is more likely to cause a failure because one disk is being used 100% of the time and once that disk fails then the other disks are more prone to failure.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-secure-is-raid-3-to-data-loss" class="title-text">How secure is RAID-3 to data-loss?<a class="anchor title-text" href="#how-secure-is-raid-3-to-data-loss">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>A single disk failure will not result in data loss (because there is sufficient data to rebuild the array from the remaining disks). Data-loss will occur when a two disks are unusable because there is no longer sufficient data to rebuild the array. We can calculate the probability of a two disk failure based on the repair time which includes not just the time to insert a new disk but the time required to rebuild the entire contents of the array.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>MTTF = mean time to failure
+MTTR = mean time to repair
+N = number of original disks
+
+p = MTTR / (MTTF-one-disk / (N-1))
+</code></pre></div></div>
+<p>Using typical numbers (MTTR=1day, MTTF=1000days, N-1 = 9,, p=0.009</p>
+<p>There is a 1% chance that another drive will fail during the rebuild process (at that point you had better hope you still have an accessible backup of your original data.</p>
+<p>In practice the probability of a second failure during the repair process is likely higher because rebuilding the array is I/O-intensive (and on top of normal I/O request activity). This higher I/O load will also stress the disk array</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-raid-5" class="title-text">What is RAID-5?<a class="anchor title-text" href="#what-is-raid-5">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>RAID-5 is similar to RAID-3 except that the check block (parity information) is assigned to different disks for different blocks. The check-block is ‘rotated’ through the disk array. RAID-5 provides better read and write performance than RAID-3 because there is no longer the bottleneck of the single parity disk. The one drawback is that you need more disks to have this setup and there are more complicated algorithms need to be used</p>
+<p><img src="http://www.seagate.com/files/www-content/manuals/business-storage-nas-os-manual/_shared/images/118a_ill_raid_5.png" alt=""></p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="distributed-storage" class="title-text">Distributed storage<a class="anchor title-text" href="#distributed-storage">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Failure is the common case
+Google reports 2-10% of disks fail per year
+Now multiply that by 60,000+ disks in a single warehouse…
+Must survive failure of not just a disk, but a rack of servers or a whole data center</p>
+<p>Solutions:</p>
+<ul>
+  <li>Simple redundancy (2 or 3 copies of each file) e.g., Google GFS (2001)</li>
+  <li>More efficient redundancy (analogous to RAID 3++) e.g., <a href="http://goo.gl/LwFIy" class="fancy-link wiki-link">Google Colossus filesystem</a> (~2010)</li>
+  <li>customizable replication including Reed-Solomon codes with 1.5x redundancy</li>
+</ul>
+<p><a href="/wikibook/file-system-part-8-removing-preinstalled-malware-from-an-android-device.html#" class="fancy-link wiki-link">Go to File System: Part 8</a></p>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/file-system-part-7-scalable-and-reliable-filesystems.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

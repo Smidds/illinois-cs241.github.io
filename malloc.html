@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Malloc</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Malloc
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/illinois-cs241/assignment-docs/blob/master//malloc.md">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+              <div class="submission-wrapper">
+                
+                  <b>Part 1</b> due <b>10/08/2018 11:59 pm</b><br/>
+                  
+                    <b>Graded files:</b>
+                    <ul>
+                      
+                        <li>alloc.c</li>
+                      
+                    </ul>
+                  
+                
+              </div>
+            
+            
+              <div class="schedule-wrapper">
+                
+                  <b>AG Schedule</b>
+                  <br/>
+                  <b>Pre-deadline Runs</b>
+                    <ul>
+                      
+                        <li>10/09 10:00 PM</li>
+                      
+                        <li>10/11 10:00 PM</li>
+                      
+                        <li>10/13 10:00 PM</li>
+                      
+                        <li>10/14 10:00 PM</li>
+                      
+                        <li>10/15 12:00 PM (noon)</li>
+                      
+                    </ul>
+                
+              </div>
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_introduction" href="#introduction" class="fancy-link">Introduction</a></li>
+<li><a id="toc_overview" href="#overview" class="fancy-link">Overview</a></li>
+<li><a id="toc_a-bad-example" href="#a-bad-example" class="fancy-link">A Bad Example</a></li>
+<li><a id="toc_testing-your-code" href="#testing-your-code" class="fancy-link">Testing Your Code</a></li>
+<li><a id="toc_grading" href="#grading" class="fancy-link">Grading</a></li>
+<li><a id="toc_contest" href="#contest" class="fancy-link">Contest</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+  <div class="pad"><div class="card">
+<div class="title"><h2 id="learning-objectives" class="title-text">Learning Objectives<a class="anchor title-text" href="#learning-objectives">#</a>
+</h2></div>
+  
+  
+
+
+  <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>
+    The learning objectives for Malloc are: <br>
+    </p>
+<ul class="mdl-list">
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Memory Allocation and Management</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Performance Optimization</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Developing in a Restricted Environment</span>
+        </li>
+      
+    </ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="suggested-readings" class="title-text">Suggested Readings<a class="anchor title-text" href="#suggested-readings">#</a>
+</h2></div>
+  
+  
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>
+    We suggest you read the following from the
+    <a href="https://github.com/angrave/SystemProgramming/wiki" class="fancy-link wiki-link">wikibook</a>
+    before starting Malloc: <br>
+    </p>
+<ul>
+      
+        <li>
+          <a href="/wikibook/memory-part-1-heap-memory-introduction.html#" target="_blank" class="fancy-link wiki-link">Memory, Part 1: Heap Memory Introduction
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/memory-part-2-implementing-a-memory-allocator.html#" target="_blank" class="fancy-link wiki-link">Memory, Part 2: Implementing a Memory Allocator
+          </a>
+        </li>
+      
+    </ul>
+</div></div></div>
+</div></div>
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="introduction" class="title-text">Introduction<a class="anchor title-text" href="#introduction">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Well, you impressed your boss with your shell and got your job back at Macrohard. Macrohard is now in tight competition with Ocean tent, the hot new tech startup trying to innovate the world’s fastest C memory allocator. This simple competition wouldn’t be an issue to Macrohard if it wasn’t for the fact that Ocean tent also has intelligent cs241 students in it.</p>
+<p>Your new task is to create this turbo malloc. Your boss gave you total freedom on your implementation so that you can out-think anyone else’s implementation. The only limitation she gives you is two weeks to complete it. This time, you’ve decided not to procrastinate so that you can finish the first part of your memory allocator a week early, in hopes of getting a promotion.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="overview" class="title-text">Overview<a class="anchor title-text" href="#overview">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>You should write your implementations of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/calloc" class="fancy-link">calloc</a></code>, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code>, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/realloc" class="fancy-link">realloc</a></code>, and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/free" class="fancy-link">free</a></code> in <code class="highlighter-rouge">alloc.c</code>. <code class="highlighter-rouge">alloc.c</code> will be the only file we test.</p>
+<p>Don’t modify <code class="highlighter-rouge">mcontest.c</code>, <code class="highlighter-rouge">contest.h</code>, or <code class="highlighter-rouge">contest-alloc.so</code>. Those files create the environment that replaces the standard glibc malloc with your malloc. These files will be used for testing.</p>
+<p>Your <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code> must allocate heap memory using <code class="highlighter-rouge"><a href="https://linux.die.net/man/2/sbrk" class="fancy-link">sbrk</a></code>. You may not use files, pipes, system shared memory, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/mmap" class="fancy-link">mmap</a></code>, a chunk of pre-defined stack memory, other external memory libraries found on the Internet, or any of the various other external sources of memory that exist on modern operating systems.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="a-bad-example" class="title-text">A Bad Example<a class="anchor title-text" href="#a-bad-example">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Memory allocation seems like a mystery, but in actuality, we are making a wrapper around the system call <a href="http://linux.die.net/man/2/sbrk" class="fancy-link wiki-link"><code class="highlighter-rouge">sbrk</code></a>. Here’s a really simple implementation of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code>:</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>As you can see, when we request <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/size" class="fancy-link">size</a></code> bytes of memory, we call <code class="highlighter-rouge">sbrk(size)</code> to increase the heap by <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/size" class="fancy-link">size</a></code> bytes. Then, we return a pointer to this memory, and we’re done. Simple!</p>
+<p>Here is our implementation of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/free" class="fancy-link">free</a></code>:</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>This is a “correct” way to implement <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/free" class="fancy-link">free</a></code>. However, the obvious drawback with our implementation is that we can’t reuse memory after we are done with it. Also, we have not checked for errors when we call <code class="highlighter-rouge"><a href="https://linux.die.net/man/2/sbrk" class="fancy-link">sbrk</a></code>, and we have not implemented <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/realloc" class="fancy-link">realloc</a></code> or <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/calloc" class="fancy-link">calloc</a></code>.</p>
+<p>Despite all of this, this is still a “working” implementation of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code>. So, the job of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code> is not really to allocate memory, but to keep track of the memory we’ve allocated so that we can reuse it. You will use methods that you’ve learned in class and practiced in the Mini Valgrind lab to do this.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="testing-your-code" class="title-text">Testing Your Code<a class="anchor title-text" href="#testing-your-code">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>In order to run your solution on the testers, run <code class="highlighter-rouge">./mcontest</code> with the tester you want. You <strong>must</strong> do this, or your code will be run with the glibc implementation!</p>
+<p>Example:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./mcontest testers_exe/tester-1
+Memory failed to allocate!
+[mcontest]: STATUS: FAILED=(256)
+[mcontest]: MAX: 0
+[mcontest]: AVG: 0.000000
+[mcontest]: TIME: 0.000000
+</code></pre></div></div>
+<p>We’ve also distributed a bash script <code class="highlighter-rouge">run_all_mcontest.sh</code> to run all testers. We design the script so that you can
+easily test your malloc implementation. Here is how you use the script:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./run_all_mcontest.sh
+</code></pre></div></div>
+<p>It will automatically make clean and make again, and then run each test case in the <em>testers</em> folder. If you want to skip
+some test cases, you can do:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./run_all_mcontest.sh -s 1 2 3
+</code></pre></div></div>
+<p>where 1, 2, and 3 are the tests you want to skip. You can skip as many as you like.</p>
+<p>Here is what some of our error codes mean:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>11: (SIGSEGV) Segmentation fault
+15: (SIGTERM) Timed out
+65, 66: Dynamic linking error
+67: Failed to collect memory info
+68: Exceeded memory limit
+91: Data allocated outside of heap
+92: Data allocated exceeds heap limit
+</code></pre></div></div>
+<h3 id="good-practices" class="title-text">Good Practices</h3>
+<p>Since you can implement your malloc in whatever way you want, you may end up with a huge chunk of messy code that’s hard to debug. Here are some suggestions for organizing and maintaining your code better:</p>
+<ul>
+  <li>Build simple functions before you add advanced features. In other words, make sure your program does what you want it to do before moving on to optimize it.</li>
+  <li>Separate the functionality of your program into smaller chunks of independent code. For example, if you find that you’re frequently splitting a block of memory into two blocks, you probably want to write a split function instead of copy-pasting the splitting code every time you need to split.</li>
+  <li>Keep your code readable. This can be naming your variables appropriately or commenting your code well. This will really help you understand what your code is doing when you look back at them three days later!</li>
+</ul>
+<h3 id="debugging" class="title-text">Debugging</h3>
+<p><code class="highlighter-rouge">./mcontest</code> runs an optimized version of your code, so you won’t be able to debug with <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/gdb" class="fancy-link">gdb</a></code>. To solve this, we have provided another version called <code class="highlighter-rouge">./mreplace</code> which uses a version of your malloc compiled without optimization, so you can debug with <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/gdb" class="fancy-link">gdb</a></code>. Here’s an example, running tester 2 with gdb:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gdb --args ./mreplace testers_exe/tester-2
+</code></pre></div></div>
+<p>Since <code class="highlighter-rouge">./mreplace</code> calls <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code>, you need to change the <code class="highlighter-rouge">follow-fork-mode</code> in <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/gdb" class="fancy-link">gdb</a></code> to be able to set a breakpoint in your <code class="highlighter-rouge">alloc.c</code>:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(gdb) set follow-fork-mode child
+(gdb) break alloc.c:322
+No source file named alloc.c.
+Make breakpoint pending on future shared library load? (y or [n]) y
+Breakpoint 1 (alloc.c:322) pending.
+(gdb) run
+</code></pre></div></div>
+<p><em>Note:</em> if you terminate your running program and run it again, i.e. if you do this:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(gdb) run
+Thread 2.1 "tester-2" hit Breakpoint 1, malloc (size=1) at alloc.c:323
+323    return ptr;
+(gdb) kill
+Kill the program being debugged? (y or n) y
+[mcontest]: STATUS: FAILED. SIGNAL=(9)
+[mcontest]: MAX: 0
+[mcontest]: AVG: 0.000000
+[mcontest]: TIME: 0.012000
+(gdb) run
+Starting program: malloc/testers_exe/tester-2 
+Memory was allocated, used, and freed!
+</code></pre></div></div>
+<p>it will no longer use your own implementation, and therefore will not stop at the breakpoints you set, and will use the glibc implementations of malloc/calloc/etc. This is because of the way <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/gdb" class="fancy-link">gdb</a></code> handles dynamically loaded libraries.</p>
+<h3 id="real-programs" class="title-text">Real Programs</h3>
+<p>Both <code class="highlighter-rouge">mcontest</code> and <code class="highlighter-rouge">mreplace</code> can be used to launch “real” programs (not just the testers). For example:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ignore the warning about an invalid terminal, if you get it
+./mreplace /usr/bin/less alloc.c
+</code></pre></div></div>
+<p>or</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./mcontest /bin/ls
+</code></pre></div></div>
+<p>There are some programs that might not work correctly under your malloc, for a variety of reasons. You might be able to avoid this problem if you make all your
+global variables static. If you encounter a program for which this fix doesn’t work, post on Piazza!</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="grading" class="title-text">Grading<a class="anchor title-text" href="#grading">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Here is the grading breakdown:</p>
+<ul>
+  <li>Correctness (75%)
+    <ul>
+      <li>Part 1 (25%): tests 1-6 complete successfully - due 02/26 11:59pm</li>
+      <li>Part 2 (50%): tests 1-12 complete successfully - due 03/05 11:59pm</li>
+    </ul>
+  </li>
+  <li>Performance (25%): Points only awarded if all part 2 testers complete
+successfully - due with part2</li>
+</ul>
+<p>There are 12 testcases in total. For part 1, you will be graded using tests 1
+through 6. For part 2, you will be graded using tests 1 to 12 (tests 1 through 6
+get graded twice). Tester 13 is not graded.</p>
+<p>There are also performance points, which you are only eligible for if you pass
+all the testcases. Your malloc will be compared against the <code class="highlighter-rouge">glibc</code> version of
+malloc, and given a base performance score as a percentage (accounting for
+runtime, maximum memory usage, and average memory usage). The base score is
+calculated using the formula from the contest section below; higher percentages
+are better. Performance points are then awarded in buckets:</p>
+<ul>
+  <li>Better than or equal to 85% of glibc: Full 25% awarded.</li>
+  <li>75-85% (include 75%, exclude 85%): 20% awarded.</li>
+  <li>60-75%: 15% awarded.</li>
+  <li>40-60%: 10% awarded.</li>
+  <li>40% and worse: 0% awarded.</li>
+</ul>
+<p>So, let’s work out some scenarios:</p>
+<ul>
+  <li>Scenario 1: A student gets tests 1 through 6 working for part1 and misses 2
+tests on part2. Then they get all of the correctness points for part1, 10/12
+of the correctness points for part2 and none of the performance points. Thus
+this student will receive a <code class="highlighter-rouge">(6 / 6) * 25 + (10 / 12) * 50 + 0 = 66.67%</code>.</li>
+  <li>Scenario 2: A student gets none of the tests working for part1 and gets
+everything working for part2 and beats <code class="highlighter-rouge">glibc</code>. Then they get none of the
+correctness points for part1, 12/12 of the correctness points for part2, and
+the performance points. This student will receive a
+<code class="highlighter-rouge">(0 / 6) * 25 + (12 / 12) * 50 + 25 = 75.00%</code>.</li>
+  <li>Scenario 3: A student gets tests 1 through 6 working for part1, then they get
+all the tests except test 4 working for part2. Then they get all of the
+correctness points for part1, 11/12 of the correctness points for part2, but
+they will not receive any of the performance points. This student will
+receive a <code class="highlighter-rouge">(6 / 6) * 25 + (11 / 12) * 50 + 0 = 70.83%</code>.</li>
+  <li>
+    <p>Scenario 4: A student gets tests 1 through 6 working for part1, then they get
+all of the tests working for part2, but they can only get to <code class="highlighter-rouge">65%</code> of
+<code class="highlighter-rouge">glibc</code>. In this case, they get all of the correctness points for part 1, all
+of the correctness points for part 2, but only 15% performance points. So,
+they get <code class="highlighter-rouge">(6 / 6) * 25 + (12 / 12) * 50 + 15 = 90.00%</code></p>
+  </li>
+  <li>We modify the allocation numbers slightly when we actually grade.</li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="contest" class="title-text">Contest<a class="anchor title-text" href="#contest">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p><strong>View the malloc contest <a href="http://cs241grader.web.engr.illinois.edu/malloc/" class="fancy-link wiki-link">here</a>!</strong></p>
+<p>The malloc contest pits your memory allocator implementation against your fellow students. There are a few things to know:</p>
+<ul>
+  <li>The test cases used for grading will be randomized with a different seed every day.</li>
+  <li>There may be additional, more advanced tests added which won’t count for anything but the contest.</li>
+  <li>The memory limit is 2.500GB.</li>
+  <li>To submit your program to the contest, you simply commit to Subversion. Your most recent submission will be fetched somewhat frequently.</li>
+  <li>We will assign a score to each of the three categories (max heap, average heap, and total time) based on how well your program performs memory management relative to a standard solution.</li>
+  <li>You can pick a nickname in <code class="highlighter-rouge">nickname.txt</code>. You will show up as this name on the contest webpage.</li>
+  <li>On the webpage, each test will either be green, which signifies that you passed the test, or red, which signifies that you failed the test.</li>
+</ul>
+<h3 id="scores-and-ranking" class="title-text">Scores and ranking</h3>
+<p>Your score will be computed by the following formula:</p>
+<script type="math/tex; mode=display">100\% \times \frac{1}{3n} \sum_{i=1}^n \bigg(\log_2\Big(\frac{time_{\textit{reference}, i}}{time_{\textit{student}, i}} + 1\Big) + \log_2\Big(\frac{avg_{\textit{reference}, i}}{avg_{\textit{student}, i}} + 1\Big) + \log_2\Big(\frac{max_{\textit{reference}, i}}{max_{\textit{student}, i}} + 1\Big)\bigg)</script><p>Where:</p>
+<ul>
+  <li>
+<script type="math/tex">n</script> is the number of tests</li>
+  <li>
+<script type="math/tex">\textit{reference}</script> in the subscript means reference implementation, and <script type="math/tex">\textit{student}</script> means student’s implementation</li>
+  <li>
+<script type="math/tex">time_{\textit{reference}, i}</script> is the time reference implementation spends on test <script type="math/tex">i</script>
+</li>
+  <li>
+<script type="math/tex">time_{\textit{student}, i}</script> is the time student spends on test <script type="math/tex">i</script>
+</li>
+  <li>
+<script type="math/tex">avg_{\textit{reference}, i}</script> is the average memory used by reference implementation on test <script type="math/tex">i</script>
+</li>
+  <li>
+<script type="math/tex">avg_{\textit{student}, i}</script> is the average memory used by student implementation on test <script type="math/tex">i</script>
+</li>
+  <li>
+<script type="math/tex">max_{\textit{reference}, i}</script> is the max memory used by the reference implementation on test <script type="math/tex">i</script>
+</li>
+  <li>
+<script type="math/tex">max_{\textit{student}, i}</script> is the max memory used by the student implementation on test <script type="math/tex">i</script>
+</li>
+</ul>
+<p>Higher scores are better.</p>
+<p><strong>Note:</strong> We reserve the right to slightly modify constants inside the formula to ensure fair grading and prevent gaming the system. However, the basic idea will not be changing, and whatever we use will be the same for everyone.</p>
+<p><strong>Example 1.</strong></p>
+<p>If a student implementation <script type="math/tex">x</script> performs like the reference implementation, which means it spends the same time and memory as the reference, then <script type="math/tex">x</script>’s score will be:</p>
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{aligned}
+score_x
+&=
+100\% \times \frac{1}{3n} \sum_{i=1}^n \bigg(\log_2\Big(\frac{time_{\textit{reference}, i}}{time_{x, i}} + 1\Big) + \log_2\Big(\frac{avg_{\textit{reference}, i}}{avg_{x, i}} + 1\Big) + \log_2\Big(\frac{max_{\textit{reference}, i}}{max_{x, i}} + 1\Big)\bigg) \\
+&=
+100\% \times \frac{1}{3n} \sum_{i=1}^n \big(\log_2(2) + \log_2(2) + \log_2(2)\big) \\
+&= 100\%\times \frac{1}{3n} \sum_{i=1}^n 3\\
+&= 100\%
+\end{aligned} %]]></script><p><strong>Example 2.</strong></p>
+<p>If a student implementation <script type="math/tex">y</script> performs the same as the reference implementation on memory usage, but is twice as slow (meaning <script type="math/tex">time_{y, i} = 2 \times time_{\textit{reference}, i}</script>), then <script type="math/tex">y</script>’s score will be:</p>
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{aligned}
+score_y
+&=
+100\% \times \frac{1}{3n} \sum_{i=1}^n \bigg(\log_2\Big(\frac{time_{\textit{reference}, i}}{time_{y, i}} + 1\Big) + \log_2\Big(\frac{avg_{\textit{reference}, i}}{avg_{y, i}} + 1\Big) + \log_2\Big(\frac{max_{\textit{reference}, i}}{max_{y, i}} + 1\Big)\bigg) \\
+&=
+100\% \times \frac{1}{3n} \sum_{i=1}^n \big(\log_2(\tfrac{1}{2} + 1) + \log_2(2) + \log_2(2)\big) \\
+&= 100\%\times \frac{1}{3n} \sum_{i=1}^n 2.585\\
+&= 86.2\%
+\end{aligned} %]]></script><p><strong>Example 3.</strong></p>
+<p>If a student implementation <script type="math/tex">z</script> performs three times better than the reference implementation, which means <script type="math/tex">time_{z, i} = \frac{time_{\textit{reference}, i}}{3}</script>, <script type="math/tex">avg_{z, i} = \frac{avg_{\textit{reference}, i}}{3}</script>, and <script type="math/tex">max_{z, i} = \frac{max_{\textit{reference}, i}}{3}</script>, then <script type="math/tex">z</script>’s score will be:</p>
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{aligned}
+score_z
+&=
+100\% \times \frac{1}{3n} \sum_{i=1}^n \bigg(\log_2\Big(\frac{time_{\textit{reference}, i}}{time_{z, i}} + 1\Big) + \log_2\Big(\frac{avg_{\textit{reference}, i}}{avg_{z, i}} + 1\Big) + \log_2\Big(\frac{max_{\textit{reference}, i}}{max_{z, i}} + 1\Big)\bigg) \\
+&=
+100\% \times \frac{1}{3n} \sum_{i=1}^n \big(\log_2(4) + \log_2(4) + \log_2(4)\big) \\
+&= 100\%\times \frac{1}{3n} \sum_{i=1}^n 6 \\
+&= 200\%
+\end{aligned} %]]></script><p><strong>WARNING:</strong> As the deadline approaches, the contest page will refresh more slowly. There are 400 students, 12 test cases, and up to a minute or so. It will only retest a student’s code if it has been updated, but many more students will be updating their code causing longer waits. Start early, and don’t become reliant on the contest page by testing locally!</p>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="submission-instructions" class="title-text">Submission Instructions<a class="anchor title-text" href="#submission-instructions">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Please read details on <a href="/#academic-integrity" class="fancy-link wiki-link">Academic Integrity</a> fully. These are shared by all assignments in CS 241.</p>
+<p>We will be using GitHub as our hand-in system this semester. Our grading system will checkout your most recent (pre-deadline) commit for grading. Therefore, to hand in your code, all you have to do is commit and push to your Github repository.</p>
+<p>To check out the provided code for <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code> from the class repository, go to your cs241 directory (the one you checked out for “know your tools”) and run:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git pull release master
+</code></pre></div></div>
+<p>If you run <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/ls" class="fancy-link">ls</a></code> you will now see a <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code> folder, where you can find this assignment! To commit your changes (send them to us), type:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git add malloc
+git commit -m "malloc submission"
+git push origin master
+</code></pre></div></div>
+<p>Your repository directory can be viewed from a web browser from the following URL: 
+<a href="https://github-dev.cs.illinois.edu/cs241-fa18/NETID/tree/master/malloc" class="fancy-link wiki-link">https://github-dev.cs.illinois.edu/cs241-fa18/NETID/tree/master/malloc</a> where NETID is your University NetID. It is important to check that the files you expect to be graded are present and up to date in your remote git copy.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="assignment-feedback" class="title-text">Assignment Feedback<a class="anchor title-text" href="#assignment-feedback">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>We strive to provide the best assignments that we can for this course, and we would like your feedback on them!</p>
+<p>This is the form we will use to evaluate our assignments. We appreciate the time you take to give us your honest feedback and we promise to keep improving the course to make your experience in CS 241 the best it can be.</p>
+<p><a href="https://goo.gl/forms/hREf0ojFWumYfQF12" class="fancy-link wiki-link">https://goo.gl/forms/hREf0ojFWumYfQF12</a></p>
+</div></div></div>
+</div></div>
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_docs/malloc.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

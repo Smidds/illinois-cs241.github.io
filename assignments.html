@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Assignments</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+    <style>
+     @media only screen and (max-width: 768px) {
+         .col-xs-12 .table {
+             margin-left: 0px;
+         }
+     }
+
+     h1 {
+         margin-bottom: 0px;
+         padding-bottom: 10px;
+     }
+    </style>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="container-fluid">
+  <div class="row">
+    <div class="col-md-1 col-1 col-xs-0"></div>
+  	<div class="col-md-10 col-10 col-xs-12">
+      <h1>Assignments</h1>
+      <div class="row">
+
+      <div class="col-md-5 col-5 col-xs-12">
+          <div class="table-responsive">
+              <h3>MPs</h3>
+              <table width="100%" class="table" style="width:90%">
+    		          <thead>
+    		              <tr>
+    		                  <th>MP</th>
+    		                  <th>Release Date</th>
+    		                  <th>Due Date</th>
+    		              </tr>
+    		          </thead>
+    		          <tbody>
+                      
+                      
+                      <tr>
+                          <th scope="row"><a href="./vector.html">Vector</a></th>
+      		    	          <td>Week 2</td>
+      		    	          <td>Week 3</td>
+                      </tr>
+                      
+                      
+                      <tr>
+                          <th scope="row"><a href="./extreme_edge_cases.html">Extreme Edge Cases</a></th>
+      		    	          <td>Week 3</td>
+      		    	          <td>Week 4</td>
+                      </tr>
+                      
+                      
+                      <tr>
+                          <th scope="row"><a href="./text_editor.html">Text Editor</a></th>
+      		    	          <td>Week 4</td>
+      		    	          <td>Week 5</td>
+                      </tr>
+                      
+                      
+                      <tr>
+                          <th scope="row"><a href="./shell.html">Shell</a></th>
+      		    	          <td>Week 5</td>
+      		    	          <td>Week 6</td>
+                      </tr>
+                      
+                      
+                      <tr>
+                          <th scope="row"><a href="./malloc.html">Malloc</a></th>
+      		    	          <td>Week 6</td>
+      		    	          <td>Week 8</td>
+                      </tr>
+                      
+                      
+                      <tr>
+                          <th scope="row"><a href="./password_cracker.html">Password Cracker</a></th>
+      		    	          <td>Week 8</td>
+      		    	          <td>Week 9</td>
+                      </tr>
+                      
+                      
+                      <tr>
+                          <th scope="row"><a href="./parallel_make.html">Parallel Make</a></th>
+      		    	          <td>Week 9</td>
+      		    	          <td>Week 11</td>
+                      </tr>
+                      
+                      
+                      <tr>
+                          <th scope="row"><a href="./finding_filesystems.html">Finding Filesystems</a></th>
+      		    	          <td>Week 11</td>
+      		    	          <td>Week 12</td>
+                      </tr>
+                      
+                      
+                      <tr>
+                          <th scope="row"><a href="./networking_mp.html">Nonstop Networking</a></th>
+      		    	          <td>Week 12</td>
+      		    	          <td>Week 15</td>
+                      </tr>
+                      
+    		          </tbody>
+    		      </table>
+          </div>
+      </div>
+     <div class="col-md-7 col-7 col-xs-12">
+
+      <div class="table-responsive">
+          <h3>Labs</h3>
+          <table class="table" style="width:90%">
+    		  <thead>
+    		    <tr>
+    		      <th>Lab</th>
+    		      <th>Release Date</th>
+              <th>Due Date</th>
+              <th>Slides</th>
+              <th>Handout</th>
+    		    </tr>
+    		  </thead>
+    		  <tbody>
+            
+              
+              <tr>
+                <th scope="row"><a href="./know_your_tools.html">Know Your Tools</a></th>
+      		    	<td>Week 1</td>
+                <td>Week 2</td>
+                
+                  
+                    <td><a href="/resources/slides/know_your_tools.html" class="fancy-link wiki-link"><img src="./images/lab_assets/animation.png" alt='Slides'></a></td>
+                  
+                  
+                    <td><a href="/resources/handouts/know_your_tools.pdf" class="fancy-link wiki-link"><img src="./images/lab_assets/file-document.png" alt='Handout'></a></td>
+                  
+                
+              </tr>
+            
+              
+              <tr>
+                <th scope="row"><a href="./perilous_pointers.html">Perilous Pointers</a></th>
+      		    	<td>Week 2</td>
+                <td>Week 3</td>
+                
+                  
+                    <td><a href="/resources/slides/perilous_pointers.html" class="fancy-link wiki-link"><img src="./images/lab_assets/animation.png" alt='Slides'></a></td>
+                  
+                  
+                    <td><a href="/resources/handouts/perilous_pointers.pdf" class="fancy-link wiki-link"><img src="./images/lab_assets/file-document.png" alt='Handout'></a></td>
+                  
+                
+              </tr>
+            
+              
+              <tr>
+                <th scope="row"><a href="./utilities_unleashed.html">Utilities Unleashed</a></th>
+      		    	<td>Week 3</td>
+                <td>Week 4</td>
+                
+                  
+                    <td><a href="/resources/slides/utilities_unleashed.html" class="fancy-link wiki-link"><img src="./images/lab_assets/animation.png" alt='Slides'></a></td>
+                  
+                  
+                    <td><a href="/resources/handouts/utilities_unleashed.pdf" class="fancy-link wiki-link"><img src="./images/lab_assets/file-document.png" alt='Handout'></a></td>
+                  
+                
+              </tr>
+            
+              
+              <tr>
+                <th scope="row"><a href="./mini_valgrind.html">Mini Valgrind</a></th>
+      		    	<td>Week 4</td>
+                <td>Week 5</td>
+                
+                  
+                    <td><a href="/resources/slides/mini_valgrind.html" class="fancy-link wiki-link"><img src="./images/lab_assets/animation.png" alt='Slides'></a></td>
+                  
+                  
+                    <td><a href="/resources/handouts/mini_valgrind.pdf" class="fancy-link wiki-link"><img src="./images/lab_assets/file-document.png" alt='Handout'></a></td>
+                  
+                
+              </tr>
+            
+              
+              <tr>
+                <th scope="row"><a href="./teaching_threads.html">Teaching Threads</a></th>
+      		    	<td>Week 5</td>
+                <td>Week 6</td>
+                
+                  
+                    <td><a href="/resources/slides/teaching_threads.html" class="fancy-link wiki-link"><img src="./images/lab_assets/animation.png" alt='Slides'></a></td>
+                  
+                  
+                    <td><a href="/resources/handouts/teaching_threads.pdf" class="fancy-link wiki-link"><img src="./images/lab_assets/file-document.png" alt='Handout'></a></td>
+                  
+                
+              </tr>
+            
+              
+              <tr>
+                <th scope="row"><a href="./critical_concurrency.html">Critical Concurrency</a></th>
+      		    	<td>Week 6</td>
+                <td>Week 7</td>
+                
+                  
+                    <td><a href="/resources/slides/critical_concurrency.html" class="fancy-link wiki-link"><img src="./images/lab_assets/animation.png" alt='Slides'></a></td>
+                  
+                  
+                    <td><a href="/resources/handouts/critical_concurrency.pdf" class="fancy-link wiki-link"><img src="./images/lab_assets/file-document.png" alt='Handout'></a></td>
+                  
+                
+              </tr>
+            
+              
+              <tr>
+                <th scope="row"><a href="./deadlocked_diners.html">Deadlocked Diners</a></th>
+      		    	<td>Week 7</td>
+                <td>Week 8</td>
+                
+                  
+                    <td><a href="/resources/slides/deadlocked_diners.html" class="fancy-link wiki-link"><img src="./images/lab_assets/animation.png" alt='Slides'></a></td>
+                  
+                  
+                    <td><a href="/resources/handouts/deadlocked_diners.pdf" class="fancy-link wiki-link"><img src="./images/lab_assets/file-document.png" alt='Handout'></a></td>
+                  
+                
+              </tr>
+            
+              
+              <tr>
+                <th scope="row"><a href="./ideal_indirection.html">Ideal Indirection</a></th>
+      		    	<td>Week 8</td>
+                <td>Week 9</td>
+                
+                  
+                    <td><a href="/resources/slides/ideal_indirection.html" class="fancy-link wiki-link"><img src="./images/lab_assets/animation.png" alt='Slides'></a></td>
+                  
+                  
+                    <td><a href="/resources/handouts/ideal_indirection.pdf" class="fancy-link wiki-link"><img src="./images/lab_assets/file-document.png" alt='Handout'></a></td>
+                  
+                
+              </tr>
+            
+              
+              <tr>
+                <th scope="row"><a href="./mapreduce.html">MapReduce</a></th>
+      		    	<td>Week 9</td>
+                <td>Week 10</td>
+                
+                  
+                    <td><a href="/resources/slides/mapreduce.html" class="fancy-link wiki-link"><img src="./images/lab_assets/animation.png" alt='Slides'></a></td>
+                  
+                  
+                    <td></td>
+                  
+                
+              </tr>
+            
+              
+              <tr>
+                <th scope="row"><a href="./charming_chatroom.html">Charming Chatroom</a></th>
+      		    	<td>Week 10</td>
+                <td>Week 11</td>
+                
+                  
+                    <td><a href="/resources/slides/charming_chatroom.html" class="fancy-link wiki-link"><img src="./images/lab_assets/animation.png" alt='Slides'></a></td>
+                  
+                  
+                    <td><a href="/resources/handouts/charming_chatroom.pdf" class="fancy-link wiki-link"><img src="./images/lab_assets/file-document.png" alt='Handout'></a></td>
+                  
+                
+              </tr>
+            
+              
+              <tr>
+                <th scope="row"><a href="./mad_mad_access_pattern.html">Mad Mad Access Pattern</a></th>
+      		    	<td>Week 11</td>
+                <td>Week 12</td>
+                
+                  
+                    <td><a href="/resources/slides/mad_mad_access_pattern.html" class="fancy-link wiki-link"><img src="./images/lab_assets/animation.png" alt='Slides'></a></td>
+                  
+                  
+                    <td><a href="/resources/handouts/mad_mad_access_pattern.pdf" class="fancy-link wiki-link"><img src="./images/lab_assets/file-document.png" alt='Handout'></a></td>
+                  
+                
+              </tr>
+            
+              
+              <tr>
+                <th scope="row"><a href="./savvy_scheduler.html">Savvy Scheduler</a></th>
+      		    	<td>Week 12</td>
+                <td>Week 13</td>
+                
+                  
+                    <td><a href="/resources/slides/savvy_scheduler.html" class="fancy-link wiki-link"><img src="./images/lab_assets/animation.png" alt='Slides'></a></td>
+                  
+                  
+                    <td><a href="/resources/handouts/savvy_scheduler.pdf" class="fancy-link wiki-link"><img src="./images/lab_assets/file-document.png" alt='Handout'></a></td>
+                  
+                
+              </tr>
+            
+              
+              <tr>
+                <th scope="row"><a href="./resplendent_rpcs.html">Resplendent RPCs</a></th>
+      		    	<td>Week 13</td>
+                <td>Week 14</td>
+                
+                  <td class="mdl-data-table__cell--non-numeric">
+                  </td>
+                  <td class="mdl-data-table__cell--non-numeric">
+                  </td>
+                
+              </tr>
+            
+              
+              
+    		  </tbody>
+    		</table>
+        </div>
+      </div>
+      </div>
+      <div class="col-md-3 col-1 col-xs-0"></div>
+</div>
+</div>
+</div>
+<!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

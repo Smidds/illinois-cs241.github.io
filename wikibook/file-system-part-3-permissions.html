@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>File System, Part 3: Permissions</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              File System, Part 3: Permissions
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/File-System,-Part-3:-Permissions">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_how-do-i-change-the-permissions-on-a-file" href="#how-do-i-change-the-permissions-on-a-file" class="fancy-link">How do I change the permissions on a file?</a></li>
+<li><a id="toc_how-do-i-read-the-permission-string-from-ls" href="#how-do-i-read-the-permission-string-from-ls" class="fancy-link">How do I read the permission string from ls?</a></li>
+<li><a id="toc_what-is-sudo" href="#what-is-sudo" class="fancy-link">What is sudo?</a></li>
+<li><a id="toc_how-do-i-change-ownership-of-a-file" href="#how-do-i-change-ownership-of-a-file" class="fancy-link">How do I change ownership of a file?</a></li>
+<li><a id="toc_how-do-i-set-permissions-from-code" href="#how-do-i-set-permissions-from-code" class="fancy-link">How do I set permissions from code?</a></li>
+<li><a id="toc_why-are-some-files-setuid-what-does-this-mean" href="#why-are-some-files-setuid-what-does-this-mean" class="fancy-link">Why are some files ‘setuid’? What does this mean?</a></li>
+<li><a id="toc_why-are-they-useful" href="#why-are-they-useful" class="fancy-link">Why are they useful?</a></li>
+<li><a id="toc_what-permissions-does-sudo-run-as-" href="#what-permissions-does-sudo-run-as-" class="fancy-link">What permissions does sudo run as ?</a></li>
+<li><a id="toc_whats-the-difference-between-getuid-and-geteuid" href="#whats-the-difference-between-getuid-and-geteuid" class="fancy-link">What’s the difference between getuid() and geteuid()?</a></li>
+<li><a id="toc_how-do-i-ensure-only-privileged-users-can-run-my-code" href="#how-do-i-ensure-only-privileged-users-can-run-my-code" class="fancy-link">How do I ensure only privileged users can run my code?</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+
+<p>Every file and directory has a set of 9 permission bits and a type field</p>
+<ul>
+  <li>r, permission to read the file</li>
+  <li>w, permission to write to the file</li>
+  <li>x, permission to execute the file</li>
+</ul>
+
+<p>chmod 777 <file></file></p>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>chmod</th>
+      <th>7</th>
+      <th>7</th>
+      <th>7</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>01</td>
+      <td>111</td>
+      <td>111</td>
+      <td>111</td>
+    </tr>
+    <tr>
+      <td>d</td>
+      <td>rwx</td>
+      <td>rwx</td>
+      <td>rwx</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+      <td>4</td>
+    </tr>
+  </tbody>
+</table>
+
+<ol>
+  <li>Type of the file<br>
+</li>
+  <li>Owner Permissions<br>
+</li>
+  <li>Group Permissions<br>
+</li>
+  <li>Everybody else’s permission<br>
+</li>
+</ol>
+
+<p><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/mknod" class="fancy-link">mknod</a></code> changes the first field, the type of the file.
+<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/chmod" class="fancy-link">chmod</a></code> takes a number and a file and changes the permission bits.</p>
+
+<p>The file has an owner. If your process has the same user id as the owner (or root) then the permissions in the first triad apply to you. If you are in the same group as the file (all files are also owned by a group) then the next set of permission bits applies to you. If none of the above apply, the last triad applies to you.</p>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-change-the-permissions-on-a-file" class="title-text">How do I change the permissions on a file?<a class="anchor title-text" href="#how-do-i-change-the-permissions-on-a-file">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/chmod" class="fancy-link">chmod</a></code>  (short for “change the file mode bits”)</p>
+<p>There is a system call, <code class="highlighter-rouge">int chmod(const char *path, mode_t mode);</code> but we will concentrate on the shell command. There’s two common ways to use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/chmod" class="fancy-link">chmod</a></code> ; with an octal value or with a symbolic string:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ chmod 644 file1
+$ chmod 755 file2
+$ chmod 700 file3
+$ chmod ugo-w file4
+$ chmod o-rx file4
+</code></pre></div></div>
+<p>The base-8 (‘octal’) digits describe the permissions for each role: The user who owns the file, the group and everyone else. The octal number is the sum of three values given to the three types of permission: read(4), write(2), execute(1)</p>
+<p>Example: chmod 755 myfile</p>
+<ul>
+  <li>r + w + x = digit</li>
+  <li>user has 4+2+1, full permission</li>
+  <li>group has 4+0+1, read and execute permission</li>
+  <li>all users have 4+0+1, read and execute permission</li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-read-the-permission-string-from-ls" class="title-text">How do I read the permission string from ls?<a class="anchor title-text" href="#how-do-i-read-the-permission-string-from-ls">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Use `ls -l’. 
+Note that the permissions will output in the format ‘drwxrwxrwx’. The first character indicates the type of file type. 
+Possible values for the first character:</p>
+<ul>
+  <li>(-) regular file</li>
+  <li>(d) directory</li>
+  <li>(c) character device file</li>
+  <li>(l) symbolic link</li>
+  <li>(p) pipe</li>
+  <li>(b) block device</li>
+  <li>(s) socket</li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-sudo" class="title-text">What is sudo?<a class="anchor title-text" href="#what-is-sudo">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Use <code class="highlighter-rouge">sudo</code> to become the admin on the machine.
+e.g. Normally (unless explicitly specified in the ‘/etc/fstab’ file, you need root access to mount a filesystem). <code class="highlighter-rouge">sudo</code> can be used to temporarily run a command as root (provided the user has sudo privileges)</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo mount /dev/sda2 /stuff/mydisk
+$ sudo adduser fred
+</code></pre></div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-change-ownership-of-a-file" class="title-text">How do I change ownership of a file?<a class="anchor title-text" href="#how-do-i-change-ownership-of-a-file">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Use <code class="highlighter-rouge">chown username filename</code></p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-set-permissions-from-code" class="title-text">How do I set permissions from code?<a class="anchor title-text" href="#how-do-i-set-permissions-from-code">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p><code class="highlighter-rouge">chmod(const char *path, mode_t mode);</code></p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="why-are-some-files-setuid-what-does-this-mean" class="title-text">Why are some files ‘setuid’? What does this mean?<a class="anchor title-text" href="#why-are-some-files-setuid-what-does-this-mean">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The set-user-ID-on-execution bit changes the user associated with the process when the file is run. This is typically used for commands that need to run as root but are executed by non-root users. An example of this is <code class="highlighter-rouge">sudo</code></p>
+<p>The set-group-ID-on-execution changes the group under which the process is run.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="why-are-they-useful" class="title-text">Why are they useful?<a class="anchor title-text" href="#why-are-they-useful">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>The most common usecase is so that the user can have root(admin) access for the duration of the program.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-permissions-does-sudo-run-as-" class="title-text">What permissions does sudo run as ?<a class="anchor title-text" href="#what-permissions-does-sudo-run-as-">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls -l /usr/bin/sudo
+-r-s--x--x  1 root  wheel  327920 Oct 24 09:04 /usr/bin/sudo
+</code></pre></div></div>
+<p>The ‘s’ bit means execute and set-uid; the effective userid of the process will be different from the parent process. In this example it will be root</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="whats-the-difference-between-getuid-and-geteuid" class="title-text">What’s the difference between getuid() and geteuid()?<a class="anchor title-text" href="#whats-the-difference-between-getuid-and-geteuid">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>
+<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/getuid" class="fancy-link">getuid</a></code> returns the real user id (zero if logged in as root)</li>
+  <li>
+<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/geteuid" class="fancy-link">geteuid</a></code> returns the effective userid (zero if acting as root, e.g. due to the setuid flag set on a program)</li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-ensure-only-privileged-users-can-run-my-code" class="title-text">How do I ensure only privileged users can run my code?<a class="anchor title-text" href="#how-do-i-ensure-only-privileged-users-can-run-my-code">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<ul>
+  <li>Check the effective permissions of the user by calling <code class="highlighter-rouge">geteuid()</code>. A return value of zero means the program is running effectively as root.</li>
+</ul>
+<p><a href="/wikibook/file-system-part-4-working-with-directories.html#" class="fancy-link wiki-link">Go to File System: Part 4</a></p>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/file-system-part-3-permissions.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Signals, Part 3: Raising signals</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Signals, Part 3: Raising signals
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/Signals,-Part-3:-Raising-signals">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_how-do-i-send-a-signal-to-a-process-from-the-shell" href="#how-do-i-send-a-signal-to-a-process-from-the-shell" class="fancy-link">How do I send a signal to a process from the shell?</a></li>
+<li><a id="toc_how-do-i-send-a-signal-to-a-process-from-the-running-c-program" href="#how-do-i-send-a-signal-to-a-process-from-the-running-c-program" class="fancy-link">How do I send a signal to a process from the running C program?</a></li>
+<li><a id="toc_how-do-i-send-a-signal-to-a-specific-thread" href="#how-do-i-send-a-signal-to-a-specific-thread" class="fancy-link">How do I send a signal to a specific thread?</a></li>
+<li><a id="toc_will-pthread_killthreadid-sigkill-kill-the-process-or-thread" href="#will-pthread_killthreadid-sigkill-kill-the-process-or-thread" class="fancy-link">Will <code class="highlighter-rouge">pthread_kill(threadid, SIGKILL)</code> kill the process or thread?</a></li>
+<li><a id="toc_how-do-i-catch-handle-a-signal" href="#how-do-i-catch-handle-a-signal" class="fancy-link">How do I catch (handle) a signal?</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-send-a-signal-to-a-process-from-the-shell" class="title-text">How do I send a signal to a process from the shell?<a class="anchor title-text" href="#how-do-i-send-a-signal-to-a-process-from-the-shell">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>You already know one way to send a <code class="highlighter-rouge">SIG_INT</code> just type <code class="highlighter-rouge">CTRL-C</code> 
+From the shell you can use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/kill" class="fancy-link">kill</a></code> (if you know the process id) and <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/killall" class="fancy-link">killall</a></code> (if you know the process name)</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># First let's use ps and grep to find the process we want to send a signal to</span>
+<span class="nv">$ </span>ps au | <span class="nb">grep </span>myprogram
+angrave  4409   0.0  0.0  2434892    512 s004  R+    2:42PM   0:00.00 myprogram 1 2 3
+
+<span class="c">#Send SIGINT signal to process 4409 (equivalent of `CTRL-C`)</span>
+<span class="nv">$ </span><span class="nb">kill</span> <span class="nt">-SIGINT</span> 4409
+
+<span class="c">#Send SIGKILL (terminate the process)</span>
+<span class="nv">$ </span><span class="nb">kill</span> <span class="nt">-SIGKILL</span> 4409
+<span class="nv">$ </span><span class="nb">kill</span> <span class="nt">-9</span> 4409
+</code></pre></div></div>
+<p><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/killall" class="fancy-link">killall</a></code> is similar except that it matches by program name. The next two example, sends a <code class="highlighter-rouge">SIGINT</code> and then <code class="highlighter-rouge">SIGKILL</code> to terminate the processes that are running <code class="highlighter-rouge">myprogram</code></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Send SIGINT (SIGINT can be ignored)</span>
+<span class="nv">$ </span>killall <span class="nt">-SIGINT</span> myprogram
+
+<span class="c"># SIGKILL (-9) cannot be ignored! </span>
+<span class="nv">$ </span>killall <span class="nt">-9</span> myprogram
+</code></pre></div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-send-a-signal-to-a-process-from-the-running-c-program" class="title-text">How do I send a signal to a process from the running C program?<a class="anchor title-text" href="#how-do-i-send-a-signal-to-a-process-from-the-running-c-program">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/raise" class="fancy-link">raise</a></code> or <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/kill" class="fancy-link">kill</a></code></p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>For non-root processes, signals can only be sent to processes of the same user i.e. you cant just SIGKILL my processes! See kill(2) i.e. man -s2 for more details.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-send-a-signal-to-a-specific-thread" class="title-text">How do I send a signal to a specific thread?<a class="anchor title-text" href="#how-do-i-send-a-signal-to-a-specific-thread">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_kill" class="fancy-link">pthread_kill</a></code></p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>In the example below, the newly created thread executing <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/func" class="fancy-link">func</a></code> will be interrupted by <code class="highlighter-rouge">SIGINT</code></p>
+<pre><code class="language-C"><span class="n">pthread_create</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="will-pthread_killthreadid-sigkill-kill-the-process-or-thread" class="title-text">Will <code class="highlighter-rouge">pthread_kill(threadid, SIGKILL)</code> kill the process or thread?<a class="anchor title-text" href="#will-pthread_killthreadid-sigkill-kill-the-process-or-thread">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>It will kill the entire process. Though individual threads can set a signal mask, the signal disposition (the table of handlers/action performed for each signal) is <em>per-proces</em>s not <em>per-thread</em>. This means 
+<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sigaction" class="fancy-link">sigaction</a></code> can be called from any thread because you will be setting a signal handler for all threads in the process.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-catch-handle-a-signal" class="title-text">How do I catch (handle) a signal?<a class="anchor title-text" href="#how-do-i-catch-handle-a-signal">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>You can choose a handle pending signals asynchronously or synchronously.</p>
+<p>Install a signal handler to asynchronously handle signals use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sigaction" class="fancy-link">sigaction</a></code> (or, for simple examples, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/signal" class="fancy-link">signal</a></code>).</p>
+<p>To synchronously catch a pending signal use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sigwait" class="fancy-link">sigwait</a></code> (which blocks until a signal is delivered) or <code class="highlighter-rouge"><a href="https://linux.die.net/man/2/signalfd" class="fancy-link">signalfd</a></code> (which also blocks and provides a file descriptor that can be <code class="highlighter-rouge">read()</code> to retrieve pending signals).</p>
+<p>See <code class="highlighter-rouge">Signals, Part 4</code> for an example of using <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sigwait" class="fancy-link">sigwait</a></code></p>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/signals-part-3-raising-signals.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

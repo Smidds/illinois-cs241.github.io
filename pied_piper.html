@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Pied Piper</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Pied Piper
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/illinois-cs241/assignment-docs/blob/master//pied_piper.md">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+              <div class="submission-wrapper">
+                
+                  <b>Entire Assignment</b> due <b>11/13/17 at 11:59pm</b><br>
+                  
+                    <b>Graded files:</b>
+                    <ul>
+                      
+                        <li>pied_piper.c</li>
+                      
+                    </ul>
+                  
+                
+              </div>
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_warning" href="#warning" class="fancy-link">WARNING</a></li>
+<li><a id="toc_unix-pipes" href="#unix-pipes" class="fancy-link">UNIX Pipes</a></li>
+<li><a id="toc_how-pipes-work" href="#how-pipes-work" class="fancy-link">How Pipes Work</a></li>
+<li><a id="toc_the-problem" href="#the-problem" class="fancy-link">The Problem</a></li>
+<li><a id="toc_your-solution" href="#your-solution" class="fancy-link">Your Solution</a></li>
+<li><a id="toc_implementation" href="#implementation" class="fancy-link">Implementation</a></li>
+<li><a id="toc_testing" href="#testing" class="fancy-link">Testing</a></li>
+<li><a id="toc_hints" href="#hints" class="fancy-link">Hints</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+  <div class="pad"><div class="card">
+<div class="title"><h2 id="learning-objectives" class="title-text">Learning Objectives<a class="anchor title-text" href="#learning-objectives">#</a>
+</h2></div>
+  
+  
+
+
+  <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>
+    The learning objectives for Pied Piper are: <br>
+    </p>
+<ul class="mdl-list">
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Using Pipes</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">System Call Resilience</span>
+        </li>
+      
+    </ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="suggested-readings" class="title-text">Suggested Readings<a class="anchor title-text" href="#suggested-readings">#</a>
+</h2></div>
+  
+  
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>
+    We suggest you read the following from the
+    <a href="https://github.com/angrave/SystemProgramming/wiki" class="fancy-link wiki-link">wikibook</a>
+    before starting Pied Piper: <br>
+    </p>
+<ul>
+      
+        <li>
+          <a href="/wikibook/pipes-part-1-introduction-to-pipes.html#" target="_blank" class="fancy-link wiki-link">Pipes, Part 1: Introduction to pipes
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/pipes-part-2-pipe-programming-secrets.html#" target="_blank" class="fancy-link wiki-link">Pipes, Part 2: Pipe programming secrets
+          </a>
+        </li>
+      
+    </ul>
+</div></div></div>
+</div></div>
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="warning" class="title-text">WARNING<a class="anchor title-text" href="#warning">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p><img class="emoji" title=":fork_and_knife:" alt=":fork_and_knife:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f374.png" height="20" width="20"> <img class="emoji" title=":bomb:" alt=":bomb:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4a3.png" height="20" width="20"> <img class="emoji" title=":bangbang:" alt=":bangbang:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/203c.png" height="20" width="20"></p>
+<p>If your code fork-bombs on <em>any</em> autograde, then you will automatically fail this MP. Please make sure that your <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code> code is correct before committing your code for the nightly autograder.</p>
+<p>To prevent you from fork bombing your own VM, we recommend looking into <a href="https://ss64.com/bash/ulimit.html" class="fancy-link wiki-link"><code class="highlighter-rouge">ulimit</code></a>. This will allow you to set a limit for how many times you can fork.</p>
+<p>Since a learning objective of this assignment is to learn how to use pipes, if you use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/popen" class="fancy-link">popen</a></code>, you will automatically fail this MP.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="unix-pipes" class="title-text">UNIX Pipes<a class="anchor title-text" href="#unix-pipes">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The <a href="https://en.wikipedia.org/wiki/Unix_philosophy" class="fancy-link wiki-link">UNIX philosophy</a> embraces minimalist, modular software development. One common saying is, “write programs that do one thing and do it well”. Another one is, “write programs to handle text streams, because that is a universal interface”.</p>
+<p>In Unix-like operating systems, pipes are a standard way of gluing together small “tools” in accordance with this philosophy. In other word, pipes chain together multiple smaller programs by their standard streams (<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stdin" class="fancy-link">stdin</a></code> &amp; <code class="highlighter-rouge">stout</code>) to form a larger, more complex processing pipeline. For instance, if you want to kill a process matching a specific name (let’s pretend <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/pkill" class="fancy-link">pkill</a></code> doesn’t exist), you can do this:</p>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">ps aux | grep &lt;process name&gt;</span> | <span class="nb">grep</span> <span class="nt">-v</span> <span class="nb">grep</span> | <span class="nb">awk</span> <span class="s1">'{print $2}'</span> | xargs <span class="nb">kill</span>
+</code></pre></div></div>
+<p>where the following programs are piped together:</p>
+<ul>
+  <li>
+<code class="highlighter-rouge">ps aux</code>: Print a list of running processes along with some informations to <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stdout" class="fancy-link">stdout</a></code>. The output might look something like this:</li>
+</ul>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span> ps aux
+<span class="go"> username     1925  0.0  0.1 129328  6112 ?        S    11:55   0:06 tint2
+ username     1931  0.0  0.3 154992 12108 ?        S    11:55   0:00 volumeicon
+ username     1933  0.1  0.2 134716  9460 ?        S    11:55   0:24 parcellite
+ username     1940  0.0  0.0  30416  3008 ?        S    11:55   0:10 xcompmgr -cC -t-5 -l-5 -r4.2 -o.55 -D6
+ username     1941  0.0  0.2 160336  8928 ?        Ss   11:55   0:00 xfce4-power-manager
+ username     1943  0.0  0.0  32792  1964 ?        S    11:55   0:00 /usr/lib/xfconf/xfconfd
+ username     1945  0.0  0.0  17584  1292 ?        S    11:55   0:00 /usr/lib/gamin/gam_server
+ username     1946  0.0  0.5 203016 19552 ?        S    11:55   0:00 python /usr/bin/system-config-printer-applet
+ username     1947  0.0  0.3 171840 12872 ?        S    11:55   0:00 nm-applet --sm-disable
+ username     1948  0.2  0.0 276000  3564 ?        Sl   11:55   0:38 conky -q
+</span></code></pre></div></div>
+<ul>
+  <li>
+    <p><code class="highlighter-rouge">grep &lt;process name&gt;</code>: Read from <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stdin" class="fancy-link">stdin</a></code>, find the lines containing the phrase <code class="highlighter-rouge">&lt;process name&gt;</code>, and print to <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stdout" class="fancy-link">stdout</a></code>.</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">grep -v grep</code>: Read from <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stdin" class="fancy-link">stdin</a></code>, remove the lines containing the word “grep” (since “grep &lt;process name&gt;” is also a running process), and print to <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stdout" class="fancy-link">stdout</a></code>.</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">awk '{print $2}'</code>: <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/awk" class="fancy-link">awk</a></code> is a text processing scripting language, and here we’re using <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/awk" class="fancy-link">awk</a></code> to fetch the second column of the input (the pid number in this case), and print to <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stdout" class="fancy-link">stdout</a></code>.</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">xargs kill</code>: Read from <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stdin" class="fancy-link">stdin</a></code>, form a command consisting of <code class="highlighter-rouge">kill &lt;PID&gt;</code>, and executes it.</p>
+  </li>
+</ul>
+<p>Voilà, the desired process is killed by the pipeline!</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-pipes-work" class="title-text">How Pipes Work<a class="anchor title-text" href="#how-pipes-work">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Pipes work simply by feeding the standard output of the first process into the standard input of the second, then feeding the standard output of the second into the standard input of the third, and so on. For instance, in the above example:</p>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">ps aux | grep &lt;process name&gt;</span> | <span class="nb">grep</span> <span class="nt">-v</span> <span class="nb">grep</span> | <span class="nb">awk</span> <span class="s1">'{print $2}'</span> | xargs <span class="nb">kill</span>
+</code></pre></div></div>
+<p>The standard output of <code class="highlighter-rouge">ps aux</code> is fed into the standard input of <code class="highlighter-rouge">grep &lt;process name&gt;</code>, whose standard output is fed into the standard input of <code class="highlighter-rouge">grep -v grep</code>, and so on.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="the-problem" class="title-text">The Problem<a class="anchor title-text" href="#the-problem">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Problem occurs when some of the commands spuriously fail for some reason. This causes all other commands that rely on the output of the failed command to also fail. Once again, let’s take our pipe example:</p>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">ps aux | grep &lt;process name&gt;</span> | <span class="nb">grep</span> <span class="nt">-v</span> <span class="nb">grep</span> | <span class="nb">awk</span> <span class="s1">'{print $2}'</span> | xargs <span class="nb">kill</span>
+</code></pre></div></div>
+<p>Imagine some prankster replaced the usual <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/awk" class="fancy-link">awk</a></code> implementation with a misbehaving one that only works normally 50% of the time (the rest of the time, it just exits with a nonzero exit code). This might lead to two things:</p>
+<ol>
+  <li>If the upstream process (<code class="highlighter-rouge"><a href="https://linux.die.net/man/1/grep" class="fancy-link">grep</a></code>) is still writing to its pipe, it will receive a SIGPIPE signal and most likely crash, since it is attempting to write to a pipe with no readers available.</li>
+  <li>The downstream process (<code class="highlighter-rouge"><a href="https://linux.die.net/man/1/xargs" class="fancy-link">xargs</a></code>) will not read anything from its stdin, and might throw an error like:</li>
+</ol>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">kill: not enough arguments
+</span></code></pre></div></div>
+<p>With larger and more complex pipelines, you can see how such errors might get aggravating. Your goal is, therefore, to build a “resilient pipe” that works like a bash pipe, but allows retries if any process in the pipeline exits with a nonzero exit code.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="your-solution" class="title-text">Your Solution<a class="anchor title-text" href="#your-solution">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Say we have a typical pipe command:</p>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">grep piano &lt; inventory.txt | cut -f2 -d'\t' | mail -s "sing me a song" piano_man@gmail.com
+</span></code></pre></div></div>
+<p><em>As a reminder, <code class="highlighter-rouge">&lt;</code> indicates that the file <code class="highlighter-rouge">inventory.txt</code> will be treated as the <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stdin" class="fancy-link">stdin</a></code> for <code class="highlighter-rouge">grep piano</code>, and <code class="highlighter-rouge">|</code> (the pipe operator) pipes the stdout of the program on its left to the stdin of the program on its right. Go ahead and try it out yourself! See how the operator works.</em></p>
+<p>We’re going to create an executable that does almost the same thing:</p>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">./pied_piper -i inventory.txt "grep piano" "cut -f2 -d'\t'" "mail -s \"sing me a song\" piano_man@gmail.com"
+</span></code></pre></div></div>
+<p>the only difference being that if one command fails, it will try again.</p>
+<p>So, in the above example, <code class="highlighter-rouge">pied_piper</code> will first check if the input file, <code class="highlighter-rouge">inventory.txt</code>, exists, then exec all three commands in double quotes with their standard streams chained together. And if one command fails, say the <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/mail" class="fancy-link">mail</a></code> program terminates early due to a network error, <code class="highlighter-rouge">pied_piper</code> will try to execute all the commands again.</p>
+<p>Note that double quotes are used to create a single argument which may contain many spaces. So, in the above case, <code class="highlighter-rouge">argv[3]</code> in the main function would be the string <code class="highlighter-rouge">grep piano</code>. Note also that the arguments may contain escaped double quotes, which do not affect the scope of the arguments.</p>
+<p>In this MP, the argument parsing is done for you, so don’t worry about implementing this, but keep it in mind when you are testing commands with double quotes in them.</p>
+<p>If you’re interested in how the parser works, it uses the <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/getopt" class="fancy-link">getopt</a></code> function to get the arguments specified by the flags <code class="highlighter-rouge">-i</code> and <code class="highlighter-rouge">-o</code>, then it uses <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/optind" class="fancy-link">optind</a></code> to find the next argument, which is our first command.</p>
+<p>The full usage is:</p>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">./pied_piper [-i input_file] [-o output_file] "command1 [args ...]" "command2 [args ...]" ...
+</span></code></pre></div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="implementation" class="title-text">Implementation<a class="anchor title-text" href="#implementation">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>In this MP, the boilerplate functionalities like file handling, argument parsing, and the main routine are handled for you. Your job is to implement the <code class="highlighter-rouge">pied_piper()</code> function in <code class="highlighter-rouge">pied_piper.c</code>, which does the real work—setting up redirection, and attempting resilience.</p>
+<p>Here are some pointers on how to proceed:</p>
+<ol>
+  <li>The <code class="highlighter-rouge">pied_piper()</code> function has three arguments:
+    <ul>
+      <li>
+<code class="highlighter-rouge">input_fd</code>: the file descriptor for input file.</li>
+      <li>
+<code class="highlighter-rouge">output_fd</code>: the file descriptor for output file.</li>
+      <li>
+<code class="highlighter-rouge">executables</code>: a null terminated <code class="highlighter-rouge">char **</code> (similar to how <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/argv" class="fancy-link">argv</a></code> ends with a NULL), containing all the commands to run.</li>
+    </ul>
+
+    <p><strong>If either the input or output file descriptor is negative, you should use stdin or stdout respectively (like normal).</strong></p>
+  </li>
+  <li>Try executing all the commands and set up all the pipes.
+    <ul>
+      <li>The stdin of the first program should be redirected from the input file (if exits), and the stdout of the last program should be redirected to the output file (if exists).</li>
+      <li>Pipe the stdin and stdout of each program so they communicate with each other correctly.</li>
+      <li>You can use the <code class="highlighter-rouge">exec_command()</code> function in <code class="highlighter-rouge">util.h</code>, which is a wrapper for <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code>.</li>
+      <li>If you get a failure with <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code>, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pipe" class="fancy-link">pipe</a></code>, or <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/dup2" class="fancy-link">dup2</a></code> for any reason, you can simply exit with a nonzero code, though you won’t be explicitly tested on it; these calls failing usually means the entire system is coming down (or maybe you passed a bad executable to <code class="highlighter-rouge">exec()</code>, in which case there isn’t much a resilient pipe can do for you).</li>
+    </ul>
+  </li>
+  <li>Wait on all of the processes and check their return codes.</li>
+  <li>If <em>any</em> process has a non-zero return code, then restart the script (go back to step 2). Try restarting all the processes up a total of <strong>two additional times</strong> (three runs in total).</li>
+  <li>If everything goes well once, you are done! Exit with status 0 for success in the pied piper process.</li>
+  <li>If at least one process fails on the final run, print out a summary of commands, including their return codes and anything printed out to standard error <em>for the last run</em> (hint: look in the <code class="highlighter-rouge">utils.h</code> file). You should print out the info for every command, even the ones that succeeded. You should then exit with status <code class="highlighter-rouge">EXIT_OUT_OF_RETRIES</code> (see <code class="highlighter-rouge">pied_piper.h</code>).</li>
+</ol>
+<ul>
+  <li>Note: You don’t have to worry about the pipe filling up; the commands we run will have an output of less than the size of the pipe.</li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="testing" class="title-text">Testing<a class="anchor title-text" href="#testing">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>How does one test with failures, you ask? You could try using a small C program that reads an environment variable that you set (hint: look up the <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/export" class="fancy-link">export</a></code> keyword), together with another that might sleep for a while before trying to write to a pipe, to ensure it receives SIGPIPE. Or, you could play with random number generators (are you feeling (un)lucky?), if you prefer a Russian roulette-like approach.</p>
+<p>You have also been provided with a <code class="highlighter-rouge">fail_nth</code> program that fails most of the time, and passes on the <code class="highlighter-rouge">n</code>th attempt. The code itself is pretty simple, so take a look to see what’s going on there.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="hints" class="title-text">Hints<a class="anchor title-text" href="#hints">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>You may want to section out your code into the part that tries exec’ing all of the programs.</li>
+  <li>Our programs <strong>will not</strong> mangle the input file between runs; you can assume that it will not change. But keep in mind that if a run is halfway complete, and the output file has been partially written to before failure, that the output file should be cleared before you try again.</li>
+  <li>You do not have to worry about side effects, meaning that if a process completes halfway and changes some system state you will not be expected to change it back. Though this may cause the process to fail in the future, all you have to do is execute the pipeline again.</li>
+</ul></div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="submission-instructions" class="title-text">Submission Instructions<a class="anchor title-text" href="#submission-instructions">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Please read details on <a href="/#academic-integrity" class="fancy-link wiki-link">Academic Integrity</a> fully. These are shared by all assignments in CS 241.</p>
+<p>We will be using GitHub as our hand-in system this semester. Our grading system will checkout your most recent (pre-deadline) commit for grading. Therefore, to hand in your code, all you have to do is commit and push to your Github repository.</p>
+<p>To check out the provided code for <code class="highlighter-rouge">pied_piper</code> from the class repository, go to your cs241 directory (the one you checked out for “know your tools”) and run:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git pull release master
+</code></pre></div></div>
+<p>If you run <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/ls" class="fancy-link">ls</a></code> you will now see a <code class="highlighter-rouge">pied_piper</code> folder, where you can find this assignment! To commit your changes (send them to us), type:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git add pied_piper
+git commit -m "pied_piper submission"
+git push origin master
+</code></pre></div></div>
+<p>Your repository directory can be viewed from a web browser from the following URL: 
+<a href="https://github-dev.cs.illinois.edu/cs241-fa18/NETID/tree/master/pied_piper" class="fancy-link wiki-link">https://github-dev.cs.illinois.edu/cs241-fa18/NETID/tree/master/pied_piper</a> where NETID is your University NetID. It is important to check that the files you expect to be graded are present and up to date in your remote git copy.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="assignment-feedback" class="title-text">Assignment Feedback<a class="anchor title-text" href="#assignment-feedback">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>We strive to provide the best assignments that we can for this course, and we would like your feedback on them!</p>
+<p>This is the form we will use to evaluate our assignments. We appreciate the time you take to give us your honest feedback and we promise to keep improving the course to make your experience in CS 241 the best it can be.</p>
+<p><a href="https://goo.gl/forms/hREf0ojFWumYfQF12" class="fancy-link wiki-link">https://goo.gl/forms/hREf0ojFWumYfQF12</a></p>
+</div></div></div>
+</div></div>
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_docs/pied_piper.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28%2020:00:31%20-0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</script>
+</div></body>
+</html>

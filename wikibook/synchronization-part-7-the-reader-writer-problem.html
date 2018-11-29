@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Synchronization, Part 7: The Reader Writer Problem</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Synchronization, Part 7: The Reader Writer Problem
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/Synchronization,-Part-7:-The-Reader-Writer-Problem">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_what-is-the-reader-writer-problem" href="#what-is-the-reader-writer-problem" class="fancy-link">What is the Reader Writer Problem?</a></li>
+<li><a id="toc_attempt-1" href="#attempt-1" class="fancy-link">Attempt #1</a></li>
+<li><a id="toc_attempt-2" href="#attempt-2" class="fancy-link">Attempt #2:</a></li>
+<li><a id="toc_attempt-3" href="#attempt-3" class="fancy-link">Attempt #3</a></li>
+<li><a id="toc_starving-writers" href="#starving-writers" class="fancy-link">Starving writers</a></li>
+<li><a id="toc_attempt-4" href="#attempt-4" class="fancy-link">Attempt #4</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-the-reader-writer-problem" class="title-text">What is the Reader Writer Problem?<a class="anchor title-text" href="#what-is-the-reader-writer-problem">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Imagine you had a key-value map data structure which is used by many threads. Multiple threads should be able to look up (read) values at the same time provided the data structure is not being written to. The writers are not so gregarious - to avoid data corruption, only one thread at a time may modify (<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code>) the data structure (and no readers may be reading at that time).</p>
+<p>This is an example of the <em>Reader Writer Problem</em>. Namely how can we efficiently synchronize multiple readers and writers such that multiple readers can read together but a writer gets exclusive access?</p>
+<p>An incorrect attempt is shown below (“lock” is a shorthand for <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_mutex_lock" class="fancy-link">pthread_mutex_lock</a></code>):</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="attempt-1" class="title-text">Attempt #1<a class="anchor title-text" href="#attempt-1">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<table class="table"><tr>
+<td>
+<pre>
+read() {
+  lock(&amp;m)
+  // do read stuff
+  unlock(&amp;m)
+}
+</pre>
+</td>
+<td>
+<pre>
+write() {
+  lock(&amp;m)
+  // do write stuff
+  unlock(&amp;m)
+}
+</pre>
+</td>
+</tr></table>
+<p>At least our first attempt does not suffer from data corruption (readers must wait while a writer is writing and vice versa)! However readers must also wait for other readers. So let’s try another implementation..</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="attempt-2" class="title-text">Attempt #2:<a class="anchor title-text" href="#attempt-2">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<table class="table"><tr>
+<td>
+<pre>read() {
+  while(writing) {/*spin*/}
+  reading = 1
+  // do read stuff
+  reading = 0
+}
+</pre>
+</td>
+<td>
+<pre>write() {
+  while(reading || writing) {/*spin*/}
+  writing = 1
+  // do write stuff
+  writing = 0
+}
+</pre>
+</td>
+</tr></table>
+<p>Our second attempt suffers from a race condition - imagine if two threads both called <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/read" class="fancy-link">read</a></code> and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code> (or both called write) at the same time. Both threads would be able to proceed! Secondly, we can have multiple readers and multiple writers, so lets keep track of the total number of readers or writers. Which brings us to attempt #3,</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="attempt-3" class="title-text">Attempt #3<a class="anchor title-text" href="#attempt-3">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Remember that <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_wait" class="fancy-link">pthread_cond_wait</a></code> performs <em>Three</em> actions. Firstly it atomically unlocks the mutex and then sleeps (until it is woken by <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_signal" class="fancy-link">pthread_cond_signal</a></code> or <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_broadcast" class="fancy-link">pthread_cond_broadcast</a></code>). Thirdly the awoken thread must re-acquire the mutex lock before returning. Thus only one thread can actually be running inside the critical section defined by the lock and unlock() methods.</p>
+<p>Implementation #3 below ensures that a reader will enter the cond_wait if there are any writers writing.</p>
+<pre><code class="language-C"><span class="n">read</span>
+</code></pre>
+<p>However only one reader a time can read because candidate #3 did not unlock the mutex. A better version unlocks before reading :</p>
+<pre><code class="language-C"><span class="n">read</span>
+</code></pre>
+<p>Does this mean that a writer and read could read and write at the same time? No! First of all, remember cond_wait requires the thread re-acquire the  mutex lock before returning. Thus only one thread can be executing code inside the critical section (marked with **) at a time!</p>
+<pre><code class="language-C"><span class="n">read</span>
+</code></pre>
+<p>Writers must wait for everyone. Mutual exclusion is assured by the lock.</p>
+<pre><code class="language-C"><span class="n">write</span>
+</code></pre>
+<p>Candidate #3 above also uses <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_signal" class="fancy-link">pthread_cond_signal</a></code> ; this will only wake up one thread. For example, if many readers are waiting for the writer to complete then only one sleeping reader will be awoken from their slumber. The reader and writer should use <code class="highlighter-rouge">cond_broadcast</code> so that all threads should wake up and check their while-loop condition.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="starving-writers" class="title-text">Starving writers<a class="anchor title-text" href="#starving-writers">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Candidate #3 above suffers from starvation. If readers are constantly arriving then a writer will never be able to proceed (the ‘reading’ count never reduces to zero). This is known as <em>starvation</em> and would be discovered under heavy loads. Our fix is to implement a bounded-wait for the writer. If a writer arrives they will still need to wait for existing readers however future readers must be placed in a “holding pen” and wait for the writer to finish. The “holding pen” can be implemented using a variable and a condition variable (so that we can wake up the threads once the writer has finished).</p>
+<p>Our plan is that when a writer arrives, and before waiting for current readers to finish, register our intent to write (by incrementing a counter ‘writer’). Sketched below -</p>
+<pre><code class="language-C"><span class="n">write</span>
+</code></pre>
+<p>And incoming readers will not be allowed to continue while writer is nonzero. Notice ‘writer’ indicates a writer has arrived, while ‘reading’ and ‘writing’ counters indicate there is an <em>active</em> reader or writer.</p>
+<pre><code class="language-C"><span class="n">read</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="attempt-4" class="title-text">Attempt #4<a class="anchor title-text" href="#attempt-4">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Below is our first working solution to the Reader-Writer problem. 
+Note if you continue to read about the “Reader Writer problem” then you will discover that we solved the “Second Reader Writer problem” by giving writers preferential access to the lock. This solution is not optimal. However it satisfies our original problem (N active readers, single active writer, avoids starvation of the writer if there is a constant stream of readers).</p>
+<p>Can you identify any improvements? For example, how would you improve the code so that we only woke up readers or one writer?</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/synchronization-part-7-the-reader-writer-problem.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

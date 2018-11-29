@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Synchronization, Part 2: Counting Semaphores</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Synchronization, Part 2: Counting Semaphores
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/Synchronization,-Part-2:-Counting-Semaphores">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_what-is-a-counting-semaphore" href="#what-is-a-counting-semaphore" class="fancy-link">What is a counting semaphore?</a></li>
+<li><a id="toc_how-do-i-create-a-semaphore" href="#how-do-i-create-a-semaphore" class="fancy-link">How do I create a semaphore?</a></li>
+<li><a id="toc_can-i-call-wait-and-post-from-different-threads" href="#can-i-call-wait-and-post-from-different-threads" class="fancy-link">Can I call wait and post from different threads?</a></li>
+<li><a id="toc_can-i-use-a-semaphore-instead-of-a-mutex" href="#can-i-use-a-semaphore-instead-of-a-mutex" class="fancy-link">Can I use a semaphore instead of a mutex?</a></li>
+<li><a id="toc_can-i-use-sem_post-inside-a-signal-handler" href="#can-i-use-sem_post-inside-a-signal-handler" class="fancy-link">Can I use sem_post inside a signal handler?</a></li>
+<li><a id="toc_how-do-i-find-out-more" href="#how-do-i-find-out-more" class="fancy-link">How do I find out more?</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-a-counting-semaphore" class="title-text">What is a counting semaphore?<a class="anchor title-text" href="#what-is-a-counting-semaphore">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>A counting semaphore contains a value and supports two operations “wait” and “post”. Post increments the semaphore and immediately returns. “wait” will wait if the count is zero. If the count is non-zero the semaphore decrements the count and immediately returns.</p>
+<p>An analogy is a count of the cookies in a cookie jar (or gold coins in the treasure chest). Before taking a cookie, call ‘wait’. If there are no cookies left then <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/wait" class="fancy-link">wait</a></code> will not return: It will <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/wait" class="fancy-link">wait</a></code> until another thread increments the semaphore by calling post.</p>
+<p>In short, <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/post" class="fancy-link">post</a></code> increments and immediately returns whereas <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/wait" class="fancy-link">wait</a></code> will wait if the count is zero. Before returning it will decrement count.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-create-a-semaphore" class="title-text">How do I create a semaphore?<a class="anchor title-text" href="#how-do-i-create-a-semaphore">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>This page introduces unnamed semaphores. Unfortunately Mac OS X does not support these yet.</p>
+<p>First decide if the initial value should be zero or some other value (e.g. the number of remaining spaces in an array).
+Unlike pthread mutex there are not shortcuts to creating a semaphore - use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_init" class="fancy-link">sem_init</a></code></p>
+<pre><code class="language-C"><span class="cp">#include &lt;semaphore.h&gt;
+</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="can-i-call-wait-and-post-from-different-threads" class="title-text">Can I call wait and post from different threads?<a class="anchor title-text" href="#can-i-call-wait-and-post-from-different-threads">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Yes! Unlike a mutex, the increment and decrement can be from different threads.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="can-i-use-a-semaphore-instead-of-a-mutex" class="title-text">Can I use a semaphore instead of a mutex?<a class="anchor title-text" href="#can-i-use-a-semaphore-instead-of-a-mutex">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Yes - though the overhead of a semaphore is greater. To use a semaphore:</p>
+<ul>
+  <li>Initialize the semaphore with a count of one.</li>
+  <li>Replace <code class="highlighter-rouge">...lock</code> with <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_wait" class="fancy-link">sem_wait</a></code>
+</li>
+  <li>Replace <code class="highlighter-rouge">...unlock</code> with <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_post" class="fancy-link">sem_post</a></code>
+</li>
+</ul>
+<p>A mutex is a semaphore that always <code class="highlighter-rouge">waits</code> before it <code class="highlighter-rouge">posts</code></p>
+<pre><code class="language-C"><span class="n">sem_t</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="can-i-use-sem_post-inside-a-signal-handler" class="title-text">Can I use sem_post inside a signal handler?<a class="anchor title-text" href="#can-i-use-sem_post-inside-a-signal-handler">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Yes! <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_post" class="fancy-link">sem_post</a></code> is one of a handful of functions that can be correctly used inside a signal handler.
+This means we can release a waiting thread which can now make all of the calls that we were not
+allowed to call inside the signal handler itself (e.g. <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code>).</p>
+<pre><code class="language-C"><span class="cp">#include &lt;stdio.h&gt;
+#include &lt;pthread.h&gt;
+#include &lt;signal.h&gt;
+#include &lt;semaphore.h&gt;
+#include &lt;unistd.h&gt;
+</span>
+</code></pre>
+<p>Note robust programs do not use <code class="highlighter-rouge">signal()</code> in a multi-threaded program (“The effects of signal() in a multithreaded process are unspecified.” - the signal man page); a more correct program will need to use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sigaction" class="fancy-link">sigaction</a></code>.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-find-out-more" class="title-text">How do I find out more?<a class="anchor title-text" href="#how-do-i-find-out-more">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Read the man pages:</p>
+<ul>
+  <li><a href="http://man7.org/linux/man-pages/man3/sem_init.3.html" class="fancy-link wiki-link">sem_init</a></li>
+  <li><a href="http://man7.org/linux/man-pages/man3/sem_wait.3.html" class="fancy-link wiki-link">sem_wait</a></li>
+  <li><a href="http://man7.org/linux/man-pages/man3/sem_post.3.html" class="fancy-link wiki-link">sem_post</a></li>
+  <li><a href="http://man7.org/linux/man-pages/man3/sem_destroy.3.html" class="fancy-link wiki-link">sem_destroy</a></li>
+</ul>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/synchronization-part-2-counting-semaphores.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

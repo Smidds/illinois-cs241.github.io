@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>C Programming, Part 3: Common Gotchas</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              C Programming, Part 3: Common Gotchas
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/C-Programming,-Part-3:-Common-Gotchas">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_string-constants-are-read-only" href="#string-constants-are-read-only" class="fancy-link">String Constants are Read-Only</a></li>
+<li><a id="toc_buffer-overflow--underflow" href="#buffer-overflow--underflow" class="fancy-link">Buffer Overflow / Underflow</a></li>
+<li><a id="toc_handling-pointers-to-out-of-scope-automatic-variables" href="#handling-pointers-to-out-of-scope-automatic-variables" class="fancy-link">Handling Pointers to Out-of-Scope Automatic Variables</a></li>
+<li><a id="toc_sizeoftype--versus-sizeoftype" href="#sizeoftype--versus-sizeoftype" class="fancy-link"><code class="highlighter-rouge">sizeof(type *)</code> versus <code class="highlighter-rouge">sizeof(type)</code></a></li>
+<li><a id="toc_strings-require-strlens1-bytes" href="#strings-require-strlens1-bytes" class="fancy-link">Strings Require <code class="highlighter-rouge">strlen(s)+1</code> Bytes</a></li>
+<li><a id="toc_failing-to-initialize-memory" href="#failing-to-initialize-memory" class="fancy-link">Failing to Initialize Memory</a></li>
+<li><a id="toc_double-free" href="#double-free" class="fancy-link">Double-free</a></li>
+<li><a id="toc_dangling-pointers" href="#dangling-pointers" class="fancy-link">Dangling Pointers</a></li>
+<li><a id="toc_forgetting-to-copy-getline-buffer" href="#forgetting-to-copy-getline-buffer" class="fancy-link">Forgetting to Copy <code class="highlighter-rouge">getline</code> Buffer</a></li>
+<li><a id="toc_forgetting-break-after-case" href="#forgetting-break-after-case" class="fancy-link">Forgetting <code class="highlighter-rouge">break</code> after <code class="highlighter-rouge">case</code></a></li>
+<li><a id="toc_assignment-vs-equality-check" href="#assignment-vs-equality-check" class="fancy-link">Assignment vs Equality Check</a></li>
+<li><a id="toc_undeclared-or-incorrectly-prototyped-functions" href="#undeclared-or-incorrectly-prototyped-functions" class="fancy-link">Undeclared or Incorrectly Prototyped Functions</a></li>
+<li><a id="toc_extra-semicolons" href="#extra-semicolons" class="fancy-link">Extra Semicolons</a></li>
+<li><a id="toc_c-preprocessor-macros-and-precedence" href="#c-preprocessor-macros-and-precedence" class="fancy-link">C Preprocessor macros and precedence</a></li>
+<li><a id="toc_c-preprocessor-macros-and-side-effects" href="#c-preprocessor-macros-and-side-effects" class="fancy-link">C Preprocessor Macros and Side-Effects</a></li>
+<li><a id="toc_sizeoftype-vs-sizeoftype-" href="#sizeoftype-vs-sizeoftype-" class="fancy-link"><code class="highlighter-rouge">sizeof(type[])</code> vs <code class="highlighter-rouge">sizeof(type *)</code></a></li>
+<li><a id="toc_sizeof-and-side-effects" href="#sizeof-and-side-effects" class="fancy-link"><code class="highlighter-rouge">sizeof</code> and Side-Effects</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<p>What common mistakes do C programmers make?</p>
+
+
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="string-constants-are-read-only" class="title-text">String Constants are Read-Only<a class="anchor title-text" href="#string-constants-are-read-only">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+<p>String literals are character arrays stored in the code segment of the program, which is immutable. Two string literals may share the same space in memory. An example follows:</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+<p>The strings pointed to by <code class="highlighter-rouge">str1</code> and <code class="highlighter-rouge">str2</code> may actually reside in the same location in memory.</p>
+<p>Char arrays, however, contain deep copies of string literals assigned to them, and different arrays represent different memory locations. These following char arrays do not reside in the same place in memory.</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="buffer-overflow--underflow" class="title-text">Buffer Overflow / Underflow<a class="anchor title-text" href="#buffer-overflow--underflow">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>C does not perform bounds-checking on array accesses. The above example writes into <code class="highlighter-rouge">array[10]</code> which is outside the array bounds. This can corrupt other variables on the stack as well as the very implementation of the call stack, exposing your program to attacks from hackers. In practice, these overflows often result from using unsafe library calls or putting the wrong size limit on a safer library call.</p>
+<pre><code class="language-C"><span class="n">gets</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="handling-pointers-to-out-of-scope-automatic-variables" class="title-text">Handling Pointers to Out-of-Scope Automatic Variables<a class="anchor title-text" href="#handling-pointers-to-out-of-scope-automatic-variables">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>Automatic variables are bound to stack memory only as long as they are in scope. After they go out of scope, the data stored at their memory addresses becomes undefined. Static variables reside in the data segment, which is safe to access even when those variables are not in scope.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="sizeoftype--versus-sizeoftype" class="title-text">
+<code class="highlighter-rouge">sizeof(type *)</code> versus <code class="highlighter-rouge">sizeof(type)</code><a class="anchor title-text" href="#sizeoftype--versus-sizeoftype">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<pre><code class="language-C"><span class="k">struct</span>
+</code></pre>
+<p>In the above example, we needed to allocate enough bytes for the struct. Instead, we allocated enough bytes to hold a pointer. Writing to the user pointer might corrupt the heap. The correct code is shown below.</p>
+<pre><code class="language-C"><span class="k">struct</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="strings-require-strlens1-bytes" class="title-text">Strings Require <code class="highlighter-rouge">strlen(s)+1</code> Bytes<a class="anchor title-text" href="#strings-require-strlens1-bytes">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Every string must have a null byte after the last actual character. To store the string <code>"Hi"</code> it takes 3 bytes: <code>[H] [i] [\0]</code>.</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="failing-to-initialize-memory" class="title-text">Failing to Initialize Memory<a class="anchor title-text" href="#failing-to-initialize-memory">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<pre><code class="language-C"><span class="kt">void</span>
+</code></pre>
+<p>Automatic (stack) variables and heap memory obtained with <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code> are not initialized to zero by default. The function above results in undefined behavior.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="double-free" class="title-text">Double-free<a class="anchor title-text" href="#double-free">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+<p>It is an error to free the same heap memory twice.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="dangling-pointers" class="title-text">Dangling Pointers<a class="anchor title-text" href="#dangling-pointers">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+<p>Accessing freed memory results in undefined behavior. A defensive programming practice is to set pointers to NULL as soon as the memory is freed, since there is no other way to reliably check if a pointer points to a valid address. The following macro accomplishes this.</p>
+<pre><code class="language-C"><span class="cp">#define safer_free(p) {free(p); (p) = NULL;}
+</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="forgetting-to-copy-getline-buffer" class="title-text">Forgetting to Copy <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/getline" class="fancy-link">getline</a></code> Buffer<a class="anchor title-text" href="#forgetting-to-copy-getline-buffer">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<pre><code class="language-C"><span class="cp">#include &lt;stdio.h&gt;
+</span>
+</code></pre>
+<p>Since <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/getline" class="fancy-link">getline</a></code> reuses a buffer, all pointers in the <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/strings" class="fancy-link">strings</a></code> array are actually pointing to the same memory. We can fix this by setting the assignment of <code class="highlighter-rouge">strings[i]</code> to a deep copy of the buffer.</p>
+<pre><code class="language-C"><span class="n">strings</span>
+</code></pre>
+<p>Fun fact: providing “1\n123456789abcdef\n3\n” to the broken version of the program might cause it to print out “3\n3\n1\n” instead of “3\n3\n3\n”. Now why might that be? 
+<em>Hint: use Valgrind</em></p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="forgetting-break-after-case" class="title-text">Forgetting <code class="highlighter-rouge"><a href="https://linux.die.net/man/2/break" class="fancy-link">break</a></code> after <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/case" class="fancy-link">case</a></code><a class="anchor title-text" href="#forgetting-break-after-case">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>Case statements without a break will just continue onto the code of the next case statement. The correct code is shown below. The break for the last statement is unnecessary because there are no more cases to be executed after the last one.</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="assignment-vs-equality-check" class="title-text">Assignment vs Equality Check<a class="anchor title-text" href="#assignment-vs-equality-check">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>Compilers will usually warn you about this mistake. If you really want to perform an assignment, add an extra pair of parentheses to suppress these warnings.</p>
+<pre><code class="language-C"><span class="kt">ssize_t</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="undeclared-or-incorrectly-prototyped-functions" class="title-text">Undeclared or Incorrectly Prototyped Functions<a class="anchor title-text" href="#undeclared-or-incorrectly-prototyped-functions">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<pre><code class="language-C"><span class="cp">#include &lt;stdio.h&gt;
+</span>
+</code></pre>
+<p>The library call <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/time" class="fancy-link">time</a></code> actually takes a parameter (a pointer to some memory that can receive the <code class="highlighter-rouge">time_t</code> structure). The compiler might not catch this error because the programmer did not provide a valid function prototype by including time.h. For this reason, calling undeclared functions is illegal in C99 and beyond.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="extra-semicolons" class="title-text">Extra Semicolons<a class="anchor title-text" href="#extra-semicolons">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Semicolons after <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/for" class="fancy-link">for</a></code> and <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/while" class="fancy-link">while</a></code> statements will cause them to be interpreted as “empty loops”.</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>Adding semicolons adjacent to each other in code blocks is perfectly legal and is ignored by the compiler. You can also omit components of a <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/for" class="fancy-link">for</a></code> statement by putting nothing between semicolons or between semicolons and parentheses.</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="c-preprocessor-macros-and-precedence" class="title-text">C Preprocessor macros and precedence<a class="anchor title-text" href="#c-preprocessor-macros-and-precedence">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Preprocessing is an operation performed <strong>before</strong> the program is actually compiled. It is nothing but text substitution, i.e. copy-and-paste. Consider the following code.</p>
+<pre><code class="language-C"><span class="cp">#define BADD(x,y) x+y
+</span>
+</code></pre>
+<p>After preprocessing, the code will look exactly like this.</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+<p>Notice that the buffer takes up 15 bytes instead of 20, since multiplication has higher precedence than addition. To prevent this kind of behavior, make sure to surround all macro variables as well as the entire macro expression with parentheses.</p>
+<pre><code class="language-C"><span class="cp">#define ADD(x,y) ((x)+(y))
+</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="c-preprocessor-macros-and-side-effects" class="title-text">C Preprocessor Macros and Side-Effects<a class="anchor title-text" href="#c-preprocessor-macros-and-side-effects">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<pre><code class="language-C"><span class="cp">#define min(a,b) ((a)&lt;(b) ? (a) : (b))
+</span>
+</code></pre>
+<p>The conditional expression effectively expands to <code class="highlighter-rouge">x++ &lt; 100 ? x++ : 100</code>, which results in <code class="highlighter-rouge">x</code> being incremented twice. There is no good way to prevent these kinds of side effects when using Standard C macros. But <a href="https://gcc.gnu.org/onlinedocs/gcc/Statement-Exprs.html" class="fancy-link wiki-link">GNU C</a> provides some workarounds (only works when using GCC).</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="sizeoftype-vs-sizeoftype-" class="title-text">
+<code class="highlighter-rouge">sizeof(type[])</code> vs <code class="highlighter-rouge">sizeof(type *)</code><a class="anchor title-text" href="#sizeoftype-vs-sizeoftype-">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<pre><code class="language-C"><span class="cp">#define ARRAY_LENGTH(A) (sizeof((A)) / sizeof((A)[0]))
+</span>
+</code></pre>
+<p>If we have a declared array variable like <code class="highlighter-rouge">fixed_length_array</code>, the <code class="highlighter-rouge">sizeof</code> operator yields the bytes that array takes up, and dividing this size by the size of the first element yields the number of elements in the array. Unfortunately, the size of a pointer is always the same (8 or 4 bytes), no matter the size or type of the array to which it points. Only compile-time declared array variables (and <a href="https://gcc.gnu.org/onlinedocs/gcc/Variable-Length.html" class="fancy-link wiki-link">C99 variable-length arrays</a>) will expose the true array size through <code class="highlighter-rouge">sizeof</code>.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="sizeof-and-side-effects" class="title-text">
+<code class="highlighter-rouge">sizeof</code> and Side-Effects<a class="anchor title-text" href="#sizeof-and-side-effects">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>This code prints out the following.</p>
+<pre><code class="language-C"><span class="nl">size:</span>
+</code></pre>
+<p>The expression passed into <code class="highlighter-rouge">sizeof</code> is not actually evaluated at runtime in most cases, since the type (hence the size) of the expression can be calculated at compile time. Though there are exceptions in the case of <a href="http://port70.net/~nsz/c/c11/n1570.html#6.5.3.4p2" class="fancy-link wiki-link">C99 variable-length arrays</a>, since their sizes are determined at runtime.</p>
+<div align="center">
+<a href="/wikibook/c-programming-part-2-text-input-and-output.html#" class="fancy-link wiki-link">
+Back: C Programming, Part 2: Text Input And Output
+</a> |
+<a href="/wikibook/c-programming-part-4-strings-and-structs.html#" class="fancy-link wiki-link">
+Next: C Programming, Part 4: Strings and Structs
+</a>
+</div>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/c-programming-part-3-common-gotchas.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

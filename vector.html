@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Vector</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Vector
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/illinois-cs241/assignment-docs/blob/master//vector.md">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+              <div class="submission-wrapper">
+                
+                  <b>Entire Assignment</b> due <b>09/10/2018 11:59pm</b><br/>
+                  
+                    <b>Graded files:</b>
+                    <ul>
+                      
+                        <li>vector.c</li>
+                      
+                        <li>sstring.c</li>
+                      
+                    </ul>
+                  
+                
+              </div>
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_groundwork-for-text-editor-and-shell" href="#groundwork-for-text-editor-and-shell" class="fancy-link">Groundwork For Text Editor and Shell</a></li>
+<li><a id="toc_vector" href="#vector" class="fancy-link">Vector</a></li>
+<li><a id="toc_sstring" href="#sstring" class="fancy-link">sstring</a></li>
+<li><a id="toc_managing-memory" href="#managing-memory" class="fancy-link">Managing memory</a></li>
+<li><a id="toc_undefined-behavior" href="#undefined-behavior" class="fancy-link">Undefined behavior</a></li>
+<li><a id="toc_writing-test-cases" href="#writing-test-cases" class="fancy-link">Writing test cases</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+  <div class="pad"><div class="card">
+<div class="title"><h2 id="learning-objectives" class="title-text">Learning Objectives<a class="anchor title-text" href="#learning-objectives">#</a>
+</h2></div>
+  
+  
+
+
+  <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>
+    The learning objectives for Vector are: <br>
+    </p>
+<ul class="mdl-list">
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Implementing a C++ style Vector in C</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Using Dynamic/Heap Memory</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Using malloc(), free(), calloc(), realloc()</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Function Pointers</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">OOP in C</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">String manipulation in C</span>
+        </li>
+      
+    </ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="suggested-readings" class="title-text">Suggested Readings<a class="anchor title-text" href="#suggested-readings">#</a>
+</h2></div>
+  
+  
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>
+    We suggest you read the following from the
+    <a href="https://github.com/angrave/SystemProgramming/wiki" class="fancy-link wiki-link">wikibook</a>
+    before starting Vector: <br>
+    </p>
+<ul>
+      
+        <li>
+          <a href="/wikibook/c-programming-part-1-introduction.html#" target="_blank" class="fancy-link wiki-link">C Programming, Part 1: Introduction
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/c-programming-part-2-text-input-and-output.html#" target="_blank" class="fancy-link wiki-link">C Programming, Part 2: Text Input And Output
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/c-programming-part-3-common-gotchas.html#" target="_blank" class="fancy-link wiki-link">C Programming, Part 3: Common Gotchas
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/memory-part-1-heap-memory-introduction.html#" target="_blank" class="fancy-link wiki-link">Memory, Part 1: Heap Memory Introduction
+          </a>
+        </li>
+      
+    </ul>
+</div></div></div>
+</div></div>
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="groundwork-for-text-editor-and-shell" class="title-text">Groundwork For Text Editor and Shell<a class="anchor title-text" href="#groundwork-for-text-editor-and-shell">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>You are an intern at Macrohard, where you’ll be writing a text editor and shell for everyone on your team.</p>
+<p>These projects will take you several weeks, and your mentor has decided on the following timetable:</p>
+<ul>
+  <li>Week A: Vector and Sstream</li>
+  <li>Week B: Text Editor</li>
+  <li>Week C: Shell</li>
+</ul>
+<p>The <em>Text Editor</em> will use a <a href="https://en.wikipedia.org/wiki/Text-based_user_interface" class="fancy-link wiki-link">TUI</a> that another intern has written. Your mentor has decided to create a library to make dealing with strings in C easier.</p>
+<p>The <em>Shell</em> is a terminal. Like all good terminals, your shell will need to remember what processes are running.</p>
+<p>However, after hearing tales of your talent, and with vectors being all the rage, other team leads have asked for vectors that they can use in their own projects. One option would be to write a vector for each team. However, being a good programmer, you know that code duplication is bad. Also, you’re a lazy programmer, so you want to write as little code as possible to accomplish everything. You decide to implement a generic vector, something that every team can use with minimal changes.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="vector" class="title-text">Vector<a class="anchor title-text" href="#vector">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+<!--Here's an illustration:
+
+![](./images/vector.jpg)-->
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>A vector is an array that grows as a user adds and removes items from it. (Since CS 225 was a prerequisite, you probably knew all of that already.) However, your vector will need to be feature-rich enough for someone to easily create a document from it, or anything else the other sneaky teams want for their projects.</p>
+<p>Your implementation should go in <code class="highlighter-rouge">vector.c</code>, which is the only file that will be sent to your team lead for review. As an intern looking to become a full-time employee, you should create test cases in <code class="highlighter-rouge">vector_test.c</code> to show you are a responsible programmer. Your mentor has left notes in <code class="highlighter-rouge">vector.h</code> guiding your implementation.</p>
+<p>In case a fellow employee asks what you learned in CS 225, here’s some review:</p>
+<ul>
+  <li><a href="https://web.archive.org/web/20151225075250/https://chara.cs.illinois.edu/cs225/lectures/" class="fancy-link wiki-link">Lectures</a></li>
+  <li><a href="https://web.archive.org/web/20160119032015/https://chara.cs.illinois.edu/cs225/lectures/slides/lec0928-resizing.pdf" class="fancy-link wiki-link">Array Resizing</a></li>
+  <li><a href="https://recordings.engineering.illinois.edu:8443/ess/echo/presentation/a73d58c6-98a0-4a8c-bf68-f0fb224f5c26" class="fancy-link wiki-link">Lecture Recording</a></li>
+</ul>
+<p>Since this vector is generic, it will have to call custom constructor, destructor, and default constructor functions when objects are added or removed. (How is this better than a single function which handles all possible types?) Thus, your vector structure will contain pointers to your constructor or destructor routines, and you can initialize the vector by passing pointers to these functions as parameters.</p>
+<p>What you’ll end up with is a useful general-purpose vector, capable of dynamically expanding. (No more fixed-sized buffers!)</p>
+<p>Note: Remember that vector size (the number of actual objects held in the vector) and capacity (size of the storage space currently allocated for the vector) are two different things. Refer to documentation in vector.h and vector.c for more information.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="sstring" class="title-text">sstring<a class="anchor title-text" href="#sstring">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>SString is a wrapper around c strings which makes dealing with strings easier
+with higher level functions. We have not specified the definition of the sstring
+struct, and left that up to you! Below are some brief descriptions of what each
+function should do.</p>
+<h3 id="sstring-cstr_to_sstringchar-input" class="title-text"><code class="highlighter-rouge">sstring *cstr_to_sstring(char *input)</code></h3>
+<p>This function should take in a c-string and return a pointer to a sstring on the
+heap.</p>
+<h3 id="char-sstring_to_cstrsstring-this" class="title-text"><code class="highlighter-rouge">char *sstring_to_cstr(sstring *this)</code></h3>
+<p>This function should take in a sstring an return a pointer to a c-string on the
+heap.</p>
+<h3 id="int-sstring_appendsstring-this-sstring-addition" class="title-text"><code class="highlighter-rouge">int sstring_append(sstring *this, sstring *addition)</code></h3>
+<p>This function should take in two sstrings, append the second to the first, and
+return the length of the first sstring after the append.</p>
+<h3 id="vector-sstring_splitsstring-this-char-delimiter" class="title-text"><code class="highlighter-rouge">vector *sstring_split(sstring *this, char delimiter)</code></h3>
+<p>This function should take an sstring and a character and split the sstring into
+a vector of c-strings on the delimiter.
+(e.g. <code class="highlighter-rouge">sstring_split(cstr_to_sstring("abcdeefg"), 'e') == [ "abcd", "", "fg" ]</code>)</p>
+<h3 id="int-sstring_substitutesstring-this-size_t-offset-char-target-char-substitution" class="title-text"><code class="highlighter-rouge">int sstring_substitute(sstring *this, size_t offset, char *target, char *substitution)</code></h3>
+<p>This function should substitute one occurrence of <code class="highlighter-rouge">target</code> in <code class="highlighter-rouge">this</code> after
+<code class="highlighter-rouge">offset</code> bytes with <code class="highlighter-rouge">substitution</code>. If there are no occurrences of <code class="highlighter-rouge">target</code> after
+<code class="highlighter-rouge">offset</code> bytes, return <code class="highlighter-rouge">-1</code>.  Otherwise return <code class="highlighter-rouge">0</code>.</p>
+<h3 id="char-sstring_slicesstring-this-int-start-int-end" class="title-text"><code class="highlighter-rouge">char *sstring_slice(sstring *this, int start, int end)</code></h3>
+<p>This function takes in a sstring, a start index and an end index. Return a
+c-string representing the bytes between start (inclusive) and end (exclusive).</p>
+<h3 id="void-sstring_destroysstring-this" class="title-text"><code class="highlighter-rouge">void sstring_destroy(sstring *this)</code></h3>
+<p>This function cleans up any allocated memory for a sstring.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="managing-memory" class="title-text">Managing memory<a class="anchor title-text" href="#managing-memory">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Remember, <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/man" class="fancy-link">man</a></code> is man’s best friend. Since you’re working with dynamic memory, there are quite a few functions you should be familiar with before you proceed. <code class="highlighter-rouge">malloc()</code>, <code class="highlighter-rouge">free()</code>, <code class="highlighter-rouge">realloc()</code>,  <code class="highlighter-rouge">calloc()</code>, <code class="highlighter-rouge">memmove()</code> are your friends; don’t shy away!</p>
+<ul>
+  <li><code class="highlighter-rouge">man 3 malloc</code></li>
+  <li><code class="highlighter-rouge">man 3 free</code></li>
+  <li>…there’s a pattern here</li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="undefined-behavior" class="title-text">Undefined behavior<a class="anchor title-text" href="#undefined-behavior">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p><em>Undefined behavior</em> is a scenario or edge case for which there is no documentation describing how the code should react. For example, man pages do not describe what happens when you feed <code class="highlighter-rouge">NULL</code> into <code class="highlighter-rouge">strcmp()</code>. Your mentor will not answer questions like “What if my user wants an element past the end of the vector?”, because that is undefined behavior.</p>
+<p>So, for the entirety of this MP, you should use <code class="highlighter-rouge">assert()</code> statements to check that your user is passing valid input to your function before operating on the input. For example, if you were implementing <code class="highlighter-rouge">strcmp(const char *s1, const char *s2)</code>, then your code might look like this:</p>
+<pre><code class="language-C"><span class="cp">#include &lt;assert.h&gt;
+</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="writing-test-cases" class="title-text">Writing test cases<a class="anchor title-text" href="#writing-test-cases">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Just to emphasize how important test cases are, this lab spec will repeat itself and remind you that as good programmers, you are expected to write your own test cases for sstring and vector.</p></div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="submission-instructions" class="title-text">Submission Instructions<a class="anchor title-text" href="#submission-instructions">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Please read details on <a href="/#academic-integrity" class="fancy-link wiki-link">Academic Integrity</a> fully. These are shared by all assignments in CS 241.</p>
+<p>We will be using GitHub as our hand-in system this semester. Our grading system will checkout your most recent (pre-deadline) commit for grading. Therefore, to hand in your code, all you have to do is commit and push to your Github repository.</p>
+<p>To check out the provided code for <code class="highlighter-rouge">vector</code> from the class repository, go to your cs241 directory (the one you checked out for “know your tools”) and run:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git pull release master
+</code></pre></div></div>
+<p>If you run <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/ls" class="fancy-link">ls</a></code> you will now see a <code class="highlighter-rouge">vector</code> folder, where you can find this assignment! To commit your changes (send them to us), type:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git add vector
+git commit -m "vector submission"
+git push origin master
+</code></pre></div></div>
+<p>Your repository directory can be viewed from a web browser from the following URL: 
+<a href="https://github-dev.cs.illinois.edu/cs241-fa18/NETID/tree/master/vector" class="fancy-link wiki-link">https://github-dev.cs.illinois.edu/cs241-fa18/NETID/tree/master/vector</a> where NETID is your University NetID. It is important to check that the files you expect to be graded are present and up to date in your remote git copy.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="assignment-feedback" class="title-text">Assignment Feedback<a class="anchor title-text" href="#assignment-feedback">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>We strive to provide the best assignments that we can for this course, and we would like your feedback on them!</p>
+<p>This is the form we will use to evaluate our assignments. We appreciate the time you take to give us your honest feedback and we promise to keep improving the course to make your experience in CS 241 the best it can be.</p>
+<p><a href="https://goo.gl/forms/hREf0ojFWumYfQF12" class="fancy-link wiki-link">https://goo.gl/forms/hREf0ojFWumYfQF12</a></p>
+</div></div></div>
+</div></div>
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_docs/vector.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

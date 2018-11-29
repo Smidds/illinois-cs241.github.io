@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Programming Tricks, Part 1</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Programming Tricks, Part 1
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/Programming-Tricks,-Part-1">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_use-cat-as-your-ide" href="#use-cat-as-your-ide" class="fancy-link">Use <code class="highlighter-rouge">cat</code> as your IDE</a></li>
+<li><a id="toc_edit-your-code-with-perl-regular-expressions-aka-remember-your-perl-pie" href="#edit-your-code-with-perl-regular-expressions-aka-remember-your-perl-pie" class="fancy-link">Edit your code with <code class="highlighter-rouge">perl</code> regular expressions (aka “remember your perl pie”)</a></li>
+<li><a id="toc_use-your-shell-" href="#use-your-shell-" class="fancy-link">Use your shell <code class="highlighter-rouge">!!</code></a></li>
+<li><a id="toc_use-your-shell--1" href="#use-your-shell--1" class="fancy-link">Use your shell <code class="highlighter-rouge">&amp;&amp;</code></a></li>
+<li><a id="toc_make-can-do-more-than-make" href="#make-can-do-more-than-make" class="fancy-link">Make can do more than make</a></li>
+<li><a id="toc_is-your-neighbor-too-productive-c-pre-processors-to-the-rescue" href="#is-your-neighbor-too-productive-c-pre-processors-to-the-rescue" class="fancy-link">Is your neighbor too productive? C pre-processors to the rescue!</a></li>
+<li><a id="toc_who-needs-functions-when-you-c-have-the-pre-processor" href="#who-needs-functions-when-you-c-have-the-pre-processor" class="fancy-link">Who needs functions when you C have the pre-processor</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="use-cat-as-your-ide" class="title-text">Use <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/cat" class="fancy-link">cat</a></code> as your IDE<a class="anchor title-text" href="#use-cat-as-your-ide">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Who needs an editor? IDE? We can just use <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/cat" class="fancy-link">cat</a></code>!
+You’ve seen <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/cat" class="fancy-link">cat</a></code> being used to read the contents of files but it can also be used to read the standard-input and send it back to standard output.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cat
+HELLO
+HELLO
+</code></pre></div></div>
+<p>To finish reading from the input stream close the input stream by pressing <code class="highlighter-rouge">CTRL-D</code></p>
+<p>Let’s use <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/cat" class="fancy-link">cat</a></code> to send standard input to a file. We will use ‘&gt;’ to redirect its output to a file:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cat &gt; myprog.c
+#include &lt;stdio.h&gt;
+int main() {printf("Hi!");return 0;}
+</code></pre></div></div>
+<p>(Be careful! Deletes and undos are not allowed…)
+Press <code class="highlighter-rouge">CTRL-D</code> when finished.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="edit-your-code-with-perl-regular-expressions-aka-remember-your-perl-pie" class="title-text">Edit your code with <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/perl" class="fancy-link">perl</a></code> regular expressions (aka “remember your perl pie”)<a class="anchor title-text" href="#edit-your-code-with-perl-regular-expressions-aka-remember-your-perl-pie">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>A useful trick if you have several text files (e.g. source code) to change is to use regular expressions.
+<code class="highlighter-rouge"><a href="https://linux.die.net/man/1/perl" class="fancy-link">perl</a></code> makes this very easy to edit files in place.
+Just remember ‘perl pie’ and search on the web…</p>
+<p>An example. Suppose we want to change the sequence “Hi” to “Bye” in all .c files in the current directory. Then we can write a simple substitution pattern that will be executed on each line at time in all files:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ perl -p -i -e 's/Hi/Bye/' *.c
+</code></pre></div></div>
+<p>(Don’t panic if you get it wrong, original files are still there; they just have the extension .bak)
+Obviously there’s a lot more you can do with regular expressions than changing Hi to Bye.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="use-your-shell-" class="title-text">Use your shell <code class="highlighter-rouge">!!</code><a class="anchor title-text" href="#use-your-shell-">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>To re-run the last command just type <code class="highlighter-rouge">!!</code> and press <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/return" class="fancy-link">return</a></code>
+To re-run the last command that started with g type <code class="highlighter-rouge">!g</code>  and press <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/return" class="fancy-link">return</a></code></p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="use-your-shell--1" class="title-text">Use your shell <code class="highlighter-rouge">&amp;&amp;</code><a class="anchor title-text" href="#use-your-shell--1">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Tired of running <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/make" class="fancy-link">make</a></code> or <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/gcc" class="fancy-link">gcc</a></code> and then running the program if it compiled OK? Instead, use &amp;&amp; to chain these commands together</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gcc program.c &amp;&amp; ./a.out
+</code></pre></div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="make-can-do-more-than-make" class="title-text">Make can do more than make<a class="anchor title-text" href="#make-can-do-more-than-make">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>You might also try putting a line in your Makefile that will compile, and then run your program.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>run : $(program)
+        ./$(program)
+</code></pre></div></div>
+<p>Then running</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ make run
+</code></pre></div></div>
+<p>will make sure any changes you’ve made are compiled, and run your program in one go. Also good for testing many inputs at once. Although you probably would just rather write a regular shell script for that.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="is-your-neighbor-too-productive-c-pre-processors-to-the-rescue" class="title-text">Is your neighbor too productive? C pre-processors to the rescue!<a class="anchor title-text" href="#is-your-neighbor-too-productive-c-pre-processors-to-the-rescue">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Use the C pre-processor to redefine common keywords e.g.</p>
+<pre><code class="language-C"><span class="cp">#define if while
+</span>
+</code></pre>
+<p>Protip: Put this line inside one of the standard includes e.g. /usr/include/stdio.h</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="who-needs-functions-when-you-c-have-the-pre-processor" class="title-text">Who needs functions when you C have the pre-processor<a class="anchor title-text" href="#who-needs-functions-when-you-c-have-the-pre-processor">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>OK, so this is more of a gotcha. Be careful when using macros that look like functions…</p>
+<pre><code class="language-C"><span class="cp">#define min(a,b) a&lt;b?a:b
+</span>
+</code></pre>
+<p>A perfectly reasonable definition of a minimum of a and b. However the pre-processor is just a simple
+text wrangler so precedence can bite you:</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>Is expanded to</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>int value = -2&lt;3 ? 2 :3; // Oops.. result will be 2
+</code></pre></div></div>
+<p>A partial fix is to wrap every argument with <code class="highlighter-rouge">()</code> and also the whole expression with ():</p>
+<pre><code class="language-C"><span class="cp">#define min(a,b) (  (a) &lt; (b) ?(a):(b) )
+</span>
+</code></pre>
+<p>However this is still <em>not</em> a function! For example can you see why <code class="highlighter-rouge">min(i++,10)</code> might increment i once or twice!?</p>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/programming-tricks-part-1.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

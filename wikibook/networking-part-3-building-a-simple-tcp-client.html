@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Networking, Part 3: Building a simple TCP Client</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Networking, Part 3: Building a simple TCP Client
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/Networking,-Part-3:-Building-a-simple-TCP-Client">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_socket" href="#socket" class="fancy-link"><code class="highlighter-rouge">socket</code></a></li>
+<li><a id="toc_getaddressinfo" href="#getaddressinfo" class="fancy-link"><code class="highlighter-rouge">getaddressinfo</code></a></li>
+<li><a id="toc_connect" href="#connect" class="fancy-link"><code class="highlighter-rouge">connect</code></a></li>
+<li><a id="toc_readwrite" href="#readwrite" class="fancy-link"><code class="highlighter-rouge">read</code>/<code class="highlighter-rouge">write</code></a></li>
+<li><a id="toc_complete-simple-tcp-client-example" href="#complete-simple-tcp-client-example" class="fancy-link">Complete Simple TCP Client Example</a></li>
+<li><a id="toc_comment-on-http-request-and-response" href="#comment-on-http-request-and-response" class="fancy-link">Comment on HTTP request and response</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="socket" class="title-text">
+<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/socket" class="fancy-link">socket</a></code><a class="anchor title-text" href="#socket">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p><code class="highlighter-rouge">int socket(int domain, int socket_type, int protocol);</code></p>
+<p>Socket creates a socket with domain (e.g. AF_INET for IPv4 or AF_INET6 for IPv6), <code class="highlighter-rouge">socket_type</code> is whether to use UDP or TCP or other socket type, <code class="highlighter-rouge">protocol</code> is an optional choice of protocol configuration (for our examples this we can just leave this as 0 for default). This call creates a socket object in the kernel with which one can communicate with the outside world/network. 
+You can use the result of <code class="highlighter-rouge">getaddressinfo</code> to fill in the <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/socket" class="fancy-link">socket</a></code> parameters, or provide them manually.</p>
+<p>The socket call returns an integer - a file descriptor - and, for TCP clients, you can use it like a regular file descriptor i.e. you can use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/read" class="fancy-link">read</a></code> and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code> to receive or send packets.</p>
+<p>TCP sockets are similar to <code class="highlighter-rouge">pipes</code> except that they allow full duplex communication i.e. you can send and receive data in both directions independently.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="getaddressinfo" class="title-text">
+<code class="highlighter-rouge">getaddressinfo</code><a class="anchor title-text" href="#getaddressinfo">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>We saw this in the last section! You’re experts at this.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="connect" class="title-text">
+<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/connect" class="fancy-link">connect</a></code><a class="anchor title-text" href="#connect">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p><code class="highlighter-rouge">int connectok = connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);</code></p>
+<p>Pass <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/connect" class="fancy-link">connect</a></code> the socket file descriptor, the address you want to connect to and the length in bytes of the address structure. To help identify errors and mistakes it is good practice to check the return value of all networking calls, including <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/connect" class="fancy-link">connect</a></code></p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="readwrite" class="title-text">
+<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/read" class="fancy-link">read</a></code>/<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code><a class="anchor title-text" href="#readwrite">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Once we have a successful connection we can read or write like any old file descriptor. Keep in mind if you are connected to a website, you want to conform to the HTTP protocol specification in order to get any sort of meaningful results back. There are libraries to do this, usually you don’t connect at the socket level because there are other libraries or packages around it.</p>
+<p>The number of bytes read or written may be smaller than expected. Thus it is important to check the return value of read and write.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="complete-simple-tcp-client-example" class="title-text">Complete Simple TCP Client Example<a class="anchor title-text" href="#complete-simple-tcp-client-example">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<pre><code class="language-C"><span class="cp">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;netdb.h&gt;
+#include &lt;unistd.h&gt;
+</span>
+</code></pre>
+<p>Example output:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SENDING: GET / HTTP/1.0
+
+===
+HTTP/1.1 200 OK
+Date: Mon, 27 Oct 2014 19:19:05 GMT
+Server: Apache/2.2.15 (Red Hat) mod_ssl/2.2.15 OpenSSL/1.0.1e-fips mod_jk/1.2.32
+Last-Modified: Fri, 03 Feb 2012 16:51:10 GMT
+ETag: "401b0-49-4b8121ea69b80"
+Accept-Ranges: bytes
+Content-Length: 73
+Connection: close
+Content-Type: text/html
+
+Provided by Web Services at Public Affairs at the University of Illinois
+</code></pre></div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="comment-on-http-request-and-response" class="title-text">Comment on HTTP request and response<a class="anchor title-text" href="#comment-on-http-request-and-response">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The example above demonstrates a request to the server using Hypertext Transfer Protocol.
+A web page (or other resources) are requested using the following request:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET / HTTP/1.0
+
+</code></pre></div></div>
+<p>There are four parts (the method e.g. GET,POST,…); the resource (e.g. / /index.html /image.png); the proctocol “HTTP/1.0” and two new lines (\r\n\r\n)</p>
+<p>The server’s first response line describes the HTTP version used and whether the request is successful using a 3 digit response code:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP/1.1 200 OK
+</code></pre></div></div>
+<p>If the client had requested a non existing file, e.g. <code class="highlighter-rouge">GET /nosuchfile.html HTTP/1.0</code>
+Then the first line includes the response code is the well-known <code class="highlighter-rouge">404</code> response code:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP/1.1 404 Not Found
+</code></pre></div></div>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/networking-part-3-building-a-simple-tcp-client.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

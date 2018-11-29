@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Threads</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Threads
+
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<ul>
+  <li>
+<a href="#threads" class="fancy-link wiki-link">Threads</a>
+    <ul>
+      <li><a href="#processes-vs-threads" class="fancy-link wiki-link">Processes vs threads</a></li>
+      <li>
+<a href="#thread-internals" class="fancy-link wiki-link">Thread Internals</a>
+        <ul>
+          <li><a href="#how-many-threads-can-my-process-have" class="fancy-link wiki-link">How many threads can my process have?</a></li>
+        </ul>
+      </li>
+      <li><a href="#simple-usage" class="fancy-link wiki-link">Simple Usage</a></li>
+      <li><a href="#more-pthread-functions" class="fancy-link wiki-link">Pthread Functions</a></li>
+      <li>
+<a href="#race-conditions" class="fancy-link wiki-link">Race Conditions</a>
+        <ul>
+          <li><a href="#how-can-i-find-out-more" class="fancy-link wiki-link">How can I find out more?</a></li>
+          <li><a href="#embarrassingly-parallel-problems" class="fancy-link wiki-link">Embarrassingly Parallel Problems</a></li>
+          <li><a href="#another-problem-parallel-map" class="fancy-link wiki-link">Another problem, Parallel Map</a></li>
+          <li><a href="#scheduling" class="fancy-link wiki-link">Scheduling</a></li>
+          <li><a href="#other-problems" class="fancy-link wiki-link">Other Problems</a></li>
+        </ul>
+      </li>
+      <li><a href="#topics" class="fancy-link wiki-link">Topics</a></li>
+      <li><a href="#questions" class="fancy-link wiki-link">Questions</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p>[1][] <span> </span></p>
+
+
+
+<p>A thread is short for ‘thread-of-execution’. It represents the sequence of instructions that the CPU has (and will) execute. To remember how to return from function calls, and to store the values of automatic variables and parameters a thread uses a stack. A thread is a process (meaning that creating a thread is similar to <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code></span>) except there is <strong>no copying</strong> meaning no copy on write. What this allows is for a process to share the same address space, variables, heap, file descriptors and etc. The actual system call to create a thread is similar to <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code></span>; it’s <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/clone" class="fancy-link">clone</a></code></span>. We won’t go into the specifics but you can read the <a href="http://man7.org/linux/man-pages/man2/clone.2.html" class="fancy-link wiki-link">man pages</a> keeping in mind that it is outside the direct scope of this course. LWP or threads are preferred to forking for a lot of scenarios because there is a lot less overhead creating them. But in some cases (notably python uses this) multiprocessing is the way to make your code faster.</p>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="processes-vs-threads" class="title-text">Processes vs threads<a class="anchor title-text" href="#processes-vs-threads">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Creating separate processes is useful when</p>
+<ul>
+  <li>
+    <p>When more security is desired. For example, Chrome browser uses different processes for different tabs.</p>
+  </li>
+  <li>
+    <p>When running an existing and complete program then a new process is required (e.g. starting ‘gcc’)</p>
+  </li>
+  <li>
+    <p>When you are running into synchronization primitives and each process is operating on something in the system.</p>
+  </li>
+  <li>
+    <p>When you have too many threads – the kernel tries to schedule all the threads near each other which could cause more harm than good.</p>
+  </li>
+  <li>
+    <p>When you don’t want to worry about race conditions</p>
+  </li>
+  <li>
+    <p>If one thread blocks in a task (say IO) then all threads block. Processes don’t have that same restriction.</p>
+  </li>
+  <li>
+    <p>When the amount of communication is minimal enough that simple IPC needs to be used.</p>
+  </li>
+</ul>
+<p>On the other hand, creating threads is more useful when</p>
+<ul>
+  <li>
+    <p>You want to leverage the power of a multi-core system to do one task</p>
+  </li>
+  <li>
+    <p>When you can’t deal with the overhead of processes</p>
+  </li>
+  <li>
+    <p>When you want communication between the processes simplified</p>
+  </li>
+  <li>
+    <p>When you want to threads to be part of the same process</p>
+  </li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="thread-internals" class="title-text">Thread Internals<a class="anchor title-text" href="#thread-internals">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Your main function (and other functions you might call) has automatic variables. We will store them in memory using a stack and keep track of how large the stack is by using a simple pointer (the “stack pointer”). If the thread calls another function, we move our stack pointer down, so that we have more space for parameters and automatic variables. Once it returns from a function, we can move the stack pointer back up to its previous value. We keep a copy of the old stack pointer value - on the stack! This is why returning from a function is very quick - it’s easy to ‘free’ the memory used by automatic variables - we just need to change the stack pointer.</p>
+<p>In a multi threaded program, there are multiple stack but only one address space. The pthread library allocates some stack space (either in the heap or using a part of the main program’s stack) and uses the <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/clone" class="fancy-link">clone</a></code></span> function call to start the thread at that stack address.</p>
+<p><img src="https://raw.githubusercontent.com/illinois-cs241/wikibook-project/master/threads/images/thread_stack.png" alt="Thread address space"></p>
+<h3 id="how-many-threads-can-my-process-have" class="title-text">How many threads can my process have?</h3>
+<p>You can have more than one thread running inside a process. You get the first thread for free! It runs the code you write inside ‘main’. If you need more threads you can call <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_create" class="fancy-link">pthread_create</a></code></span> to create a new thread using the pthread library. You’ll need to pass a pointer to a function so that the thread knows where to start.</p>
+<p>The threads you create all live inside the same virtual memory because they are part of the same process. Thus they can all see the heap, the global variables and the program code etc. Thus you can have two (or more) CPUs working on your program at the same time and inside the same process. It’s up to the operating system to assign the threads to CPUs. If you have more active threads than CPUs then the kernel will assign the thread to a CPU for a short duration (or until it runs out of things to do) and then will automatically switch the CPU to work on another thread. For example, one CPU might be processing the game AI while another thread is computing the graphics output.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="simple-usage" class="title-text">Simple Usage<a class="anchor title-text" href="#simple-usage">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>To use pthreads you will need to include <span><code class="highlighter-rouge">pthread.h</code></span> and compile with <span><code class="highlighter-rouge">-pthread</code></span> (or <span><code class="highlighter-rouge">-lpthread</code></span>) compiler option. This option tells the compiler that your program requires threading support. To create a thread use the function <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_create" class="fancy-link">pthread_create</a></code></span>. This function takes four arguments:</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<ul>
+  <li>
+    <p>The first is a pointer to a variable that will hold the id of the newly created thread.</p>
+  </li>
+  <li>
+    <p>The second is a pointer to attributes that we can use to tweak and tune some of the advanced features of pthreads.</p>
+  </li>
+  <li>
+    <p>The third is a pointer to a function that we want to run</p>
+  </li>
+  <li>
+    <p>Fourth is a pointer that will be given to our function</p>
+  </li>
+</ul>
+<p>The argument <span><code class="highlighter-rouge">void *(*start_routine) (void *)</code></span> is difficult to read! It means a pointer that takes a <span><code class="highlighter-rouge">void *</code></span> pointer and returns a <span><code class="highlighter-rouge">void *</code></span> pointer. It looks like a function declaration except that the name of the function is wrapped with <span><code class="highlighter-rouge">(* .... )</code></span></p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>In the above example, <span><code class="highlighter-rouge">result</code></span> will be <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/4/null" class="fancy-link">null</a></code></span> because the busy function returned <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/4/null" class="fancy-link">null</a></code></span>. We need to pass the address-of result because <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_join" class="fancy-link">pthread_join</a></code></span> will be writing into the contents of our pointer.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="pthread-functions" class="title-text">Pthread Functions<a class="anchor title-text" href="#pthread-functions">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>
+    <p><span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_create" class="fancy-link">pthread_create</a></code></span>. Creates a new thread. Every thread that gets created gets a new stack. For example if you call <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_create" class="fancy-link">pthread_create</a></code></span> twice, Your process will contain three stacks - one for each thread. The first thread is created when the process starts, and you created two more. Actually there can be more stacks than this, but let’s keep it simple. The important idea is that each thread requires a stack because the stack contains automatic variables and the old CPU PC register, so that it can back to executing the calling function after the function is finished.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cancel" class="fancy-link">pthread_cancel</a></code></span> stops a thread. Note the thread may not actually be stopped immediately. For example it can be terminated when the thread makes an operating system call (e.g. <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code></span>). In practice, <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cancel" class="fancy-link">pthread_cancel</a></code></span> is rarely used because it does not give a thread an opportunity to clean up after itself (for example, it may have opened some files). An alternative implementation is to use a boolean (int) variable whose value is used to inform other threads that they should finish and clean up.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">pthread_exit(void *)</code></span> stops the calling thread i.e. the thread never returns after calling <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_exit" class="fancy-link">pthread_exit</a></code></span>. The pthread library will automatically finish the process if there are no other threads running. <span><code class="highlighter-rouge">pthread_exit(...)</code></span> is equivalent to returning from the thread’s function; both finish the thread and also set the return value (void *pointer) for the thread. Calling <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_exit" class="fancy-link">pthread_exit</a></code></span> in the the <span><code class="highlighter-rouge">main</code></span> thread is a common way for simple programs to ensure that all threads finish. For example, in the following program, the <span><code class="highlighter-rouge">myfunc</code></span> threads will probably not have time to get started. On the other hand <span><code class="highlighter-rouge">exit()</code></span> exits the entire process and sets the processes exit value. This is equivalent to <span><code class="highlighter-rouge">return ();</code></span> in the main method. All threads inside the process are stopped. Note the <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_exit" class="fancy-link">pthread_exit</a></code></span> version creates thread zombies, however this is not a long-running processes, so we don’t care.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">pthread_join()</code></span> waits for a thread to finish and records its return value. Finished threads will continue to consume resources. Eventually, if enough threads are created, <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_create" class="fancy-link">pthread_create</a></code></span> will fail. In practice, this is only an issue for long-running processes but is not an issue for simple, short-lived processes as all thread resources are automatically freed when the process exits. This is equivalent to turning your children into zombies, so keep this in mind for long running processes. In the exit example, we could also wait on all the threads.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p>You’ve heard about this already, but how can a thread be terminated?</p>
+
+    <ul>
+      <li>
+        <p>Returning from the thread function</p>
+      </li>
+      <li>
+        <p>Calling <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_exit" class="fancy-link">pthread_exit</a></code></span></p>
+      </li>
+      <li>
+        <p>Cancelling the thread with <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cancel" class="fancy-link">pthread_cancel</a></code></span></p>
+      </li>
+      <li>
+        <p>Terminating the process (e.g. SIGTERM); exit(); returning from <span><code class="highlighter-rouge">main</code></span></p>
+      </li>
+    </ul>
+  </li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="race-conditions" class="title-text">Race Conditions<a class="anchor title-text" href="#race-conditions">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Race conditions are whenever the outcome of a program is determined by its sequence of events. Meaning that the same program can run multiple times and depending on how the kernel schedules the threads could produce inaccurate results. Take for example this race condition with one thread. We create a stack variable and pass it to our pthread function.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pthread_t start_threads() {
+  int start = 42;
+  pthread_t tid;
+  pthread_create(&amp;tid, 0, myfunc, &amp;start); // ERROR!
+  return tid;
+}
+</code></pre></div></div>
+<p>The above code is invalid because the function <span><code class="highlighter-rouge">start_threads</code></span> will likely return before <span><code class="highlighter-rouge">myfunc</code></span> even starts. The function passes the address-of <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/start" class="fancy-link">start</a></code></span>, however by the time <span><code class="highlighter-rouge">myfunc</code></span> is executes, <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/start" class="fancy-link">start</a></code></span> is no longer in scope and its address will re-used for another variable. This ia race condition because there is a situation where the thread that called pthread_create could be suspended indefinitely, and the code actually works. One way we can fix this is keep the function from returning before the thread finishes.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>void start_threads() {
+  int start = 42;
+  void *result;
+  pthread_t tid;
+  pthread_create(&amp;tid, 0, myfunc, &amp;start); // OK - start will be valid!
+  pthread_join(tid, &amp;result);
+}
+</code></pre></div></div>
+<p>Here is another small race condition. The following code is supposed to start ten threads with values 0,1,2,3,…9 However, when run prints out <span><code class="highlighter-rouge">1 7 8 8 8 8 8 8 8 10</code></span>! Can you see why?</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>The above code suffers from a <span><code class="highlighter-rouge">race condition</code></span> - the value of i is changing. The new threads start later (in the example output the last thread starts after the loop has finished). To overcome this race-condition, we will give each thread a pointer to it’s own data area. For example, for each thread we may want to store the id, a starting value and an output value. We will instead treat i as a pointer and cast it by value.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Some functions e.g. asctime, getenv, strtok, strerror not thread-safe. Let’s look at a simple function that is also not ‘thread-safe’ The result buffer could be stored in global memory. This is good - we wouldn’t want to return a pointer to an invalid address on the stack, but there’s only one result buffer in the entire memory. If two threads were to use it at the same time then one would corrupt the other:</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>There are ways around this like using synchronization locks. These are synchronization locks that are used to prevent race conditions and ensure proper synchronization between threads running in the same program. In addition, these locks are conceptually identical to the primitives used inside the kernel.</p>
+<p>In case you were wondering, you can fork inside a process with multiple threads! However, the child process only has a single thread, which is a clone of the thread that called <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code></span>. We can see this as a simple example, where the background threads never print out a second message in the child process.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>8970:New Thread One starting up...
+8970:fork()ing complete
+8973:fork()ing complete
+8970:New Thread Two starting up...
+8970:New Thread Two finishing...
+8970:New Thread One finishing...
+8970:Main thread finished
+8973:Main thread finished
+</code></pre></div></div>
+<p>In practice, creating threads before forking can lead to unexpected errors because (as demonstrated above) the other threads are immediately terminated when forking. Another thread might have just lock a mutex (e.g. by calling malloc) and never unlock it again. Advanced users may find <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_atfork" class="fancy-link">pthread_atfork</a></code></span> useful however we suggest you usually try to avoid creating threads before forking unless you fully understand the limitations and difficulties of this approach.</p>
+<h3 id="how-can-i-find-out-more" class="title-text">How can I find out more?</h3>
+<ul>
+  <li>
+    <p><a href="http://man7.org/linux/man-pages/man3/pthread_create.3.html" class="fancy-link wiki-link">man page</a></p>
+  </li>
+  <li>
+    <p><a href="http://man7.org/linux/man-pages/man7/pthreads.7.html" class="fancy-link wiki-link">pthread reference guide</a></p>
+  </li>
+  <li>
+    <p><a href="http://www.thegeekstuff.com/2012/04/terminate-c-thread/" class="fancy-link wiki-link">Concise third party sample code explaining create, join and exit</a></p>
+  </li>
+</ul>
+<h3 id="embarrassingly-parallel-problems" class="title-text">Embarrassingly Parallel Problems</h3>
+<p>The study of parallel algorithms has exploded over the past few years. An embarrassingly parallel problem is any problem that needs little effort to turn parallel. A lot of them have some synchronization concepts with them but not always. You already know a parallelizable algorithm, Merge Sort!</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>With your new understanding of threads, all you need to do is create a thread for the left half, and one for the right half. Given that your CPU has multiple real cores, you will see a speedup in accordance with <a href="https://en.wikipedia.org/wiki/Amdahl's_law" class="fancy-link wiki-link">Amdahl’s Law</a>. The time complexity analysis gets interesting here as well. The parallel algorithm runs in (O(\log^3(n))) running time (because we fancy analysis assuming that we have a lot of cores.</p>
+<p>In practice though, we typically do two changes. One, once the array gets small enough, we ditch the parallel mergesort algorithm and do a quicksort or other algorithm that works fast on small arrays (something something cache coherency). The other thing that we know is that CPUs don’t have infinite cores. To get around that, we typically keep a worker pool. You won’t see the speedup right away because of things like cache coherency and scheduling extra threads.</p>
+<h3 id="another-problem-parallel-map" class="title-text">Another problem, Parallel Map</h3>
+<p>Say we want to apply a function to an entire array, one element at a time.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Since none of the elements depend on any other element, how would you go about parallelizing this? What do you think would be the best way to split up the work between threads.</p>
+<h3 id="scheduling" class="title-text">Scheduling</h3>
+<p>There are a few ways to split up the work.</p>
+<ul>
+  <li>
+    <p><span><code class="highlighter-rouge">static scheduling</code></span> break up the problems into fixed size chunks (predetermined) and have each thread work on each of the chunks. This works well when each of the subproblems take roughly the same time because there is no additional overhead. All you need to do is write a loop and give the map function to each subarray.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">dynamic scheduling</code></span> as a new problem becomes available have a thread serve it. This is useful when you don’t know how long the scheduling will take</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">guided scheduling</code></span> This is a mix of the above with a mix of the benefits and the tradeoffs. You start with a static scheduling and move slowly to dynamic if needed</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">runtime scheduling</code></span> You have absolutely no idea how long the problems are going to take. Instead of deciding it yourself, let the program decide what to do!</p>
+  </li>
+</ul>
+<p><a href="https://software.intel.com/en-us/articles/openmp-loop-scheduling" class="fancy-link wiki-link">source</a>, but no need to memorize.</p>
+<h3 id="other-problems" class="title-text">Other Problems</h3>
+<p>From <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel" class="fancy-link wiki-link">Wikipedia</a></p>
+<ul>
+  <li>
+    <p>Serving static files on a webserver to multiple users at once.</p>
+  </li>
+  <li>
+    <p>The Mandelbrot set, Perlin noise and similar images, where each point is calculated independently.</p>
+  </li>
+  <li>
+    <p>Rendering of computer graphics. In computer animation, each frame may be rendered independently (see parallel rendering).</p>
+  </li>
+  <li>
+    <p>Brute-force searches in cryptography.</p>
+  </li>
+  <li>
+    <p>Notable real-world examples include distributed.net and proof-of-work systems used in cryptocurrency.</p>
+  </li>
+  <li>
+    <p>BLAST searches in bioinformatics for multiple queries (but not for individual large queries)</p>
+  </li>
+  <li>
+    <p>Large scale facial recognition systems that compare thousands of arbitrary acquired faces (e.g., a security or surveillance video via closed-circuit television) with similarly large number of previously stored faces (e.g., a rogues gallery or similar watch list).</p>
+  </li>
+  <li>
+    <p>Computer simulations comparing many independent scenarios, such as climate models.</p>
+  </li>
+  <li>
+    <p>Evolutionary computation metaheuristics such as genetic algorithms.</p>
+  </li>
+  <li>
+    <p>Ensemble calculations of numerical weather prediction.</p>
+  </li>
+  <li>
+    <p>Event simulation and reconstruction in particle physics.</p>
+  </li>
+  <li>
+    <p>The marching squares algorithm</p>
+  </li>
+  <li>
+    <p>Sieving step of the quadratic sieve and the number field sieve.</p>
+  </li>
+  <li>
+    <p>Tree growth step of the random forest machine learning technique.</p>
+  </li>
+  <li>
+    <p>Discrete Fourier Transform where each harmonic is independently calculated.</p>
+  </li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="topics" class="title-text">Topics<a class="anchor title-text" href="#topics">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>
+    <p>pthread lifecycle</p>
+  </li>
+  <li>
+    <p>Each thread has a stack</p>
+  </li>
+  <li>
+    <p>Capturing return values from a thread</p>
+  </li>
+  <li>
+    <p>Using <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_join" class="fancy-link">pthread_join</a></code></span></p>
+  </li>
+  <li>
+    <p>Using <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_create" class="fancy-link">pthread_create</a></code></span></p>
+  </li>
+  <li>
+    <p>Using <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_exit" class="fancy-link">pthread_exit</a></code></span></p>
+  </li>
+  <li>
+    <p>Under what conditions will a process exit</p>
+  </li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="questions" class="title-text">Questions<a class="anchor title-text" href="#questions">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>
+    <p>What happens when a pthread gets created? (you don’t need to go into super specifics)</p>
+  </li>
+  <li>
+    <p>Where is each thread’s stack?</p>
+  </li>
+  <li>
+    <p>How do you get a return value given a <span><code class="highlighter-rouge">pthread_t</code></span>? What are the ways a thread can set that return value? What happens if you discard the return value?</p>
+  </li>
+  <li>
+    <p>Why is <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_join" class="fancy-link">pthread_join</a></code></span> important (think stack space, registers, return values)?</p>
+  </li>
+  <li>
+    <p>What does <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_exit" class="fancy-link">pthread_exit</a></code></span> do under normal circumstances (ie you are not the last thread)? What other functions are called when you call pthread_exit?</p>
+  </li>
+  <li>
+    <p>Give me three conditions under which a multithreaded process will exit. Can you think of any more?</p>
+  </li>
+  <li>
+    <p>What is an embarrassingly parallel problem?</p>
+  </li>
+</ul></div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook_project/Threads.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

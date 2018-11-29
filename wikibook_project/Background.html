@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Background</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Background
+
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<ul>
+  <li>
+<a href="#background" class="fancy-link wiki-link">Background</a>
+    <ul>
+      <li>
+<a href="#systems-architecture" class="fancy-link wiki-link">Systems Architecture</a>
+        <ul>
+          <li><a href="#assembly" class="fancy-link wiki-link">Assembly</a></li>
+          <li><a href="#atomic-operations" class="fancy-link wiki-link">Atomic Operations</a></li>
+          <li><a href="#caching" class="fancy-link wiki-link">Caching</a></li>
+          <li><a href="#interrupts" class="fancy-link wiki-link">Interrupts</a></li>
+          <li><a href="#optional-out-of-order-instructions" class="fancy-link wiki-link">Optional: Out of order instructions</a></li>
+          <li><a href="#optional-hyperthreading" class="fancy-link wiki-link">Optional: Hyperthreading</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="#the-hitchhikers-guide-to-debugging-c-programs" class="fancy-link wiki-link">The Hitchhiker’s Guide to Debugging C Programs</a>
+        <ul>
+          <li><a href="#clean-code" class="fancy-link wiki-link">Clean code</a></li>
+          <li><a href="#asserts" class="fancy-link wiki-link">Asserts!</a></li>
+          <li><a href="#printfs" class="fancy-link wiki-link">printfs</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="#valgrind" class="fancy-link wiki-link">Valgrind</a>
+        <ul>
+          <li><a href="#tsan" class="fancy-link wiki-link">TSAN</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="#gdb" class="fancy-link wiki-link">GDB</a>
+        <ul>
+          <li><a href="#setting-breakpoints-programmatically" class="fancy-link wiki-link">Setting breakpoints programmatically</a></li>
+          <li><a href="#checking-memory-content" class="fancy-link wiki-link">Checking memory content</a></li>
+          <li><a href="#failing-fast" class="fancy-link wiki-link">Failing Fast</a></li>
+          <li><a href="#searching-for-errors" class="fancy-link wiki-link">Searching for Errors</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="#homework-0" class="fancy-link wiki-link">Homework 0</a>
+        <ul>
+          <li><a href="#so-you-want-to-master-system-programming-and-get-a-better-grade-than-b" class="fancy-link wiki-link">So you want to master System Programming? And get a better grade than B?</a></li>
+          <li><a href="#watch-the-videos-and-write-up-your-answers-to-the-following-questions" class="fancy-link wiki-link">Watch the videos and write up your answers to the following questions</a></li>
+          <li><a href="#chapter-1" class="fancy-link wiki-link">Chapter 1</a></li>
+          <li><a href="#chapter-2" class="fancy-link wiki-link">Chapter 2</a></li>
+          <li><a href="#chapter-3" class="fancy-link wiki-link">Chapter 3</a></li>
+          <li><a href="#chapter-4" class="fancy-link wiki-link">Chapter 4</a></li>
+          <li><a href="#chapter-5" class="fancy-link wiki-link">Chapter 5</a></li>
+          <li><a href="#c-development" class="fancy-link wiki-link">C Development</a></li>
+          <li><a href="#optional-just-for-fun" class="fancy-link wiki-link">Optional: Just for fun</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="#uiuc-specific-guidlines" class="fancy-link wiki-link">UIUC Specific Guidlines</a>
+        <ul>
+          <li><a href="#piazza" class="fancy-link wiki-link">Piazza</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>[1][] <span> </span></p>
+
+
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="systems-architecture" class="title-text">Systems Architecture<a class="anchor title-text" href="#systems-architecture">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>For those of you taking this course at the University of Illinois at Urbana Champaign, some of you may be taking it concurrently with our Computer Architecture course – CS 233. Although requirements say that you may take them concurrently, we’d thought it’d be a good idea to fill you in on some of the concepts that come up in systems programming.</p>
+<h3 id="assembly" class="title-text">Assembly</h3>
+<p>What is assembly? Assumbly is the lowest that you’ll get to machine language without writing 1’s and 0’s. Each computer has an architecture, and that architecture has an associated assembly language. Each assembly command has a 1:1 mapping to a set of 1’s and 0’s that tell the computer exactly what to do. For example the following in the widely used x86 Assembly language add one to the memory address 20.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>add BYTE PTR [0x20], 1
+</code></pre></div></div>
+<p>Why do we mention this? Because it is important that although you are going to be doing most of this class in C That this is what the code is translated into. Serious implications arise for race conditions and atomic operations.</p>
+<h3 id="atomic-operations" class="title-text">Atomic Operations</h3>
+<p>An operation is atomic if no other processor should interrupt it. Take for example the above assembly code to add one to a register. In the architecture, it may actually have a few different steps on the circuit. The operation may start by fetching the value of the memory from the stick of ram, then storing it in the cache or a register, and then finally writing back. The problem comes in if two processors try to do it at the same time. The two processors could (at the same time) copy the value of the memory address, add one, and store the same result back. Resulting in the value only being incremented once. That is why we have a special set of instructions on modern systems called atomic operations. If an instruction is atomic, it makes sure that only one processor or thread performs any intermediate step at a time. With x86 this is done by the <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/2/lock" class="fancy-link">lock</a></code></span> prefix.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lock add BYTE PTR [0x20], 1
+</code></pre></div></div>
+<p>Why don’t we do this for everything? It makes commands slower! If every time a computer does something it has to make sure that the other cores or processors aren’t doing anything, it’ll be much slower. Most of the time we differentiate these.</p>
+<h3 id="caching" class="title-text">Caching</h3>
+<p>Ah yes Caching. One of computer science’s greatest problems. Caching that we are referring is processor caching. Whenever you do a memory access if the particular address is already in the cache then the processor will perform the operation on the cache (such as adding) and update the actual memory later because updating memory is slow. If it isn’t, the processor requests a chunk of memory from the the memory chip and stores it in cache, kicking out the least recently used page (roughly). This is done because the processor cache is roughly ten times faster to reach than the memory in terms of time. Naturally this leads to problems because there are two different copies of the same value. This isn’t a class about caching, just know how this could impact your code.</p>
+<h3 id="interrupts" class="title-text">Interrupts</h3>
+<p>Interrupts are a very important part of system programming. An interrupt is internally an electrical signal that is delivered to the processor when something happens – this is hardware interrupt. Then the hardware decides if this is something that it should handle (i.e. handling keyboard or mouse input for older keyboard and mouses) or it should pass to the operating system. The operating system then decides if this is something that it should handle (i.e. paging a memory table from disk) or something the application should handle (i.e. a SEGFAULT). The application then decides if it is an error (SEGFAULT) or not (SIGPIPE for example) and reports to the user. Applications can also send signals to the kernel and to the hardware as well.</p>
+<p>An important application of this is this is how system calls are served! There is a well established set of registers that the arguments go in according to the kernel as well as a system call “number” again defined by the kernel. Then the operating system triggers an interrupt which the kernel catches and serves the system call.</p>
+<h3 id="optional-out-of-order-instructions" class="title-text">Optional: Out of order instructions</h3>
+<p>For those of you who have and haven’t taken the systems architecture course, you may not have heard about out of order instruction execution. Out of order execution is an amazing development by processors recently. Processors now instead of executing a sequence of instructions (let’s say assigning a variable and then another variable) execute instructions before the current one is done. This is because modern processors spend a lot of time waiting for memory accesses and other I/O driven applications. This means that a processor while it is waiting for an operation to complete will execute the next few operations. If any of the operations would possibly alter the previous operation or there is a barrier, the processor will not reorder the instructions.</p>
+<p>This naturally has allowed CPUs to become more energy efficient while executing more instructions in real time but naturally comes with security risks and more complex architectures. Where system programmers are worried is that (this is discussed in later chapters) operationg with mutex locks among threads are out of order – meaning that a software implementation of a mutex will not work without copious memory barriers. Basically, the programmer has to adopt the mental model of updates may not be seen among a series of threads without a barrier on modern processors.</p>
+<p>One of the most prominent bugs with respect to this is Spectre. Spectre is a bug where instructions that otherwise wouldn’t be executed are due to out of order instruction execution. Here is an example</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Let’s anaylze this code. The first loop allocates 9 elements through a valid malloc. The last element is <span><code class="highlighter-rouge">0xCAFE</code></span>, meaning a dereference should result in a segfault. For the first 9 iterations, the branch is taken and the second branch in the dereference (the question mark) also returns the first value. The interesting part happens in the last iteration. The resulting behavior of the program is to skip the last iteration and <span><code class="highlighter-rouge">val</code></span> never gets asisgned the last previous value.</p>
+<p>But under the right compilation conditions and compiler flags, the instructions will get out of order executed. The processor thinks that the branch will be taken – it has been taken in the last 9 iterations. As such the processor will load that code up. Due to out of order instruction execution, while the value of i is being fetched from memory – we have to force it not to be in a register – the processor will try to dereference that address. Naturally that should result in a segfault, but since the address was never logically reached by the program the result is just discarded.</p>
+<p>Now here is the trick. Even though the value of the calculation would’ve resulted in a segfault, the bug doesn’t clear the cache that refers to the physical memory where 0xCAFE is located (this not an exact explanation, but essentially how it works) SInce it is still in the cache, if you again trick the processor to read form the cache using <span><code class="highlighter-rouge">val</code></span> then you will read a memory value that you wouldn’t be able to read normally. This includes important information like passwords, payment info etc etc.</p>
+<h3 id="optional-hyperthreading" class="title-text">Optional: Hyperthreading</h3>
+<p>Hyperthreading is a new technology and is in no way shape or form multithreading. Hyperthreading is allowing one physical core appear as many virtual cores to the operating system The operating system can then schedule processes on these virtual cores and one core will execute them. Each core interleaves processes. While the core is waiting for one memory access to complete, it may perform a few instructions of another process. The overal result is more instructions executed in a shorter time. This is also potentially means that you can divide the number of cores you need to power smaller devices.</p>
+<p>There be dragons here though. With hyperthreading, you must be wary of optimizations. A famous hyperthreading bug that caused programs to crash if at least two processes was scheduled on a physical core, using specific registers, in a tight loop. The actual problem is better explained through an architecture lens. But, the actual application was found through systems programmers working on OCaml’s mainline. <a href="http://gallium.inria.fr/blog/intel-skylake-bug/" class="fancy-link wiki-link">http://gallium.inria.fr/blog/intel-skylake-bug/</a></p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="the-hitchhikers-guide-to-debugging-c-programs" class="title-text">The Hitchhiker’s Guide to Debugging C Programs<a class="anchor title-text" href="#the-hitchhikers-guide-to-debugging-c-programs">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>This is going to be a massive guide to helping you debug your C programs. There are different levels that you can check errors and we will be going through most of them. Feel free to add anything that you found helpful in debugging C programs including but not limited to, debugger usage, recognizing common error types, gotchas, and effective googling tips.</p>
+<h3 id="clean-code" class="title-text">Clean code</h3>
+<p>Make your code modular using helper functions. If there is a repeated task (getting the pointers to contiguous blocks in the malloc MP, for example), make them helper functions. And make sure each function does one thing very well, so that you don’t have to debug twice.</p>
+<p>Let’s say that we are doing selection sort by finding the minimum element each iteration like so,</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Many can see the bug in the code, but it can help to refactor the above method into</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>And the error is specifically in one function. In the end, we are not a class about refactoring/debugging your code. In fact, most kernel code is so atrocious that you don’t want to read it. But for the sake of debugging, it may benefit you in the long run to adopt some of these practices.</p>
+<h3 id="asserts" class="title-text">Asserts!</h3>
+<p>Use assertions to make sure your code works up to a certain point – and importantly, to make sure you don’t break it later. For example, if your data structure is a doubly linked list, you can do something like <code class="highlighter-rouge">assert(node-&gt;size == node-&gt;next-&gt;prev-&gt;size)</code> to assert that the next node has a pointer to the current node. You can also check the pointer is pointing to an expected range of memory address, not null, -&gt;size is reasonable etc. The <code class="highlighter-rouge">NDEBUG</code> macro will disable all assertions, so don’t forget to set that once you finish debugging. <a href="http://www.cplusplus.com/reference/cassert/assert/" class="fancy-link wiki-link">assert link</a></p>
+<p>Here’s a quick example with assert. Let’s say that I’m writing code using memcpy</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>This check can be turned off at compile time, but will save you <strong>tons</strong> of trouble debugging!</p>
+<h3 id="printfs" class="title-text">printfs</h3>
+<p>When all else fails, print like crazy! Each of your functions should have an idea of what it is going to do (ie find_min better find the minimum element). You want to test that each of your functions is doing what it set out to do and see exactly where your code breaks. In the case with race conditions, tsan may be able to help, but having each thread print out data at certain times could help you identify the race condition.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="valgrind" class="title-text">Valgrind<a class="anchor title-text" href="#valgrind">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Valgrind is a suite of tools designed to provide debugging and profiling tools to make your programs more correct and detect some runtime issues. The most used of these tools is Memcheck, which can detect many memory-related errors that are common in C and C++ programs and that can lead to crashes and unpredictable behaviour (for example, unfreed memory buffers). To run Valgrind on your program:</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Arguments are optional and the default tool that will run is Memcheck. The output will be presented in form of number of allocations, number of freed allocations, and the number of errors.Suppose we have a simple program like this:</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>This program compiles and run with no errors. Let’s see what Valgrind will output.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p><strong>Invalid write</strong>: It detected our heap block overrun, writing outside of allocated block.</p>
+<p><strong>Definitely lost</strong>: Memory leak — you probably forgot to free a memory block.</p>
+<p>Valgrind is a very effective tool to check for errors at runtime. C is very special when it comes to such behavior, so after compiling your program you can use Valgrind to fix errors that your compiler may not catch and that usually happen when your program is running.</p>
+<p>For more information, you can refer to the <a href="http://valgrind.org/docs/manual/quick-start.html" class="fancy-link wiki-link">valgrind website</a>.</p>
+<h3 id="tsan" class="title-text">TSAN</h3>
+<p>ThreadSanitizer is a tool from Google, built into clang and gcc, to help you detect race conditions in your code. For more information about the tool, see the Github wiki. Note, that running with tsan will slow your code down a bit. Consider the following code.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>We can see that there is a race condition on the variable <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/global" class="fancy-link">global</a></code>. Both the main thread and the thread created with will try to change the value at the same time. But, does ThreadSantizer catch it?</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>If we compiled with the debug flag, then it would give us the variable name as well.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="gdb" class="title-text">GDB<a class="anchor title-text" href="#gdb">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p><a href="http://www.cs.cmu.edu/~gilpin/tutorial/" class="fancy-link wiki-link">Introduction to gdb</a></p>
+<div class="pad"><div class="card">
+<h5 id="setting-breakpoints-programmatically">Setting breakpoints programmatically</h5>
+
+<p>A very useful trick when debugging complex C programs with GDB is setting breakpoints in the source code.</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+</div></div>
+<div class="pad"><div class="card">
+<h5 id="checking-memory-content">Checking memory content</h5>
+
+<p><a href="http://www.delorie.com/gnu/docs/gdb/gdb_56.html" class="fancy-link wiki-link">Memory Content</a></p>
+
+<p>For example,</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gcc main.c -g -o main &amp;&amp; ./main
+$ Cat ZVQ� $
+
+(gdb) l
+1 #include &lt;stdio.h&gt;
+2 int main() {
+3     char bad_string[3] = {'C', 'a', 't'};
+4     printf("%s", bad_string);
+5 }
+(gdb) b 4
+Breakpoint 1 at 0x100000f57: file main.c, line 4.
+(gdb) r
+[...]
+Breakpoint 1, main () at main.c:4
+4     printf("%s", bad_string);
+(gdb) x/16xb bad_string
+0x7fff5fbff9cd: 0x63  0x61  0x74  0xe0  0xf9  0xbf  0x5f  0xff
+0x7fff5fbff9d5: 0x7f  0x00  0x00  0xfd  0xb5  0x23  0x89  0xff
+
+(gdb)
+</code></pre></div></div>
+
+<p>Here, by using the <code class="highlighter-rouge">x</code> command with parameters <code class="highlighter-rouge">16xb</code>, we can see that starting at memory address <code class="highlighter-rouge">0x7fff5fbff9c</code> (value of <code class="highlighter-rouge">bad_string</code>), <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code> would actually see the following sequence of bytes as a string because we provided a malformed string without a null terminator.</p>
+
+<p>What do you actually use to run your program? A shell! A shell is a programming language that is running inside your terminal. A terminal is merely a window to input commands. Now, on POSIX we usually have one shell called <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/sh" class="fancy-link">sh</a></code></span> that is linked to a POSIX compliant shell called <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/dash" class="fancy-link">dash</a></code></span>. Most of the time, you use a shell called <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/bash" class="fancy-link">bash</a></code></span> that is not entirely POSIX compliant but has some nifty built in features. If you want to be even more advanced, <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/zsh" class="fancy-link">zsh</a></code></span> has some more powerful features like tab complete on programs and fuzzy patterns, but that is neither here nor there.</p>
+
+<h3 id="failing-fast" class="title-text">Failing Fast</h3>
+
+<h3 id="searching-for-errors" class="title-text">Searching for Errors</h3>
+
+</div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="homework-0" class="title-text">Homework 0<a class="anchor title-text" href="#homework-0">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="so-you-want-to-master-system-programming-and-get-a-better-grade-than-b" class="title-text">So you want to master System Programming? And get a better grade than B?</h3>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="watch-the-videos-and-write-up-your-answers-to-the-following-questions" class="title-text">Watch the videos and write up your answers to the following questions</h3>
+<p><strong>Important!</strong></p>
+<p>The virtual machine-in-your-browser and the videos you need for HW0 are here:</p>
+<p><a href="http://cs-education.github.io/sys/" class="fancy-link wiki-link">http://cs-education.github.io/sys/</a></p>
+<p>Questions? Comments? Use Piazza: <a href="https://piazza.com/illinois/fall2018/cs241" class="fancy-link wiki-link">https://piazza.com/illinois/fall2018/cs241</a></p>
+<p>The in-browser virtual machine runs entirely in Javascript and is fastest in Chrome. Note the VM and any code you write is reset when you reload the page, <strong>so copy your code to a separate document.</strong> The post-video challenges are not part of homework 0 but you learn the most by doing rather than just passively watching - so we suggest you have some fun with each end-of-video challenge.</p>
+<p>HW0 questions are below. Copy your answers into a text document sd you’ll need to submit them later in the course.</p>
+<h3 id="chapter-1" class="title-text">Chapter 1</h3>
+<p>In which our intrepid hero battles standard out, standard error, file descriptors and writing to files</p>
+<ol>
+  <li>
+    <p><strong>Hello, World! (system call style)</strong> Write a program that uses <span><code class="highlighter-rouge">write()</code></span> to print out “Hi! My name is &lt;Your Name&gt;”.</p>
+  </li>
+  <li>
+    <p><strong>Hello, Standard Error Stream!</strong> Write a function to print out a triangle of height <span><code class="highlighter-rouge">n</code></span> to standard error. Your function should have the signature <span><code class="highlighter-rouge">void write_triangle(int n)</code></span> and should use <span><code class="highlighter-rouge">write()</code></span>. The triangle should look like this, for n = 3:</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p><strong>Writing to files</strong> Take your program from “Hello, World!” modify it write to a file called <span><code class="highlighter-rouge">hello_world.txt</code></span>. Make sure to to use correct flags and a correct mode for <span><code class="highlighter-rouge">open()</code></span> (<span><code class="highlighter-rouge">man 2 open</code></span> is your friend).</p>
+  </li>
+  <li>
+    <p><strong>Not everything is a system call</strong></p>
+  </li>
+  <li>
+    <p>Take your program from “Writing to files” and replace <span><code class="highlighter-rouge">write()</code></span> with <span><code class="highlighter-rouge">printf()</code></span>. <em>Make sure to print to the file instead of standard out!</em></p>
+  </li>
+  <li>
+    <p>What are some differences between <span><code class="highlighter-rouge">write()</code></span> and <span><code class="highlighter-rouge">printf()</code></span>?</p>
+  </li>
+</ol>
+<h3 id="chapter-2" class="title-text">Chapter 2</h3>
+<p>Sizing up C types and their limits, <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/int" class="fancy-link">int</a></code></span> and <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/char" class="fancy-link">char</a></code></span> arrays, and incrementing pointers</p>
+<ol>
+  <li>
+    <p>How many bits are there in a byte?</p>
+  </li>
+  <li>
+    <p>How many bytes are there in a <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/char" class="fancy-link">char</a></code></span>?</p>
+  </li>
+  <li>
+    <p>How many bytes the following are on your machine? <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/int" class="fancy-link">int</a></code></span>, <span><code class="highlighter-rouge">double</code></span>, <span><code class="highlighter-rouge">float</code></span>, <span><code class="highlighter-rouge">long</code></span>, and <span><code class="highlighter-rouge">long long</code></span></p>
+  </li>
+  <li>
+    <p>On a machine with 8 byte integers, the declaration for the variable <span><code class="highlighter-rouge">data</code></span> is <span><code class="highlighter-rouge">int data[8]</code></span>. If the address of data is <span><code class="highlighter-rouge">0x7fbd9d40</code></span>, then what is the address of <span><code class="highlighter-rouge">data+2</code></span>?</p>
+  </li>
+  <li>
+    <p>What is <span><code class="highlighter-rouge">data[3]</code></span> equivalent to in C? Hint: what does C convert <span><code class="highlighter-rouge">data[3]</code></span> to before dereferencing the address? Remember, the type of a string constant <span><code class="highlighter-rouge">abc</code></span> is an array.</p>
+  </li>
+  <li>
+    <p>Why does this segfault?</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p>What does <span><code class="highlighter-rouge">sizeof(HelloWorld)</code></span> return?</p>
+  </li>
+  <li>
+    <p>What does <span><code class="highlighter-rouge">strlen(HelloWorld)</code></span> return?</p>
+  </li>
+  <li>
+    <p>Give an example of X such that <span><code class="highlighter-rouge">sizeof(X)</code></span> is 3.</p>
+  </li>
+  <li>
+    <p>Give an example of Y such that <span><code class="highlighter-rouge">sizeof(Y)</code></span> might be 4 or 8 depending on the machine.</p>
+  </li>
+</ol>
+<h3 id="chapter-3" class="title-text">Chapter 3</h3>
+<p>Program arguments, environment variables, and working with character arrays (strings)</p>
+<ol>
+  <li>
+    <p>What are two ways to find the length of <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/argv" class="fancy-link">argv</a></code></span>?</p>
+  </li>
+  <li>
+    <p>What does <span><code class="highlighter-rouge">argv[0]</code></span> represent?</p>
+  </li>
+  <li>
+    <p>Where are the pointers to environment variables stored (on the stack, the heap, somewhere else)?</p>
+  </li>
+  <li>
+    <p>On a machine where pointers are 8 bytes, and with the following code:</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+    <p>What are the values of <span><code class="highlighter-rouge">sizeof(ptr)</code></span> and <span><code class="highlighter-rouge">sizeof(array)</code></span>? Why?</p>
+  </li>
+  <li>
+    <p>What data structure manages the lifetime of automatic variables?</p>
+  </li>
+</ol>
+<h3 id="chapter-4" class="title-text">Chapter 4</h3>
+<p>Heap and stack memory, and working with structs</p>
+<ol>
+  <li>
+    <p>If I want to use data after the lifetime of the function it was created in ends, where should I put it? How do I put it there?</p>
+  </li>
+  <li>
+    <p>What are the differences between heap and stack memory?</p>
+  </li>
+  <li>
+    <p>Are there other kinds of memory in a process?</p>
+  </li>
+  <li>
+    <p>Fill in the blank: “In a good C program, for every malloc, there is a ___”.</p>
+  </li>
+  <li>
+    <p>What is one reason <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code></span> can fail?</p>
+  </li>
+  <li>
+    <p>What are some differences between <span><code class="highlighter-rouge">time()</code></span> and <span><code class="highlighter-rouge">ctime()</code></span>?</p>
+  </li>
+  <li>
+    <p>What is wrong with this code snippet?</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p>What is wrong with this code snippet?</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p>How can one avoid the previous two mistakes?</p>
+  </li>
+  <li>
+    <p>Create a <span><code class="highlighter-rouge">struct</code></span> that represents a <span><code class="highlighter-rouge">Person</code></span>. Then make a <span><code class="highlighter-rouge">typedef</code></span>, so that <span><code class="highlighter-rouge">struct Person</code></span> can be replaced with a single word. A person should contain the following information: their name (a string), their age (an integer), and a list of their friends (stored as a pointer to an array of pointers to <span><code class="highlighter-rouge">Person</code></span>s).</p>
+  </li>
+  <li>
+    <p>Now, make two persons on the heap, “Agent Smith” and “Sonny Moore”, who are 128 and 256 years old respectively and are friends with each other. Create functions to create and destroy a Person (Person’s and their names should live on the heap).</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">create()</code></span> should take a name and age. The name should be copied onto the heap. Use malloc to reserve sufficient memory for everyone having up to ten friends. Be sure initialize all fields (why?).</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">destroy()</code></span> should free up not only the memory of the person struct, but also free all of its attributes that are stored on the heap. Destroying one person should not destroy any others.</p>
+  </li>
+</ol>
+<h3 id="chapter-5" class="title-text">Chapter 5</h3>
+<p>Text input and output and parsing using <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/getchar" class="fancy-link">getchar</a></code></span>, <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/gets" class="fancy-link">gets</a></code></span>, and <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/getline" class="fancy-link">getline</a></code></span>.</p>
+<ol>
+  <li>
+    <p>What functions can be used for getting characters from <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stdin" class="fancy-link">stdin</a></code></span> and writing them to <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stdout" class="fancy-link">stdout</a></code></span>?</p>
+  </li>
+  <li>
+    <p>Name one issue with <span><code class="highlighter-rouge">gets()</code></span>.</p>
+  </li>
+  <li>
+    <p>Write code that parses the string “Hello 5 World” and initializes 3 variables to “Hello”, 5, and “World”.</p>
+  </li>
+  <li>
+    <p>What does one need to define before including <span><code class="highlighter-rouge">getline()</code></span>?</p>
+  </li>
+  <li>
+    <p>Write a C program to print out the content of a file line-by-line using <span><code class="highlighter-rouge">getline()</code></span>.</p>
+  </li>
+</ol>
+<h3 id="c-development" class="title-text">C Development</h3>
+<p>These are general tips for compiling and developing using a compiler and git. Some web searches will be useful here</p>
+<ol>
+  <li>
+    <p>What compiler flag is used to generate a debug build?</p>
+  </li>
+  <li>
+    <p>You fix a problem in the Makefile and type <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/make" class="fancy-link">make</a></code></span> again. Explain why this may be insufficient to generate a new build.</p>
+  </li>
+  <li>
+    <p>Are tabs or spaces used to indent the commands after the rule in a Makefile?</p>
+  </li>
+  <li>
+    <p>What does <span><code class="highlighter-rouge">git commit</code></span> do? What’s a <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sha" class="fancy-link">sha</a></code></span> in the context of git?</p>
+  </li>
+  <li>
+    <p>What does <span><code class="highlighter-rouge">git log</code></span> show you?</p>
+  </li>
+  <li>
+    <p>What does <span><code class="highlighter-rouge">git status</code></span> tell you and how would the contents of <span><code class="highlighter-rouge">.gitignore</code></span> change its output?</p>
+  </li>
+  <li>
+    <p>What does <span><code class="highlighter-rouge">git push</code></span> do? Why is it not just sufficient to commit with <span><code class="highlighter-rouge">git commit -m ’fixed all bugs’ </code></span>?</p>
+  </li>
+  <li>
+    <p>What does a non-fast-forward error <span><code class="highlighter-rouge">git push</code></span> reject mean? What is the most common way of dealing with this?</p>
+  </li>
+</ol>
+<h3 id="optional-just-for-fun" class="title-text">Optional: Just for fun</h3>
+<ul>
+  <li>
+    <p>Convert your a song lyrics into System Programming and C code covered in this wiki book and share on Piazza.</p>
+  </li>
+  <li>
+    <p>Find, in your opinion, the best and worst C code on the web and post the link to Piazza.</p>
+  </li>
+  <li>
+    <p>Write a short C program with a deliberate subtle C bug and post it on Piazza to see if others can spot your bug.</p>
+  </li>
+  <li>
+    <p>Do you have any cool/disastrous system programming bugs you’ve heard about? Feel free to share with your peers and the course staff on piazza.</p>
+  </li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="uiuc-specific-guidlines" class="title-text">UIUC Specific Guidlines<a class="anchor title-text" href="#uiuc-specific-guidlines">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<h3 id="piazza" class="title-text">Piazza</h3>
+<p>TAs and student assistants get a ton of questions. Some are well-researched, and some…are not. This is a handy guide that’ll help you move away from the latter and towards the former. Oh, and did I mention that this is an easy way to score points with your internship managers? Ask yourself…</p>
+<ol>
+  <li>
+    <p>Am I running on EWS?</p>
+  </li>
+  <li>
+    <p><strong>Did I check the man pages?</strong></p>
+  </li>
+  <li>
+    <p>Have I searched for similar questions/followups on Piazza?</p>
+  </li>
+  <li>
+    <p>Have I read the MP/DS specification completely?</p>
+  </li>
+  <li>
+    <p>Have I watched all of the videos?</p>
+  </li>
+  <li>
+    <p>Did I Google the error message and a few permutations thereof if necessary?</p>
+  </li>
+  <li>
+    <p>Did I try commenting out, printlining, and/or stepping through parts of the code bit by bit to find out precisely where the error occurs?</p>
+  </li>
+  <li>
+    <p><strong>Did I commit my code to git in case the TAs need more context?</strong></p>
+  </li>
+  <li>
+    <p>Did I include the console/GDB/Valgrind output **AND** code surrounding the bug in my Piazza post?</p>
+  </li>
+  <li>
+    <p>Have I fixed other segmentation faults not related to the issue I’m having?</p>
+  </li>
+  <li>
+    <p>Am I following good programming practice? (i.e. encapsulation, functions to limit repetition, etc)</p>
+  </li>
+</ol>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook_project/Background.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

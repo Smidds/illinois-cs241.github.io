@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>C Programming, Part 1: Introduction</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              C Programming, Part 1: Introduction
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/C-Programming,-Part-1:-Introduction">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_how-do-you-write-a-complete-hello-world-program-in-c" href="#how-do-you-write-a-complete-hello-world-program-in-c" class="fancy-link">How do you write a complete hello world program in C?</a></li>
+<li><a id="toc_why-do-we-use-include-stdioh" href="#why-do-we-use-include-stdioh" class="fancy-link">Why do we use ‘<code class="highlighter-rouge">#include &lt;stdio.h&gt;</code>’?</a></li>
+<li><a id="toc_how-are-c-strings-represented" href="#how-are-c-strings-represented" class="fancy-link">How are C strings represented?</a></li>
+<li><a id="toc_how-do-you-declare-a-pointer" href="#how-do-you-declare-a-pointer" class="fancy-link">How do you declare a pointer?</a></li>
+<li><a id="toc_how-do-you-use-a-pointer-to-readwrite-some-memory" href="#how-do-you-use-a-pointer-to-readwrite-some-memory" class="fancy-link">How do you use a pointer to read/write some memory?</a></li>
+<li><a id="toc_what-is-pointer-arithmetic" href="#what-is-pointer-arithmetic" class="fancy-link">What is pointer arithmetic?</a></li>
+<li><a id="toc_what-is-a-void-pointer" href="#what-is-a-void-pointer" class="fancy-link">What is a void pointer?</a></li>
+<li><a id="toc_does-printf-call-write-or-does-write-call-printf" href="#does-printf-call-write-or-does-write-call-printf" class="fancy-link">Does <code class="highlighter-rouge">printf</code> call write or does write call <code class="highlighter-rouge">printf</code>?</a></li>
+<li><a id="toc_how-do-you-print-out-pointer-values-integers-strings" href="#how-do-you-print-out-pointer-values-integers-strings" class="fancy-link">How do you print out pointer values? integers? strings?</a></li>
+<li><a id="toc_how-would-you-make-standard-out-be-saved-to-a-file" href="#how-would-you-make-standard-out-be-saved-to-a-file" class="fancy-link">How would you make standard out be saved to a file?</a></li>
+<li><a id="toc_whats-the-difference-between-a-pointer-and-an-array-give-an-example-of-something-you-can-do-with-one-but-not-the-other" href="#whats-the-difference-between-a-pointer-and-an-array-give-an-example-of-something-you-can-do-with-one-but-not-the-other" class="fancy-link">What’s the difference between a pointer and an array? Give an example of something you can do with one but not the other.</a></li>
+<li><a id="toc_sizeof-returns-the-number-of-bytes-so-using-above-code-what-is-sizeofary-and-sizeofptr" href="#sizeof-returns-the-number-of-bytes-so-using-above-code-what-is-sizeofary-and-sizeofptr" class="fancy-link"><code class="highlighter-rouge">sizeof()</code> returns the number of bytes. So using above code, what is sizeof(ary) and sizeof(ptr)?</a></li>
+<li><a id="toc_which-of-the-following-code-is-incorrect-or-correct-and-why" href="#which-of-the-following-code-is-incorrect-or-correct-and-why" class="fancy-link">Which of the following code is incorrect or correct and why?</a></li>
+<li><a id="toc_how-do-you-look-up-information-c-library-calls-and-system-calls" href="#how-do-you-look-up-information-c-library-calls-and-system-calls" class="fancy-link">How do you look up information C library calls and system calls?</a></li>
+<li><a id="toc_how-do-you-allocate-memory-on-the-heap" href="#how-do-you-allocate-memory-on-the-heap" class="fancy-link">How do you allocate memory on the heap?</a></li>
+<li><a id="toc_whats-wrong-with-this-string-copy-code" href="#whats-wrong-with-this-string-copy-code" class="fancy-link">What’s wrong with this string copy code?</a></li>
+<li><a id="toc_how-do-you-write-a-strdup-replacement" href="#how-do-you-write-a-strdup-replacement" class="fancy-link">How do you write a strdup replacement?</a></li>
+<li><a id="toc_how-do-you-unallocate-memory-on-the-heap" href="#how-do-you-unallocate-memory-on-the-heap" class="fancy-link">How do you unallocate memory on the heap?</a></li>
+<li><a id="toc_what-is-double-free-error-how-can-you-avoid-what-is-a-dangling-pointer-how-do-you-avoid" href="#what-is-double-free-error-how-can-you-avoid-what-is-a-dangling-pointer-how-do-you-avoid" class="fancy-link">What is double free error? How can you avoid? What is a dangling pointer? How do you avoid?</a></li>
+<li><a id="toc_what-is-an-example-of-buffer-overflow" href="#what-is-an-example-of-buffer-overflow" class="fancy-link">What is an example of buffer overflow?</a></li>
+<li><a id="toc_what-is-typedef-and-how-do-you-use-it" href="#what-is-typedef-and-how-do-you-use-it" class="fancy-link">What is ‘typedef’ and how do you use it?</a></li>
+<li><a id="toc_wow-that-was-a-lot-of-c" href="#wow-that-was-a-lot-of-c" class="fancy-link">Wow that was a lot of C</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<ul>
+  <li>Keep reading for the quick crash-course to C Programming below</li>
+  <li>
+    <table class="table">
+      <tbody>
+        <tr>
+          <td>Then see the [[C Gotchas wiki page</td>
+          <td>C Programming, Part 3: Common Gotchas]].</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>
+    <table class="table">
+      <tbody>
+        <tr>
+          <td>And learn about [[text I/O</td>
+          <td>C Programming, Part 2: Text Input And Output]].</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>Kick back relax with <a href="http://cs-education.github.io/sys/#" class="fancy-link wiki-link">Lawrence’s intro videos</a> (Also there is a virtual machine-in-a-browser you can play with!)</li>
+</ul>
+
+
+<ul>
+  <li>
+<a href="https://learnxinyminutes.com/docs/c/" class="fancy-link wiki-link">Learn X in Y</a> (Highly recommended to skim through!)</li>
+  <li><a href="http://www.ccs.neu.edu/course/com3620/parent/C-for-Java-C++/c-for-c++-alt.html" class="fancy-link wiki-link">C for C++/Java Programmers</a></li>
+  <li><a href="http://www.lysator.liu.se/c/bwk-tutor.html" class="fancy-link wiki-link">C Tutorial by Brian Kernighan</a></li>
+  <li><a href="http://c-faq.com/" class="fancy-link wiki-link">c faq</a></li>
+  <li><a href="http://gribblelab.org/CBootCamp/index.html" class="fancy-link wiki-link">C Bootcamp</a></li>
+  <li><a href="http://www.cplusplus.com/reference/clibrary/" class="fancy-link wiki-link">C/C++ function reference</a></li>
+  <li>
+<a href="http://www.unknownroad.com/rtfm/gdbtut/gdbtoc.html" class="fancy-link wiki-link">gdb (Gnu debugger) tutorial</a> Tip: run gdb with the “-tui” command line argument to get a full-screen version of the debugger.</li>
+  <li>Add your favorite resources here</li>
+</ul>
+
+
+
+<p><em>Warning new page</em> Please fix typos and formatting mistakes for me and add useful links too.*</p>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-you-write-a-complete-hello-world-program-in-c" class="title-text">How do you write a complete hello world program in C?<a class="anchor title-text" href="#how-do-you-write-a-complete-hello-world-program-in-c">#</a>
+</h2></div>
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><pre><code class="language-C"><span class="cp">#include &lt;stdio.h&gt;
+</span>
+</code></pre></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="why-do-we-use-include-stdioh" class="title-text">Why do we use ‘<code class="highlighter-rouge">#include &lt;stdio.h&gt;</code>’?<a class="anchor title-text" href="#why-do-we-use-include-stdioh">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>We’re lazy! We don’t want to declare the <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code> function. It’s already done for us inside the file ‘<code class="highlighter-rouge">stdio.h</code>’. The <code class="highlighter-rouge">#include</code> includes the text of the file as part of our file to be compiled.</p>
+<p>Specifically, the <code class="highlighter-rouge">#include</code> directive takes the file <code class="highlighter-rouge">stdio.h</code> (which stands for <strong>st</strong>an<strong>d</strong>ard <strong>i</strong>nput and <strong>o</strong>utput) located somewhere in your operating system, copies the text, and substitutes it where the <code class="highlighter-rouge">#include</code> was.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-are-c-strings-represented" class="title-text">How are C strings represented?<a class="anchor title-text" href="#how-are-c-strings-represented">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>They are represented as characters in memory.  The end of the string includes a NULL (0) byte. So “ABC” requires four(4) bytes <code class="highlighter-rouge">['A','B','C','\0']</code>. The only way to find out the length of a C string is to keep reading memory until you find the NULL byte. C characters are always exactly one byte each.</p>
+<p>When you write a string literal <code class="highlighter-rouge">"ABC"</code> in an expression the string literal evaluates to a char pointer (<code class="highlighter-rouge">char *</code>), which points to the first byte/char of the string.  This means <code class="highlighter-rouge">ptr</code> in the example below will hold the memory address of the first character in the string.</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+<p>Some common ways to initialize a string include:</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-you-declare-a-pointer" class="title-text">How do you declare a pointer?<a class="anchor title-text" href="#how-do-you-declare-a-pointer">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>A pointer refers to a memory address. The type of the pointer is useful - it tells the compiler how many bytes need to be read/written. You can declare a pointer as follows.</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>Due to C’s grammar, an <code class="highlighter-rouge">int*</code> or any pointer is not actually its own type. You have to precede each pointer variable with an asterisk. As a common gotcha, the following</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>Will only declare <code class="highlighter-rouge">*ptr3</code> as a pointer. <code class="highlighter-rouge">ptr4</code> will actually be a regular int variable. To fix this declaration, keep the <code class="highlighter-rouge">*</code> preceding to the pointer</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-you-use-a-pointer-to-readwrite-some-memory" class="title-text">How do you use a pointer to read/write some memory?<a class="anchor title-text" href="#how-do-you-use-a-pointer-to-readwrite-some-memory">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Let’s say that we declare a pointer <code class="highlighter-rouge">int *ptr</code>. For the sake of discussion, let’s say that <code class="highlighter-rouge">ptr</code> points to memory address <code class="highlighter-rouge">0x1000</code>. If we want to write to a pointer, we can dereference and assign <code class="highlighter-rouge">*ptr</code>.</p>
+<pre><code class="language-C"><span class="o">*</span>
+</code></pre>
+<p>What C will do is take the type of the pointer which is an <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/int" class="fancy-link">int</a></code> and writes <code class="highlighter-rouge">sizeof(int)</code> bytes from the start of the pointer, meaning that bytes <code class="highlighter-rouge">0x1000</code>, <code class="highlighter-rouge">0x1001</code>, <code class="highlighter-rouge">0x1002</code>, <code class="highlighter-rouge">0x1003</code> will all be zero. The number of bytes written depends on the pointer type. It is the same for all primitive types but structs are a little different.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-pointer-arithmetic" class="title-text">What is pointer arithmetic?<a class="anchor title-text" href="#what-is-pointer-arithmetic">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>You can add an integer to a pointer. However, the pointer type is used to determine how much to increment the pointer. For char pointers this is trivial because characters are always one byte:</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+<p>If an int is 4 bytes then ptr+1 points to 4 bytes after whatever ptr is pointing at.</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+<p>Because pointer arithmetic in C is always automatically scaled by the size of the type that is pointed to, you can’t perform pointer arithmetic on void pointers.</p>
+<p>You can think of pointer arithmetic in C as essentially doing the following</p>
+<p>If I want to do</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>Think</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>To get the value. <strong>Every time you do pointer arithmetic, take a deep breath and make sure that you are shifting over the number of bytes you think you are shifting over.</strong></p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-a-void-pointer" class="title-text">What is a void pointer?<a class="anchor title-text" href="#what-is-a-void-pointer">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>A pointer without a type (very similar to a void variable). Void pointers are used when either a datatype you’re dealing with is unknown or when you’re interfacing C code with other programming languages. You can think of this as a raw pointer, or just a memory address. You cannot directly read or write to it because the void type does not have a size. For Example</p>
+<pre><code class="language-C"><span class="kt">void</span>
+</code></pre>
+<p>This does not require a cast because C automatically promotes <code class="highlighter-rouge">void*</code> to its appropriate type.
+<strong>Note:</strong></p>
+<p>gcc and clang are not total ISO-C compliant, meaning that they will let you do arithmetic on a void pointer. They will treat it as a char pointer but do not do this because it may not work with all compilers!</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="does-printf-call-write-or-does-write-call-printf" class="title-text">Does <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code> call write or does write call <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code>?<a class="anchor title-text" href="#does-printf-call-write-or-does-write-call-printf">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code> calls <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code>. <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code> includes an internal buffer so, to increase performance <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code> may not call <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code> everytime you call <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code>. <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code> is a C library function. <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code> is a system call and as we know system calls are expensive. On the other hand, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code> uses a buffer which suits our needs better at that point</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-you-print-out-pointer-values-integers-strings" class="title-text">How do you print out pointer values? integers? strings?<a class="anchor title-text" href="#how-do-you-print-out-pointer-values-integers-strings">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Use format specifiers “%p” for pointers, “%d” for integers and “%s” for Strings.
+A full list of all of the format specifiers is found <a href="http://www.cplusplus.com/reference/cstdio/printf/" class="fancy-link wiki-link">here</a></p>
+<p>Example of integer:</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>Example of integer pointer:</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>Example of string:</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+<p><a href="https://www.cs.bu.edu/teaching/c/string/intro/" class="fancy-link wiki-link">Strings as Pointers &amp; Arrays @ BU</a></p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-would-you-make-standard-out-be-saved-to-a-file" class="title-text">How would you make standard out be saved to a file?<a class="anchor title-text" href="#how-would-you-make-standard-out-be-saved-to-a-file">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Simplest way: run your program and use shell redirection
+e.g.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./program &gt; output.txt
+
+#To read the contents of the file,
+cat output.txt
+</code></pre></div></div>
+<p>More complicated way: close(1) and then use open to re-open the file descriptor.
+See [[http://cs-education.github.io/sys/#chapter/0/section/3/activity/0]]</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="whats-the-difference-between-a-pointer-and-an-array-give-an-example-of-something-you-can-do-with-one-but-not-the-other" class="title-text">What’s the difference between a pointer and an array? Give an example of something you can do with one but not the other.<a class="anchor title-text" href="#whats-the-difference-between-a-pointer-and-an-array-give-an-example-of-something-you-can-do-with-one-but-not-the-other">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+<p>Example</p>
+<p>The array name points to the first byte of the array. Both <code class="highlighter-rouge">ary</code> and <code class="highlighter-rouge">ptr</code> can be printed out:</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+<p>The array is mutable, so we can change its contents (be careful not to write bytes beyond the end of the array though). Fortunately, ‘World’ is no longer than ‘Hello”</p>
+<p>In this case, the char pointer <code class="highlighter-rouge">ptr</code> points to some read-only memory (where the statically allocated string literal is stored), so we cannot change those contents.</p>
+<pre><code class="language-C"><span class="n">strcpy</span>
+</code></pre>
+<p>We can, however, unlike the array, we change <code class="highlighter-rouge">ptr</code> to point to another piece of memory,</p>
+<pre><code class="language-C"><span class="n">ptr</span>
+</code></pre>
+<p>What to take away from this is that pointers * can point to any type of memory while C arrays [] can only point to memory on the stack. In a more common case, pointers will point to heap memory in which case the memory referred to by the pointer CAN be modified.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="sizeof-returns-the-number-of-bytes-so-using-above-code-what-is-sizeofary-and-sizeofptr" class="title-text">
+<code class="highlighter-rouge">sizeof()</code> returns the number of bytes. So using above code, what is sizeof(ary) and sizeof(ptr)?<a class="anchor title-text" href="#sizeof-returns-the-number-of-bytes-so-using-above-code-what-is-sizeofary-and-sizeofptr">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p><code class="highlighter-rouge">sizeof(ary)</code>: <code class="highlighter-rouge">ary</code> is an array. Returns the number of bytes required for the entire array (5 chars + zero byte = 6 bytes)
+<code class="highlighter-rouge">sizeof(ptr)</code>: Same as sizeof(char *). Returns the number bytes required for a pointer (e.g. 4 or 8 for a 32 bit or 64-bit machine)</p>
+<p><code class="highlighter-rouge">sizeof</code> is a special operator. Really it’s something the compiler substitutes in before compiling the program because the size of all types is known at compile time. When you have <code class="highlighter-rouge">sizeof(char*)</code> that takes the size of a pointer on your machine (8 bytes for a 64-bit machine and 4 for a 32 bit and so on). When you try <code class="highlighter-rouge">sizeof(char[])</code>, the compiler looks at that and substitutes the number of bytes that the <strong>entire</strong> array contains because the total size of the array is known at compile time.</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+<p>Be careful, using sizeof for the length of a string!</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="which-of-the-following-code-is-incorrect-or-correct-and-why" class="title-text">Which of the following code is incorrect or correct and why?<a class="anchor title-text" href="#which-of-the-following-code-is-incorrect-or-correct-and-why">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+<p>Explanation: An array p is created on the stack for the correct size to hold H,e,l,l,o, and a null byte i.e. (6) bytes. This array is stored on the stack and is invalid after we return from f2.</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+<p>Explanation: p is a pointer. It holds the address of the string constant. The string constant is unchanged and valid even after f3 returns.</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+<p>Explanation: The array is static meaning it exists for the lifetime of the process (static variables are not on the heap or the stack).</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-you-look-up-information-c-library-calls-and-system-calls" class="title-text">How do you look up information C library calls and system calls?<a class="anchor title-text" href="#how-do-you-look-up-information-c-library-calls-and-system-calls">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Use the man pages. Note the man pages are organized into sections. Section 2 = System calls. Section 3 = C libraries.
+Web: Google “man7 open”
+shell: man -S2 open  or man -S3 printf</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-you-allocate-memory-on-the-heap" class="title-text">How do you allocate memory on the heap?<a class="anchor title-text" href="#how-do-you-allocate-memory-on-the-heap">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Use malloc. There’s also realloc and calloc.
+Typically used with sizeof. e.g. enough space to hold 10 integers</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="whats-wrong-with-this-string-copy-code" class="title-text">What’s wrong with this string copy code?<a class="anchor title-text" href="#whats-wrong-with-this-string-copy-code">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<pre><code class="language-C"><span class="kt">void</span>
+</code></pre>
+<p>In the above code it simply changes the dest pointer to point to source string. Also the nuls bytes are not copied. Here’s a better version -</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  while( *src ) { *dest = *src; src ++; dest++; } 
+  *dest = *src;
+</code></pre></div></div>
+<p>Note it’s also usual to see the following kind of implementation, which does everything inside the expression test, including copying the nul byte.</p>
+<pre><code class="language-C"><span class="k">while</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-you-write-a-strdup-replacement" class="title-text">How do you write a strdup replacement?<a class="anchor title-text" href="#how-do-you-write-a-strdup-replacement">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><pre><code class="language-C"><span class="c1">// Use strlen+1 to find the zero byte... </span>
+</code></pre></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-you-unallocate-memory-on-the-heap" class="title-text">How do you unallocate memory on the heap?<a class="anchor title-text" href="#how-do-you-unallocate-memory-on-the-heap">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Use free!</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-double-free-error-how-can-you-avoid-what-is-a-dangling-pointer-how-do-you-avoid" class="title-text">What is double free error? How can you avoid? What is a dangling pointer? How do you avoid?<a class="anchor title-text" href="#what-is-double-free-error-how-can-you-avoid-what-is-a-dangling-pointer-how-do-you-avoid">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>A double free error is when you accidentally attempt to free the same allocation twice.</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>The fix is first to write correct programs! Secondly, it’s good programming hygiene to reset pointers
+once the memory has been freed. This ensures the pointer can’t be used incorrectly without the program crashing.</p>
+<p>Fix:</p>
+<pre><code class="language-C"><span class="n">p</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-an-example-of-buffer-overflow" class="title-text">What is an example of buffer overflow?<a class="anchor title-text" href="#what-is-an-example-of-buffer-overflow">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Famous example: Heart Bleed (performed a memcpy into a buffer that was of insufficient size).
+Simple example: implement a strcpy and forget to add one to strlen, when determining the size of the memory required.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-typedef-and-how-do-you-use-it" class="title-text">What is ‘typedef’ and how do you use it?<a class="anchor title-text" href="#what-is-typedef-and-how-do-you-use-it">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Declares an alias for a type. Often used with structs to reduce the visual clutter of having to write ‘struct’ as part of the type.</p>
+<pre><code class="language-C"><span class="k">typedef</span>
+</code></pre>
+<p>In this class, we regularly typedef functions. A typedef for a function can be this for example</p>
+<pre><code class="language-C"><span class="k">typedef</span>
+</code></pre>
+<p>This declares a function type comparator that accepts two <code class="highlighter-rouge">void*</code> params and returns an integer.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="wow-that-was-a-lot-of-c" class="title-text">Wow that was a lot of C<a class="anchor title-text" href="#wow-that-was-a-lot-of-c">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Don’t worry more to come!</p>
+<div align="center">
+<a href="/wikibook/c-programming-part-2-text-input-and-output.html#" class="fancy-link wiki-link">
+Next: C Programming, Part 2: Text Input And Output
+</a>
+</div>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/c-programming-part-1-introduction.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

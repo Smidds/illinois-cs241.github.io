@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>POSIX, Part 1: Error handling</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              POSIX, Part 1: Error handling
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/POSIX,-Part-1:-Error-handling">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_what-is-errno-and-when-is-it-set" href="#what-is-errno-and-when-is-it-set" class="fancy-link">What is <code class="highlighter-rouge">errno</code> and when is it set?</a></li>
+<li><a id="toc_what-about-multiple-threads" href="#what-about-multiple-threads" class="fancy-link">What about multiple threads?</a></li>
+<li><a id="toc_when-is-errno-reset-to-zero" href="#when-is-errno-reset-to-zero" class="fancy-link">When is <code class="highlighter-rouge">errno</code> reset to zero?</a></li>
+<li><a id="toc_what-are-the-gotchas-and-best-practices-of-using-errno" href="#what-are-the-gotchas-and-best-practices-of-using-errno" class="fancy-link">What are the gotchas and best practices of using <code class="highlighter-rouge">errno</code>?</a></li>
+<li><a id="toc_how-can-you-print-out-the-string-message-associated-with-a-particular-error-number" href="#how-can-you-print-out-the-string-message-associated-with-a-particular-error-number" class="fancy-link">How can you print out the string message associated with a particular error number?</a></li>
+<li><a id="toc_how-are-perror-and-strerror-related" href="#how-are-perror-and-strerror-related" class="fancy-link">How are perror and strerror related?</a></li>
+<li><a id="toc_what-are-the-gotchas-of-using-strerror" href="#what-are-the-gotchas-of-using-strerror" class="fancy-link">What are the gotchas of using strerror?</a></li>
+<li><a id="toc_what-is-eintr-what-does-it-mean-for-sem_wait-read-write" href="#what-is-eintr-what-does-it-mean-for-sem_wait-read-write" class="fancy-link">What is <code class="highlighter-rouge">EINTR</code>? What does it mean for <code class="highlighter-rouge">sem_wait</code>? <code class="highlighter-rouge">read</code>? <code class="highlighter-rouge">write</code>?</a></li>
+<li><a id="toc_which-system-calls-may-be-interrupted-and-need-to-be-wrapped" href="#which-system-calls-may-be-interrupted-and-need-to-be-wrapped" class="fancy-link">Which system calls may be interrupted and need to be wrapped?</a></li>
+<li><a id="toc_errno-exceptions" href="#errno-exceptions" class="fancy-link">Errno exceptions?</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+
+<p>In other languages, you may see error handling implemented with exceptions. Although you technically can use them in C –You keep a stack of very try/catch block and use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/setjmp" class="fancy-link">setjmp</a></code> and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/longjmp" class="fancy-link">longjmp</a></code> to go to those blocks, respectively – error handling in C is typically done with POSIX error handling the code typically looks like this.</p>
+
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+
+<p>In the kernel, the use of <code class="highlighter-rouge">goto</code> is heavily used to clean up different parts of the application. <strong>You should not use gotos</strong> because they make code harder to read. gotos in the kernel are there out of necessity, so don’t take lessons.</p>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-errno-and-when-is-it-set" class="title-text">What is <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/errno" class="fancy-link">errno</a></code> and when is it set?<a class="anchor title-text" href="#what-is-errno-and-when-is-it-set">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>POSIX defines a special integer <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/errno" class="fancy-link">errno</a></code> that is set when a system call fails.
+The initial value of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/errno" class="fancy-link">errno</a></code> is zero (i.e. no error).
+When a system call fails it will typically return -1 to indicate an error and set <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/errno" class="fancy-link">errno</a></code></p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-about-multiple-threads" class="title-text">What about multiple threads?<a class="anchor title-text" href="#what-about-multiple-threads">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Each thread has it’s own copy of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/errno" class="fancy-link">errno</a></code>. This is very useful; otherwise an error in one thread would interfere with the error status of another thread.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="when-is-errno-reset-to-zero" class="title-text">When is <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/errno" class="fancy-link">errno</a></code> reset to zero?<a class="anchor title-text" href="#when-is-errno-reset-to-zero">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>It’s not unless you specifically reset it to zero!  When system calls are successful they do <em>not</em> reset the value of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/errno" class="fancy-link">errno</a></code>.</p>
+<p>This means you should only rely on the value of errno if you know a system call has failed (e.g. it returned -1).</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-are-the-gotchas-and-best-practices-of-using-errno" class="title-text">What are the gotchas and best practices of using <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/errno" class="fancy-link">errno</a></code>?<a class="anchor title-text" href="#what-are-the-gotchas-and-best-practices-of-using-errno">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Be careful when complex error handling use of library calls or system calls that may change the value of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/errno" class="fancy-link">errno</a></code>. In practice it’s safer to copy the value of errno into a int variable:</p>
+<pre><code class="language-C"><span class="c1">// Unsafe - the first fprintf may change the value of errno before we use it!</span>
+</code></pre>
+<p>In a similar vein, if your signal handler makes any system or library calls, then it is good practice to save the original value of errno and restore the value before returning:</p>
+<pre><code class="language-C"><span class="kt">void</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-can-you-print-out-the-string-message-associated-with-a-particular-error-number" class="title-text">How can you print out the string message associated with a particular error number?<a class="anchor title-text" href="#how-can-you-print-out-the-string-message-associated-with-a-particular-error-number">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/strerror" class="fancy-link">strerror</a></code> to get a short (English) description of the error value</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-are-perror-and-strerror-related" class="title-text">How are perror and strerror related?<a class="anchor title-text" href="#how-are-perror-and-strerror-related">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>In previous pages we’ve used perror to print out the error to standard error. Using <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/strerror" class="fancy-link">strerror</a></code>, we can now write a simple implementation of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/perror" class="fancy-link">perror</a></code>:</p>
+<pre><code class="language-C"><span class="kt">void</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-are-the-gotchas-of-using-strerror" class="title-text">What are the gotchas of using strerror?<a class="anchor title-text" href="#what-are-the-gotchas-of-using-strerror">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Unfortunately <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/strerror" class="fancy-link">strerror</a></code> is not threadsafe. In other words, two threads cannot call it at the same time!</p>
+<p>There are two workarounds: Firstly we can use a mutex lock to define a critical section and a local buffer. The same mutex should be used by all threads in all places that call <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/strerror" class="fancy-link">strerror</a></code></p>
+<pre><code class="language-C"><span class="n">pthread_mutex_lock</span>
+</code></pre>
+<p>Alternatively, use the less portable but thread-safe <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/strerror_r" class="fancy-link">strerror_r</a></code>. <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/perror" class="fancy-link">perror</a></code> is thread safe, which is why it is preferred in multi-threading environments if possible.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-eintr-what-does-it-mean-for-sem_wait-read-write" class="title-text">What is <code class="highlighter-rouge">EINTR</code>? What does it mean for <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_wait" class="fancy-link">sem_wait</a></code>? <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/read" class="fancy-link">read</a></code>? <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code>?<a class="anchor title-text" href="#what-is-eintr-what-does-it-mean-for-sem_wait-read-write">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Some system calls can be interrupted when a signal (e.g SIGCHLD, SIGPIPE,…) is delivered to the process. At this point the system call may return without performing any action! For example, bytes may not have been read/written, semaphore wait may not have waited.</p>
+<p>This interruption can be detected by checking the return value and if <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/errno" class="fancy-link">errno</a></code> is <code class="highlighter-rouge">EINTR</code>. In which case the system call should be retried. It’s common to see the following kind of loop that wraps a system call (such as sem_wait).</p>
+<pre><code class="language-C"><span class="k">while</span>
+</code></pre>
+<p>Be careful to write <code class="highlighter-rouge">== EINTR</code>, not <code class="highlighter-rouge">= EINTR</code>.</p>
+<p>Or, if the result value needs to be used later…</p>
+<pre><code class="language-C"><span class="k">while</span>
+</code></pre>
+<p>On Linux,calling <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/read" class="fancy-link">read</a></code> and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code> to a local disk will normally not return with EINTR (instead the function is automatically restarted for you). However, calling <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/read" class="fancy-link">read</a></code> and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code> on a file descriptor that corresponds to a network stream <em>can</em> return with EINTR.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="which-system-calls-may-be-interrupted-and-need-to-be-wrapped" class="title-text">Which system calls may be interrupted and need to be wrapped?<a class="anchor title-text" href="#which-system-calls-may-be-interrupted-and-need-to-be-wrapped">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Use the man page! The man page includes a list of errors (i.e. errno values) that may be set by the system call. A rule of thumb is ‘slow’ (blocking) calls (e.g. writing to a socket) may be interrupted but fast non-blocking calls (e.g. pthread_mutex_lock) will not.</p>
+<p>From the linux signal 7 man page:</p>
+<p>“If a signal handler is invoked while a system call or library function call is blocked, then either:</p>
+<ul>
+  <li>the call is automatically restarted after the signal handler returns; or</li>
+  <li>the call fails with the error EINTR.
+Which of these two behaviors occurs depends on the interface and whether or not the signal handler was established using the SA_RESTART flag (see sigaction(2)). The details vary across UNIX systems; below, the details for Linux.</li>
+</ul>
+<p>If a blocked call to one of the following interfaces is interrupted by a signal handler, then the call will be automatically restarted after the signal handler returns if the SA_RESTART flag was used; otherwise the call will fail with the error EINTR:</p>
+<ul>
+  <li>read(2), readv(2), write(2), writev(2), and ioctl(2) calls on “slow” devices. A “slow” device is one where the I/O call may block for an indefinite time, for example, a terminal, pipe, or socket. (A disk is not a slow device according to this definition.) If an I/O call on a slow device has already transferred some data by the time it is interrupted by a signal handler, then the call will return a success status (normally, the number of bytes transferred).
+“</li>
+</ul>
+<p>Note, it is easy to believe that setting ‘SA_RESTART’ flag is sufficient to make this whole problem disappear. Unfortunately that’s not true: there are still system calls that may return early and set <code class="highlighter-rouge">EINTR</code>! See <a href="https://cs-education.github.io/sysassets/man_pages/html/man7/signal.7.html" class="fancy-link wiki-link">signal(7)</a> for details.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="errno-exceptions" class="title-text">Errno exceptions?<a class="anchor title-text" href="#errno-exceptions">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>There are some POSIX utilities that have their own errno per say. One is when you call <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/getaddrinfo" class="fancy-link">getaddrinfo</a></code> the function to check that error and convert to a string is <a href="https://linux.die.net/man/3/gai_strerror" class="fancy-link wiki-link">gai_strerr</a>. Don’t get them mixed up!</p></div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/posix-part-1-error-handling.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

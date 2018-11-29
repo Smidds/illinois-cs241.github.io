@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Getting Caught Up</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Getting Caught Up
+
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_quick-links" href="#quick-links" class="fancy-link">Quick Links</a></li>
+<li><a id="toc_join-piazza" href="#join-piazza" class="fancy-link">Join Piazza!</a></li>
+<li><a id="toc_assignments" href="#assignments" class="fancy-link">Assignments</a></li>
+<li><a id="toc_catching-up-on-material" href="#catching-up-on-material" class="fancy-link">Catching up on Material</a></li>
+<li><a id="toc_labs" href="#labs" class="fancy-link">Labs</a></li>
+<li><a id="toc_quizzes" href="#quizzes" class="fancy-link">Quizzes</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="quick-links" class="title-text">Quick Links<a class="anchor title-text" href="#quick-links">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>Piazza: <a href="https://piazza.com" class="fancy-link wiki-link">https://piazza.com</a>
+</li>
+  <li>Linux in Browser: <a href="https://cs-education.github.io/sys/#playground" class="fancy-link wiki-link">https://cs-education.github.io/sys/#playground</a>
+</li>
+  <li>Wikibook: <a href="https://github.com/angrave/SystemProgramming/wiki" class="fancy-link wiki-link">https://github.com/angrave/SystemProgramming/wiki</a>
+</li>
+  <li>Class Transcribe/Old Lecture Recordings: <a href="http://classtranscribe.com/cs241" class="fancy-link wiki-link">http://classtranscribe.com/cs241</a>
+</li>
+  <li>Shared Github: <a href="https://github-dev.cs.illinois.edu/cs241-fa18/_release" class="fancy-link wiki-link">https://github-dev.cs.illinois.edu/cs241-fa18/_release</a>
+</li>
+  <li>Grades: Compass</li>
+  <li>Lecture Videos: <a href="https://echo360.org" class="fancy-link wiki-link">https://echo360.org</a>
+</li>
+  <li>CBTF Quiz and Test Signup: <a href="https://edu.cs.illinois.edu/testcenter/" class="fancy-link wiki-link">https://edu.cs.illinois.edu/testcenter/</a>
+</li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="join-piazza" class="title-text">Join Piazza!<a class="anchor title-text" href="#join-piazza">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p><a href="https://piazza.com" class="fancy-link wiki-link">Piazza</a> is the way that we communicate announcements to the rest of the class. It should have deadlines, which you can also find on our course web page (here) under the Labs and MP tab. You can register with your illinois email and pick the classes you are apart of. Search for CS241 and also the advising piazza for all things CS.</p>
+<p>To get a sense of going on and where we are in the course, please read <strong>all</strong> the posts by instructors.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="assignments" class="title-text">Assignments<a class="anchor title-text" href="#assignments">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<ul>
+  <li>Overdue assignment’s deadlines will not be extended. <strong>Though, It is in your best interest to read through the assignments that you missed in order to understand them (some of them will build of each other)</strong>
+</li>
+  <li>Email cs241admin@illinois.edu and say that you have added late (give the date you added if you can remember it).</li>
+  <li>Email engrit-help@illinois.edu and tell them that added CS241 late. You will need git access and your own virtual machine. You should give them a bit of time. You can create your repository at <a href="https://edu.cs.illinois.edu/create-ghe-repo/cs241-fa18/" class="fancy-link wiki-link">the repository creator</a> Your repo should be available at</li>
+</ul>
+<p><code class="highlighter-rouge">https://github-dev.cs.illinois.edu/cs241-fa18/NETID</code>.</p>
+<p>In that folder, you can read the <a href="./know_your_tools.html" class="fancy-link wiki-link">Know Your Tools</a> lab to get familiar with the VM, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/ssh" class="fancy-link">ssh</a></code>, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/git" class="fancy-link">git</a></code>, and any other tools you will need to be successful in the course.</p>
+<ul>
+  <li>Ideally, we want (and most cases) require you to work on your assignment on your VM. Instructions on how to log in are on the Know Your Tools page. If you can’t get your VM in time for an assignment to be do, you can do work on EWS – just complete the steps below.</li>
+  <li>The only non-programming assignment in the first few weeks is <a href="/wikibook/hw0.html#" class="fancy-link wiki-link">Homework 0</a> if the assignment’s deadline has not passed, submit the form on the know your tools page as soon as possible!</li>
+  <li>We will not extend deadlines for programming assignments. Here are the steps to be able to start working on your assignments that are not past due. To check if an assignment’s deadline has passed, check piazza or the lab and MP page. <strong>If the Assignment has not been deployed to your git (you don’t see a folder), complete the following steps</strong>
+</li>
+</ul>
+<p>Go to <a href="https://github-dev.cs.illinois.edu/cs241-fa18/_release" class="fancy-link wiki-link">https://github-dev.cs.illinois.edu/cs241-fa18/_release</a> and piazza and see what assignments are deployed and are not yet due.</p>
+<p>Here are the terminal steps to update. Make sure you are in your git repository in the terminal.</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github-dev.cs.illinois.edu/cs241-fa18/<span class="k">${</span><span class="nv">NETID</span><span class="k">}</span>
+<span class="nb">cd</span> <span class="k">${</span><span class="nv">NETID</span><span class="k">}</span>
+git remote add release https://github-dev.cs.illinois.edu/cs241-fa18/_release
+git pull release master
+git push origin master
+<span class="nb">cd</span> <span class="k">${</span><span class="nv">ASSIGNMENT</span><span class="k">}</span>
+</code></pre></div></div>
+<p>Then to submit your work.</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Do work on the assignment</span>
+<span class="nv">$ </span>git commit <span class="nt">-a</span> <span class="nt">-m</span> <span class="s2">"my_submission"</span>
+<span class="nv">$ </span>git push origin master
+</code></pre></div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="catching-up-on-material" class="title-text">Catching up on Material<a class="anchor title-text" href="#catching-up-on-material">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Make sure you visit the course <a href="https://github.com/angrave/SystemProgramming/wiki" class="fancy-link wiki-link">Wiki Book</a> and read over the chapters relating to our <a href="./schedule.html#currentWeek" class="fancy-link wiki-link">lecture schedule</a> from when you joined.</p>
+<p>If you are looking for the lecture handouts, they are in the _shared folder above. Feel free to ask about any material you don’t understand on Piazza or Lab sections. There is a lot to go through in this course, so falling behind is not ideal.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="labs" class="title-text">Labs<a class="anchor title-text" href="#labs">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Go to your assigned lab section and tell the TA in charge that you added late, we will manually give you attendance until we can update the roster. Remember go to your registered lab section.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="quizzes" class="title-text">Quizzes<a class="anchor title-text" href="#quizzes">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>We won’t have quizzes for the first few weeks but if and when the time comes, go to the quiz and test signup in order to take register to take computerized quizzes at the testing facility in the basement of Grainger.</p></div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_pages/late_add.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

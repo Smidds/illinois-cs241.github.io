@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Kernel, Shells, Terminals Oh My!</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Kernel, Shells, Terminals Oh My!
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/Kernel,-Shells,-Terminals-Oh-My!">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_cool-whats-a-shell-then" href="#cool-whats-a-shell-then" class="fancy-link">Cool, what’s a shell then?</a></li>
+<li><a id="toc_alright-then-whats-a-terminal" href="#alright-then-whats-a-terminal" class="fancy-link">Alright then what’s a terminal?</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+
+<p>The operating system kernel is a special piece of software. This is the piece of software that is loaded up before all of your other programs even consider getting booted up. What the kernel does is the following, abbreviated</p>
+
+<ol>
+  <li>The operating system executes ROM or read only code</li>
+  <li>The operating system then executes a <code class="highlighter-rouge">boot_loader</code> or <code class="highlighter-rouge">EFI</code> extensions nowadays</li>
+  <li>The boot_loader loads your kernels</li>
+  <li>Your kernel executes <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/init" class="fancy-link">init</a></code> to <a href="https://en.wikipedia.org/wiki/Bootstrapping" class="fancy-link wiki-link">bootstrap</a> itself from nothing</li>
+  <li>The kernel executes start up scripts</li>
+  <li>The kernel executes userland scripts, and you get to use your computer!</li>
+</ol>
+
+<p>You don’t need to know the specifics of the booting process, but there it is. When you are executing in user space the kernel provides some important operations that programs don’t have to worry about.</p>
+<ul>
+  <li>Scheduling Processes and threads; in addition, handling synchronization primitives</li>
+  <li>Providing System Calls like <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code> or <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/read" class="fancy-link">read</a></code>
+</li>
+  <li>Manages virtual memory and low level binary devices like <code class="highlighter-rouge">usb</code> drivers</li>
+  <li>Handles reading and understanding a filesystem</li>
+  <li>Handles communicating over networks</li>
+  <li>Handles communications with other processes</li>
+  <li>Dynamically linking libraries</li>
+</ul>
+
+<p>The kernel handles all of this stuff in kernel mode. Kernel mode gets you greater power, like executing extra CPU instructions but at the cost of one failure crashes your entire computer – ouch. That is what you are going to interacting with in this class.</p>
+
+<h3 id="file-descriptors" class="title-text">File Descriptors</h3>
+
+<p>One of the things that you have already become familiar with is that the kernel gives you file descriptors when you open text files. Here is a zine from Julia Evans that details it a bit.</p>
+
+<p><img src="https://drawings.jvns.ca/drawings/file-descriptors.svg" alt="Fds"></p>
+
+<p>As the little zine shows, the Kernel keeps track of the file descriptors and what they point to. We will see later that file descriptors need not point to actual files and the OS keeps track of them for you. Also, notice that between processes file descriptors may be reused but inside of a process they are unique.</p>
+
+<p>File descriptors also have a notion of position. You can read a file on disk completely because the OS keeps track of the position in the file, and that belongs to your process as well.</p>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="cool-whats-a-shell-then" class="title-text">Cool, what’s a shell then?<a class="anchor title-text" href="#cool-whats-a-shell-then">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>A shell is actually how you are going to be interacting with the kernel. Before User Friendly operating systems, when a computer started up all you had access to was a shell. This meant that all of your commands and editing had to be done this way. Nowadays, our computers start up in desktop mode, but one can still access a shell using a terminal. When you open one up you should see something like this</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(Stuff) $
+</code></pre></div></div>
+<p>It is ready for your next command! You can type in a lot of unix utilities like <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/ls" class="fancy-link">ls</a></code>, <code class="highlighter-rouge">echo Hello</code> and the shell will execute them and give you the result. Some of these are what are known as <code class="highlighter-rouge">shell-builtins</code> meaning that the code is in the shell program itself. Some of these are compiled programs that you run. The shell only looks through a special variable called path which contains a list of <code class="highlighter-rouge">:</code> separated paths to search for an executable with your name, here is an example path.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ echo $PATH
+/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games
+</code></pre></div></div>
+<p>So when the shell executes <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/ls" class="fancy-link">ls</a></code>, it looks through all of those directories, finds <code class="highlighter-rouge">/bin/ls</code> and executes that.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls
+...
+$ /bin/ls
+</code></pre></div></div>
+<p>You can always call through the full path. That is always why in past classes if you want to run something on the terminal you’ve had to do <code class="highlighter-rouge">./exe</code> because typically the directory that you are working in is not in the <code class="highlighter-rouge">PATH</code> variable. The <code class="highlighter-rouge">.</code> expands to your current directory and your shell executes <code class="highlighter-rouge">&lt;current_dir&gt;/exe</code> which is a valid command.</p>
+<h3 id="shell-tricks-and-tips" class="title-text">Shell tricks and tips</h3>
+<ul>
+  <li>The up arrow will get you your most recent command</li>
+  <li>
+<code class="highlighter-rouge">ctrl-r</code> will search commands that you previously ran</li>
+  <li>
+<code class="highlighter-rouge">ctrl-c</code> will interrupt your shell’s process</li>
+  <li>Add more!</li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="alright-then-whats-a-terminal" class="title-text">Alright then what’s a terminal?<a class="anchor title-text" href="#alright-then-whats-a-terminal">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>A terminal is just an application that displays the output form the shell. You can have your default terminal, a quake based terminal, terminator, the options are endless!</p></div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/kernel-shells-terminals-oh-my!.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

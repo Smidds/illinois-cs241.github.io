@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Map Reduce 0 - Lab Edition</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Map Reduce 0 - Lab Edition
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/illinois-cs241/assignment-docs/blob/master//mr0.md">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+              <div class="submission-wrapper">
+                
+                  <b>Entire Assignment</b> due <b>10/26 11:59pm</b><br/>
+                  
+                    <b>Graded files:</b>
+                    <ul>
+                      
+                        <li>mr0.c</li>
+                      
+                    </ul>
+                  
+                
+              </div>
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_mapreduce" href="#mapreduce" class="fancy-link">MapReduce</a></li>
+<li><a id="toc_the-lab" href="#the-lab" class="fancy-link">The Lab</a></li>
+<li><a id="toc_version-0---one-mapper-one-reducer" href="#version-0---one-mapper-one-reducer" class="fancy-link">Version 0 - one mapper, one reducer</a></li>
+<li><a id="toc_building-and-running" href="#building-and-running" class="fancy-link">Building and Running</a></li>
+<li><a id="toc_notes" href="#notes" class="fancy-link">Notes</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+  <div class="pad"><div class="card">
+<div class="title"><h2 id="learning-objectives" class="title-text">Learning Objectives<a class="anchor title-text" href="#learning-objectives">#</a>
+</h2></div>
+  
+  
+
+
+  <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>
+    The learning objectives for Map Reduce 0 - Lab Edition are: <br>
+    </p>
+<ul class="mdl-list">
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Interprocess Communication (IPC)</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Pipes</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Files and File Descriptors</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">MapReduce</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Jeff Dean</span>
+        </li>
+      
+    </ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="suggested-readings" class="title-text">Suggested Readings<a class="anchor title-text" href="#suggested-readings">#</a>
+</h2></div>
+  
+  
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>
+    We suggest you read the following from the
+    <a href="https://github.com/angrave/SystemProgramming/wiki" class="fancy-link wiki-link">wikibook</a>
+    before starting Map Reduce 0 - Lab Edition: <br>
+    </p>
+<ul>
+      
+        <li>
+          <a href="/wikibook/pipes-part-1-introduction-to-pipes.html#" target="_blank" class="fancy-link wiki-link">Pipes, Part 1: Introduction to pipes
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/pipes-part-2-pipe-programming-secrets.html#" target="_blank" class="fancy-link wiki-link">Pipes, Part 2: Pipe programming secrets
+          </a>
+        </li>
+      
+    </ul>
+</div></div></div>
+</div></div>
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="mapreduce" class="title-text">MapReduce<a class="anchor title-text" href="#mapreduce">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>In 2004, Google released a general framework for processing large data sets on clusters of computers.
+We recommend you read <a href="http://en.wikipedia.org/wiki/MapReduce" class="fancy-link wiki-link">this link</a> on Wikipedia for a general understanding of MapReduce.
+Also, <a href="http://static.googleusercontent.com/media/research.google.com/zh-CN/us/archive/mapreduce-osdi04.pdf" class="fancy-link wiki-link">this paper</a> written by Jeffrey Dean and Sanjay Ghemawat gives more detailed information about MapReduce.
+However, we will explain everything you need to know below.</p>
+<p>To demonstrate what MapReduce can do, we’ll start with a small dataset–three lines of text:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Hello
+there
+class!
+</code></pre></div></div>
+<p>The goal of this MapReduce program will be to count the number of occurrences of each letter in the input.</p>
+<p>MapReduce is designed to make it easy to process large data sets, spreading the work across many machines. We’ll start by splitting our (not so large) data set into one chunk per line.</p>
+<table class="table">
+  <thead>
+    <tr>
+      <th> </th>
+      <th>Chunk #1</th>
+      <th>Chunk #2</th>
+      <th>Chunk #3</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Input</strong></td>
+      <td>“Hello”</td>
+      <td>“there”</td>
+      <td>“class!”</td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>Map</strong>. Once the data is split into chunks, <code class="highlighter-rouge">map()</code> is used to convert the input into <code class="highlighter-rouge">(key, value)</code> pairs.
+In this example, our <code class="highlighter-rouge">map()</code> function will create a <code class="highlighter-rouge">(key, value)</code> pair for each letter in the input, where the key is the letter and the value is 1.</p>
+<table class="table">
+  <thead>
+    <tr>
+      <th> </th>
+      <th>Chunk #1</th>
+      <th>Chunk #2</th>
+      <th>Chunk #3</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Input</strong></td>
+      <td>“Hello”</td>
+      <td>“there”</td>
+      <td>“class!”</td>
+    </tr>
+    <tr>
+      <td><strong>Output</strong></td>
+      <td><code class="highlighter-rouge">(h, 1)</code></td>
+      <td><code class="highlighter-rouge">(t, 1)</code></td>
+      <td><code class="highlighter-rouge">(c, 1)</code></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="highlighter-rouge">(e, 1)</code></td>
+      <td><code class="highlighter-rouge">(h, 1)</code></td>
+      <td><code class="highlighter-rouge">(l, 1)</code></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="highlighter-rouge">(l, 1)</code></td>
+      <td><code class="highlighter-rouge">(e, 1)</code></td>
+      <td><code class="highlighter-rouge">(a, 1)</code></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="highlighter-rouge">(l, 1)</code></td>
+      <td><code class="highlighter-rouge">(r, 1)</code></td>
+      <td><code class="highlighter-rouge">(s, 1)</code></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="highlighter-rouge">(o, 1)</code></td>
+      <td><code class="highlighter-rouge">(e, 1)</code></td>
+      <td><code class="highlighter-rouge">(s, 1)</code></td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>Reduce.</strong> Now that the data is organized into <code class="highlighter-rouge">(key, value)</code> pairs, the <code class="highlighter-rouge">reduce()</code> function is used to combine all the values for each key.
+In this example, it will “reduce” multiple values by adding up the counts for each letter.
+Note that only values for the same key are reduced.
+Each key is reduced independently, which makes it easy to process keys in parallel.</p>
+<table class="table">
+  <thead>
+    <tr>
+      <th> </th>
+      <th>Chunk #1</th>
+      <th>Chunk #2</th>
+      <th>Chunk #3</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Input</strong></td>
+      <td><code class="highlighter-rouge">(h, 1)</code></td>
+      <td><code class="highlighter-rouge">(t, 1)</code></td>
+      <td><code class="highlighter-rouge">(c, 1)</code></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="highlighter-rouge">(e, 1)</code></td>
+      <td><code class="highlighter-rouge">(h, 1)</code></td>
+      <td><code class="highlighter-rouge">(l, 1)</code></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="highlighter-rouge">(l, 1)</code></td>
+      <td><code class="highlighter-rouge">(e, 1)</code></td>
+      <td><code class="highlighter-rouge">(a, 1)</code></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="highlighter-rouge">(l, 1)</code></td>
+      <td><code class="highlighter-rouge">(r, 1)</code></td>
+      <td><code class="highlighter-rouge">(s, 1)</code></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="highlighter-rouge">(o, 1)</code></td>
+      <td><code class="highlighter-rouge">(e, 1)</code></td>
+      <td><code class="highlighter-rouge">(s, 1)</code></td>
+    </tr>
+    <tr>
+      <td><strong>Output</strong></td>
+      <td><code class="highlighter-rouge">(a, 1)</code></td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="highlighter-rouge">(c, 1)</code></td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="highlighter-rouge">(e, 3)</code></td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="highlighter-rouge">(h, 2)</code></td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="highlighter-rouge">(l, 3)</code></td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="highlighter-rouge">(o, 1)</code></td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="highlighter-rouge">(r, 1)</code></td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="highlighter-rouge">(s, 2)</code></td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="highlighter-rouge">(t, 1)</code></td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<p>MapReduce is useful because many different algorithms can be implemented by plugging in different functions for <code class="highlighter-rouge">map()</code> and <code class="highlighter-rouge">reduce()</code>.
+If you want to implement a new algorithm you just need to implement those two functions.
+The MapReduce framework will take care of all the other aspects of running a large job: splitting the data and CPU time across any number of machines, recovering from machine failures, tracking job progress, etc.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="the-lab" class="title-text">The Lab<a class="anchor title-text" href="#the-lab">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>For this Lab, you have been tasked with building a simplified version of the MapReduce framework.
+It will run multiple processes on one machine as independent processing units and use IPC mechanisms to communicate between them.
+<code class="highlighter-rouge">map()</code> and <code class="highlighter-rouge">reduce()</code> will be programs that read from standard input and write to standard output.
+The input data for each mapper program will be lines of text.
+Key/value pairs will be represented as a line of text with “: “ between the key and the value:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>key1: value1
+key two: values and keys may contain spaces
+key_3: but they cannot have colons or newlines
+</code></pre></div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="version-0---one-mapper-one-reducer" class="title-text">Version 0 - one mapper, one reducer<a class="anchor title-text" href="#version-0---one-mapper-one-reducer">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>For your initial implementation, start with one mapper process and one reducer.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>input_file
+    |
+   MAP
+    |
+ REDUCER
+    |
+output_file
+</code></pre></div></div>
+<p>Command line:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mr0 &lt;input_file&gt; &lt;output_file&gt; &lt;mapper_executable&gt; &lt;reducer_executable&gt;
+</code></pre></div></div>
+<p>Sample Usage:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% ./mr0 test.in test.out my_mapper my_reducer
+my_mapper exited with status 1
+my_reducer exited with status 2
+output pairs in test.out: 9
+</code></pre></div></div>
+<p>You won’t implement your own <code class="highlighter-rouge">map()</code> or <code class="highlighter-rouge">reduce()</code> function–your program will take the names of a map program and a reduce program on the command line and run those.</p>
+<h3 id="close-all-unused-file-descriptors" class="title-text">Close all unused file descriptors!</h3>
+<p>The mapper and reducer processes won’t exit until they reach the end of their input file.
+An <code class="highlighter-rouge">EOF</code> won’t be triggered on their input file until all processes that have a copy of their input file descriptor close that file descriptor.</p>
+<p>For example, if the main process doesn’t close its copy of the write end of the pipe that the reducer is reading from, the reducer will never see an EOF and will never exit.
+In each child process created with <code class="highlighter-rouge">fork()</code> you’ll also need to close all unused file descriptors inherited from the parent process.
+To aid you in this, we’ve provided a set of functions, declared in <code class="highlighter-rouge">common.h</code>, that make it easy to keep track of all the additional file descriptors you create, and to close them all.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>void descriptors_add(int fd);
+void descriptors_closeall();
+void descriptors_destroy();
+</code></pre></div></div>
+<p>You don’t have to use these, but they may make the project easier.</p>
+<p>You also should consider using the function <code class="highlighter-rouge">pipe2()</code> to create your pipes.
+If you use <code class="highlighter-rouge">pipe2()</code>, you can set a flag <code class="highlighter-rouge">O_CLOEXEC</code> which will instruct the system to close both ends of the pipe if a call to <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code> is made.
+See the man pages for <code class="highlighter-rouge">pipe2()</code> and <code class="highlighter-rouge">open()</code> for more information.</p>
+<p>Since most of the child processes in this program have their <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stdin" class="fancy-link">stdin</a></code> and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stdout" class="fancy-link">stdout</a></code> redirected, you may wish to create a function for that.</p>
+<h3 id="reference-implementation" class="title-text">“Reference Implementation”</h3>
+<p>You can implement the equivalent of this program in a Unix shell quite easily:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% my_mapper &lt; test.in | my_reducer &gt; test.out
+</code></pre></div></div>
+<h3 id="files-used-for-grading" class="title-text">Files used for grading:</h3>
+<ul>
+  <li>mr0.c</li>
+</ul>
+<h3 id="things-we-will-be-testing-for" class="title-text">Things we will be testing for:</h3>
+<ul>
+  <li>Inputs of varying size</li>
+  <li>Different types of mapper and reducer tasks</li>
+  <li>No memory leaks and memory errors when running application</li>
+</ul>
+<h3 id="things-that-will-not-be-tested-for" class="title-text">Things that will not be tested for:</h3>
+<ul>
+  <li>Illegal inputs for either the mapper or reducer (Input data in a format other than as described above)</li>
+  <li>Invalid mapper or reducer code (mappers or reducers that do not work)</li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="building-and-running" class="title-text">Building and Running<a class="anchor title-text" href="#building-and-running">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<h3 id="building" class="title-text">Building</h3>
+<p>This Lab has a very complicated <code class="highlighter-rouge">Makefile</code>, but, it defines all the normal targets.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make # builds provided code and student code in release mode
+make debug # builds provided code and student code in debug mode
+</code></pre></div></div>
+<h3 id="input-data" class="title-text">Input Data</h3>
+<p>To download the example input files (books from <a href="https://www.gutenberg.org/" class="fancy-link wiki-link">Project Gutenberg</a>), use the <code class="highlighter-rouge">Makefile</code>:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make data
+</code></pre></div></div>
+<p>You should now see <code class="highlighter-rouge">data/dracula.txt</code> and <code class="highlighter-rouge">data/alice.txt</code> in your Lab folder</p>
+<h3 id="running-your-code" class="title-text">Running Your Code</h3>
+<p>We have provided the following mappers:</p>
+<ul>
+  <li><code class="highlighter-rouge">mapper_wordcount</code></li>
+  <li><code class="highlighter-rouge">mapper_lettercount</code></li>
+  <li><code class="highlighter-rouge">mapper_asciicount</code></li>
+  <li><code class="highlighter-rouge">mapper_wordlengths</code></li>
+</ul>
+<p>These each be used anywhere we specify <code class="highlighter-rouge">my_mapper</code> in these docs.</p>
+<p>And the following reducers:</p>
+<ul>
+  <li><code class="highlighter-rouge">reducer_sum</code></li>
+</ul>
+<p>These each be used anywhere we specify <code class="highlighter-rouge">my_reducer</code> in these docs.</p>
+<p>For example, if you wanted to count the occurrences of each word in Alice in Wonderland, you can run and of the following</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./mr0 data/alice.txt test.out ./mapper_wordcount ./reducer_sum
+</code></pre></div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="notes" class="title-text">Notes<a class="anchor title-text" href="#notes">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>You may find <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/dup" class="fancy-link">dup</a></code> and/or <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/dup2" class="fancy-link">dup2</a></code> helpful.</li>
+  <li>You may <strong>NOT</strong> use <code class="highlighter-rouge">system()</code>
+</li>
+</ul></div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="submission-instructions" class="title-text">Submission Instructions<a class="anchor title-text" href="#submission-instructions">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Please read details on <a href="/#academic-integrity" class="fancy-link wiki-link">Academic Integrity</a> fully. These are shared by all assignments in CS 241.</p>
+<p>We will be using GitHub as our hand-in system this semester. Our grading system will checkout your most recent (pre-deadline) commit for grading. Therefore, to hand in your code, all you have to do is commit and push to your Github repository.</p>
+<p>To check out the provided code for <code class="highlighter-rouge">mr0</code> from the class repository, go to your cs241 directory (the one you checked out for “know your tools”) and run:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git pull release master
+</code></pre></div></div>
+<p>If you run <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/ls" class="fancy-link">ls</a></code> you will now see a <code class="highlighter-rouge">mr0</code> folder, where you can find this assignment! To commit your changes (send them to us), type:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git add mr0
+git commit -m "mr0 submission"
+git push origin master
+</code></pre></div></div>
+<p>Your repository directory can be viewed from a web browser from the following URL: 
+<a href="https://github-dev.cs.illinois.edu/cs241-fa18/NETID/tree/master/mr0" class="fancy-link wiki-link">https://github-dev.cs.illinois.edu/cs241-fa18/NETID/tree/master/mr0</a> where NETID is your University NetID. It is important to check that the files you expect to be graded are present and up to date in your remote git copy.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="assignment-feedback" class="title-text">Assignment Feedback<a class="anchor title-text" href="#assignment-feedback">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>We strive to provide the best assignments that we can for this course, and we would like your feedback on them!</p>
+<p>This is the form we will use to evaluate our assignments. We appreciate the time you take to give us your honest feedback and we promise to keep improving the course to make your experience in CS 241 the best it can be.</p>
+<p><a href="https://goo.gl/forms/hREf0ojFWumYfQF12" class="fancy-link wiki-link">https://goo.gl/forms/hREf0ojFWumYfQF12</a></p>
+</div></div></div>
+</div></div>
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_docs/mr0.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

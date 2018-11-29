@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Synchronization, Part 5: Condition Variables</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Synchronization, Part 5: Condition Variables
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/Synchronization,-Part-5:-Condition-Variables">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_warm-up" href="#warm-up" class="fancy-link">Warm up</a></li>
+<li><a id="toc_what-are-condition-variables-how-do-you-use-them-what-is-spurious-wakeup" href="#what-are-condition-variables-how-do-you-use-them-what-is-spurious-wakeup" class="fancy-link">What are condition variables? How do you use them? What is Spurious Wakeup?</a></li>
+<li><a id="toc_what-does-pthread_cond_wait-do" href="#what-does-pthread_cond_wait-do" class="fancy-link">What does <code class="highlighter-rouge">pthread_cond_wait</code> do?</a></li>
+<li><a id="toc_advanced-topic-why-do-condition-variables-also-need-a-mutex" href="#advanced-topic-why-do-condition-variables-also-need-a-mutex" class="fancy-link">(Advanced topic) Why do Condition Variables also need a mutex?</a></li>
+<li><a id="toc_why-do-spurious-wakes-exist" href="#why-do-spurious-wakes-exist" class="fancy-link">Why do spurious wakes exist?</a></li>
+<li><a id="toc_example" href="#example" class="fancy-link">Example</a></li>
+<li><a id="toc_other-semaphore-considerations" href="#other-semaphore-considerations" class="fancy-link">Other semaphore considerations</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="warm-up" class="title-text">Warm up<a class="anchor title-text" href="#warm-up">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Name these properties!</p>
+<ul>
+  <li>“Only one process(/thread) can be in the CS at a time”</li>
+  <li>“If waiting, then another process can only enter the CS a finite number of times”</li>
+  <li>“If no other process is in the CS then the process can immediately enter the CS”</li>
+</ul>
+<p>See <a class="wiki-link" href="./synchronization-part-4-the-critical-section-problem.html">Synchronization, Part 4: The Critical Section Problem</a> for answers.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-are-condition-variables-how-do-you-use-them-what-is-spurious-wakeup" class="title-text">What are condition variables? How do you use them? What is Spurious Wakeup?<a class="anchor title-text" href="#what-are-condition-variables-how-do-you-use-them-what-is-spurious-wakeup">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>
+    <p>Condition variables allow a set of threads to sleep until tickled! You can tickle one thread or all threads that are sleeping. If you only wake one thread then the operating system will decide which thread to wake up. You don’t wake threads directly instead you ‘signal’ the condition variable, which then will wake up one (or all) threads that are sleeping inside the condition variable.</p>
+  </li>
+  <li>
+    <p>Condition variables are used with a mutex and with a loop (to check a condition).</p>
+  </li>
+  <li>
+    <p>Occasionally a waiting thread may appear to wake up for no reason (this is called a <em>spurious wake</em>)! This is not an issue because you always use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/wait" class="fancy-link">wait</a></code> inside a loop that tests a condition that must be true to continue.</p>
+  </li>
+  <li>
+    <p>Threads sleeping inside a condition variable are woken up by calling <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_broadcast" class="fancy-link">pthread_cond_broadcast</a></code> (wake up all) or <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_signal" class="fancy-link">pthread_cond_signal</a></code> (wake up one). Note despite the function name, this has nothing to do with POSIX <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/signal" class="fancy-link">signal</a></code>s!</p>
+  </li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-does-pthread_cond_wait-do" class="title-text">What does <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_wait" class="fancy-link">pthread_cond_wait</a></code> do?<a class="anchor title-text" href="#what-does-pthread_cond_wait-do">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The call <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_wait" class="fancy-link">pthread_cond_wait</a></code> performs three actions:</p>
+<ol>
+  <li>unlock the mutex</li>
+  <li>waits (sleeps until <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_signal" class="fancy-link">pthread_cond_signal</a></code> is called on the same condition variable). It does 1 and 2 atomically.</li>
+  <li>Before returning, locks the mutex</li>
+</ol>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="advanced-topic-why-do-condition-variables-also-need-a-mutex" class="title-text">(Advanced topic) Why do Condition Variables also need a mutex?<a class="anchor title-text" href="#advanced-topic-why-do-condition-variables-also-need-a-mutex">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Condition variables need a mutex for three reasons. The simplest to understand is that it prevents an early wakeup message (<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/signal" class="fancy-link">signal</a></code> or <code class="highlighter-rouge">broadcast</code> functions) from being ‘lost.’ Imagine the following sequence of events (time runs down the page) where the condition is satisfied _just before _<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_wait" class="fancy-link">pthread_cond_wait</a></code> is called. In this example the wake-up signal is lost!</p>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Thread 1</th>
+      <th>Thread 2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge">while (answer &lt; 42) {</code></td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="highlighter-rouge">answer++</code></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="highlighter-rouge">p_cond_signal(cv)</code></td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">p_cond_wait(cv, m) </code></td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+<p>If both threads had locked a mutex, the signal can not be sent until <em>after</em> <code class="highlighter-rouge">pthread_cond_wait(cv, m)</code> is called (which then internally unlocks the mutex)</p>
+<p>A second common reason is that updating the program state (<code class="highlighter-rouge">answer</code> variable) typically requires mutual exclusion - for example multiple threads may be updating the value of <code class="highlighter-rouge">answer</code>.</p>
+<p>A third and subtle reason is to satisfy real-time scheduling concerns which we only outline here: In a time-critical application, the waiting thread with the <em>highest priority</em> should be allowed to continue first. To satisfy this requirement the mutex must also be locked before calling <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_signal" class="fancy-link">pthread_cond_signal</a></code> or <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_broadcast" class="fancy-link">pthread_cond_broadcast</a></code> . For the curious, a longer and historical discussion is <a href="https://groups.google.com/forum/?hl=ky#!msg/comp.programming.threads/wEUgPq541v8/ZByyyS8acqMJ" class="fancy-link wiki-link">here</a>.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="why-do-spurious-wakes-exist" class="title-text">Why do spurious wakes exist?<a class="anchor title-text" href="#why-do-spurious-wakes-exist">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>For performance. On multi-CPU systems it is possible that a race-condition could cause a wake-up (signal) request to be unnoticed. The kernel may not detect this lost wake-up call but can detect when it might occur. To avoid the potential lost signal the thread is woken up so that the program code can test the condition again.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="example" class="title-text">Example<a class="anchor title-text" href="#example">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Condition variables are <em>always</em> used with a mutex lock.</p>
+<p>Before calling <em>wait</em>, the mutex lock must be locked and <em>wait</em> must be wrapped with a loop.</p>
+<pre><code class="language-C"><span class="n">pthread_cond_t</span>
+</code></pre>
+<ul>
+  <li>We can implement a counting semaphore using condition variables.</li>
+  <li>Each semaphore needs a count, a condition variable and a mutex
+    <pre><code class="language-C"><span class="k">typedef</span>
+</code></pre>
+  </li>
+</ul>
+<p>Implement <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_init" class="fancy-link">sem_init</a></code> to initialize the mutex and condition variable</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>Our implementation of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_post" class="fancy-link">sem_post</a></code> needs to increment the count.
+We will also wake up any threads sleeping inside the condition variable.
+Notice we lock and unlock the mutex so only one thread can be inside the critical section at a time.</p>
+<pre><code class="language-C"><span class="n">sem_post</span>
+</code></pre>
+<p>Our implementation of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_wait" class="fancy-link">sem_wait</a></code> may need to sleep if the semaphore’s count is zero.
+Just like <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_post" class="fancy-link">sem_post</a></code> we wrap the critical section using the lock (so only one thread can be executing our code at a time). Notice if the thread does need to wait then the mutex will be unlocked, allowing another thread to enter <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_post" class="fancy-link">sem_post</a></code> and waken us from our sleep!</p>
+<p>Notice that even if a thread is woken up, before it returns from  <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_wait" class="fancy-link">pthread_cond_wait</a></code> it must re-acquire the lock, so it will have to wait a little bit more (e.g. until sem_post finishes).</p>
+<pre><code class="language-C"><span class="n">sem_wait</span>
+</code></pre>
+<p><strong>Wait <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_post" class="fancy-link">sem_post</a></code> keeps calling <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_signal" class="fancy-link">pthread_cond_signal</a></code> won’t that break sem_wait?</strong>
+Answer: No! We can’t get past the loop until the count is non-zero. In practice this means <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_post" class="fancy-link">sem_post</a></code> would unnecessary call <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_signal" class="fancy-link">pthread_cond_signal</a></code> even if there are no waiting threads. A more efficient implementation would only call <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_signal" class="fancy-link">pthread_cond_signal</a></code> when necessary i.e.</p>
+<pre><code class="language-C"><span class="cm">/* Did we increment from zero to one- time to signal a thread sleeping inside sem_post */</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="other-semaphore-considerations" class="title-text">Other semaphore considerations<a class="anchor title-text" href="#other-semaphore-considerations">#</a>
+</h2></div>
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>Real semaphores implementation include a queue and scheduling concerns to ensure fairness and priority e.g. wake up the highest-priority longest sleeping thread.</li>
+  <li>Also, an advanced use of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_init" class="fancy-link">sem_init</a></code> allows semaphores to be shared across processes. Our implementation only works for threads inside the same process.</li>
+</ul></div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/synchronization-part-5-condition-variables.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

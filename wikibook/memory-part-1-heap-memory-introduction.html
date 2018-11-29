@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Memory, Part 1: Heap Memory Introduction</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Memory, Part 1: Heap Memory Introduction
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/Memory,-Part-1:-Heap-Memory-Introduction">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_what-happens-when-i-call-malloc" href="#what-happens-when-i-call-malloc" class="fancy-link">What happens when I call malloc?</a></li>
+<li><a id="toc_can-malloc-fail" href="#can-malloc-fail" class="fancy-link">Can malloc fail?</a></li>
+<li><a id="toc_where-is-the-heap-and-how-big-is-it" href="#where-is-the-heap-and-how-big-is-it" class="fancy-link">Where is the heap and how big is it?</a></li>
+<li><a id="toc_do-programs-need-to-call-brk-or-sbrk" href="#do-programs-need-to-call-brk-or-sbrk" class="fancy-link">Do programs need to call brk or sbrk?</a></li>
+<li><a id="toc_what-is-calloc" href="#what-is-calloc" class="fancy-link">What is calloc?</a></li>
+<li><a id="toc_why-is-the-memory-that-is-first-returned-by-sbrk-initialized-to-zero" href="#why-is-the-memory-that-is-first-returned-by-sbrk-initialized-to-zero" class="fancy-link">Why is the memory that is first returned by sbrk initialized to zero?</a></li>
+<li><a id="toc_why-doesnt-malloc-always-initialize-memory-to-zero" href="#why-doesnt-malloc-always-initialize-memory-to-zero" class="fancy-link">Why doesn’t malloc always initialize memory to zero?</a></li>
+<li><a id="toc_what-is-realloc-and-when-would-you-use-it" href="#what-is-realloc-and-when-would-you-use-it" class="fancy-link">What is realloc and when would you use it?</a></li>
+<li><a id="toc_where-can-i-read-more" href="#where-can-i-read-more" class="fancy-link">Where can I read more?</a></li>
+<li><a id="toc_how-important-is-that-memory-allocation-is-fast" href="#how-important-is-that-memory-allocation-is-fast" class="fancy-link">How important is that memory allocation is fast?</a></li>
+<li><a id="toc_what-is-the-silliest-malloc-and-free-implementation-and-what-is-wrong-with-it" href="#what-is-the-silliest-malloc-and-free-implementation-and-what-is-wrong-with-it" class="fancy-link">What is the silliest malloc and free implementation and what is wrong with it?</a></li>
+<li><a id="toc_what-are-placement-strategies" href="#what-are-placement-strategies" class="fancy-link">What are placement strategies?</a></li>
+<li><a id="toc_what-is-external-fragmentation" href="#what-is-external-fragmentation" class="fancy-link">What is external fragmentation?</a></li>
+<li><a id="toc_what-effect-do-placement-strategies-have-on-external-fragmentation-and-performance" href="#what-effect-do-placement-strategies-have-on-external-fragmentation-and-performance" class="fancy-link">What effect do placement strategies have on external fragmentation and performance?</a></li>
+<li><a id="toc_what-are-the-challenges-of-writing-a-heap-allocator" href="#what-are-the-challenges-of-writing-a-heap-allocator" class="fancy-link">What are the challenges of writing a heap allocator?</a></li>
+<li><a id="toc_how-do-you-implement-a-memory-allocator" href="#how-do-you-implement-a-memory-allocator" class="fancy-link">How do you implement a memory allocator?</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-happens-when-i-call-malloc" class="title-text">What happens when I call malloc?<a class="anchor title-text" href="#what-happens-when-i-call-malloc">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>The function <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code> is a C library call and is used to reserve a contiguous block of memory. Unlike stack memory, the memory remains allocated until <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/free" class="fancy-link">free</a></code> is called with the same pointer. There is also <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/calloc" class="fancy-link">calloc</a></code> and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/realloc" class="fancy-link">realloc</a></code> which are discussed below.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="can-malloc-fail" class="title-text">Can malloc fail?<a class="anchor title-text" href="#can-malloc-fail">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>If <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code> fails to reserve any more memory then it returns <code class="highlighter-rouge">NULL</code>. Robust programs should check the return value. If your code assumes <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code> succeeds and it does not, then your program will likely crash (segfault) when it tries to write to address 0.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="where-is-the-heap-and-how-big-is-it" class="title-text">Where is the heap and how big is it?<a class="anchor title-text" href="#where-is-the-heap-and-how-big-is-it">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The heap is part of the process memory and it does not have a fixed size. Heap memory allocation is performed by the C library when you call <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code> (<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/calloc" class="fancy-link">calloc</a></code>, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/realloc" class="fancy-link">realloc</a></code>) and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/free" class="fancy-link">free</a></code>.</p>
+<p>First a quick review on process memory: A process is a running instance of your program. Each process has its own address space. For example on a 32 bit machine your process gets about 4 billion addresses to play with, however not all of these are valid or even mapped to actual physical memory (RAM). Inside the process’s memory you will find the executable code, space for the stack, environment variables, global (static) variables and the heap.</p>
+<p>By calling <code class="highlighter-rouge"><a href="https://linux.die.net/man/2/sbrk" class="fancy-link">sbrk</a></code> the C library can increase the size of the heap as your program demands more heap memory. As the heap and stack (one for each thread) need to grow, we put them at opposite ends of the address space. So for typical architectures the heap will grow upwards and the stack grows downwards.</p>
+<p>Truthiness: Modern operating system memory allocators no longer need <code class="highlighter-rouge"><a href="https://linux.die.net/man/2/sbrk" class="fancy-link">sbrk</a></code> - instead they can request independent regions of virtual memory and maintain multiple memory regions. For example gigabyte requests may be placed in a different memory region than small allocation requests. However this detail is an unwanted complexity: The problems of fragmentation and allocating memory efficiently still apply, so we will ignore this implementation nicety here and will write as if the heap is a single region.</p>
+<p>If we write a multi-threaded program (more about that later) we will need multiple stacks (one per thread) but there’s only ever one heap.</p>
+<p>On typical architectures, the heap is part of the <code class="highlighter-rouge">Data segment</code> and starts just above the code and global variables.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="do-programs-need-to-call-brk-or-sbrk" class="title-text">Do programs need to call brk or sbrk?<a class="anchor title-text" href="#do-programs-need-to-call-brk-or-sbrk">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Not typically (though calling <code class="highlighter-rouge">sbrk(0)</code> can be interesting because it tells you where your heap currently ends). Instead programs use <code class="highlighter-rouge">malloc,calloc,realloc</code> and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/free" class="fancy-link">free</a></code> which are part of the C library. The internal implementation of these functions will call <code class="highlighter-rouge"><a href="https://linux.die.net/man/2/sbrk" class="fancy-link">sbrk</a></code> when additional heap memory is required.</p>
+<pre><code class="language-C"><span class="kt">void</span>
+</code></pre>
+<p>Example output: <code class="highlighter-rouge">The top of heap went from 0x4000 to 0xa000</code></p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-calloc" class="title-text">What is calloc?<a class="anchor title-text" href="#what-is-calloc">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Unlike <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code>, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/calloc" class="fancy-link">calloc</a></code> initializes memory contents to zero and also takes two arguments (the number of items and the size in bytes of each item). A naive but readable implementation of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/calloc" class="fancy-link">calloc</a></code> looks like this:</p>
+<pre><code class="language-C"><span class="kt">void</span>
+</code></pre>
+<p>An advanced discussion of these limitations is <a href="http://locklessinc.com/articles/calloc/" class="fancy-link wiki-link">here</a>.</p>
+<p>Programmers often use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/calloc" class="fancy-link">calloc</a></code> rather than explicitly calling <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/memset" class="fancy-link">memset</a></code> after <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code>, to set the memory contents to zero. Note <code class="highlighter-rouge">calloc(x,y)</code> is identical to <code class="highlighter-rouge">calloc(y,x)</code>, but you should follow the conventions of the manual.</p>
+<pre><code class="language-C"><span class="c1">// Ensure our memory is initialized to zero</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="why-is-the-memory-that-is-first-returned-by-sbrk-initialized-to-zero" class="title-text">Why is the memory that is first returned by sbrk initialized to zero?<a class="anchor title-text" href="#why-is-the-memory-that-is-first-returned-by-sbrk-initialized-to-zero">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>If the operating system did not zero out contents of physical RAM it might be possible for one process to learn about the memory of another process that had previously used the memory. This would be a security leak.</p>
+<p>Unfortunately this means that for <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code> requests before any memory has been freed and simple programs (which end up using newly reserved memory from the system) the memory is <em>often</em> zero. Then programmers mistaken write C programs that assume malloc’d memory will <em>always</em> be zero.</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="why-doesnt-malloc-always-initialize-memory-to-zero" class="title-text">Why doesn’t malloc always initialize memory to zero?<a class="anchor title-text" href="#why-doesnt-malloc-always-initialize-memory-to-zero">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Performance! We want malloc to be as fast as possible. Zeroing out memory may be unnecessary.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-realloc-and-when-would-you-use-it" class="title-text">What is realloc and when would you use it?<a class="anchor title-text" href="#what-is-realloc-and-when-would-you-use-it">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/realloc" class="fancy-link">realloc</a></code> allows you to resize an existing memory allocation that was previously allocated on the heap (via malloc,calloc or realloc). The most common use of realloc is to resize memory used to hold an array of values. A naive but readable version of realloc is suggested below</p>
+<pre><code class="language-C"><span class="kt">void</span>
+</code></pre>
+<p>An INCORRECT use of realloc is shown below:</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>The above code contains two mistakes. Firstly we needed 3*sizeof(int) bytes not 3 bytes.
+Secondly realloc may need to move the existing contents of the memory to a new location. For example, there may not be sufficient space because the neighboring bytes are already allocated. A correct use of realloc is shown below.</p>
+<pre><code class="language-C"><span class="n">array</span>
+</code></pre>
+<p>A robust version would also check for a <code class="highlighter-rouge">NULL</code> return value. Note <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/realloc" class="fancy-link">realloc</a></code> can be used to grow and shrink allocations.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="where-can-i-read-more" class="title-text">Where can I read more?<a class="anchor title-text" href="#where-can-i-read-more">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>See <a href="http://man7.org/linux/man-pages/man3/malloc.3.html" class="fancy-link wiki-link">the man page</a>!</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-important-is-that-memory-allocation-is-fast" class="title-text">How important is that memory allocation is fast?<a class="anchor title-text" href="#how-important-is-that-memory-allocation-is-fast">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Very! Allocating and de-allocating heap memory is a common operation in most applications.</p></div></div></div>
+</div></div>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-the-silliest-malloc-and-free-implementation-and-what-is-wrong-with-it" class="title-text">What is the silliest malloc and free implementation and what is wrong with it?<a class="anchor title-text" href="#what-is-the-silliest-malloc-and-free-implementation-and-what-is-wrong-with-it">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<pre><code class="language-C"><span class="kt">void</span>
+</code></pre>
+<p>The above implementation suffers from two major drawbacks:</p>
+<ul>
+  <li>System calls are slow (compared to library calls). We should reserve a large amount of memory and only occasionally ask for more from the system.</li>
+  <li>No reuse of freed memory. Our program never re-uses heap memory - it just keeps asking for a bigger heap.</li>
+</ul>
+<p>If this allocator was used in a typical program, the process would quickly exhaust all available memory.
+Instead we need an allocator that can efficiently use heap space and only ask for more memory when necessary.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-are-placement-strategies" class="title-text">What are placement strategies?<a class="anchor title-text" href="#what-are-placement-strategies">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>During program execution memory is allocated and de-allocated (freed), so there will be gaps (holes) in the heap memory that can be re-used for future memory requests. The memory allocator needs to keep track of which parts of the heap are currently allocated and which are parts are available.</p>
+<p>Suppose our current heap size is 64K, though not all of it is in use because some earlier malloc’d memory has already been freed by the program:</p>
+<p>16KB free | 10KB allocated | 1KB free | 1KB allocated | 30KB free | 4KB allocated | 2KB free 
+—|—|—|—|—|—|—</p>
+<p>If a new malloc request for 2KB is executed (<code class="highlighter-rouge">malloc(2048)</code>), where should <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code> reserve the memory? It could use the last 2KB hole (which happens to be the perfect size!) or it could split one of the other two free holes. These choices represent different placement strategies.</p>
+<p>Whichever hole is chosen, the allocator will need to split the hole into two: The newly allocated space (which will be returned to the program) and a smaller hole (if there is spare space left over).</p>
+<p>A perfect-fit strategy finds the smallest hole that is of sufficient size (at least 2KB):</p>
+<p>16KB free | 10KB allocated | 1KB free | 1KB allocated | 30KB free | 4KB allocated | ‘2KB HERE!’
+—|—|—|—|—|—|—</p>
+<p>A worst-fit strategy finds the largest hole that is of sufficient size (so break the 30KB hole into two):</p>
+<p>16KB free | 10KB allocated | 1KB free | 1KB allocated | <code class="highlighter-rouge">2KB HERE!</code> | <code class="highlighter-rouge">28KB free</code> | 4KB allocated | 2KB free 
+—|—|—|—|—|—|—|—</p>
+<p>A first-fit strategy finds the first available hole that is of sufficient size (break the 16KB hole into two):</p>
+<p><code class="highlighter-rouge">2KB HERE!</code> | <code class="highlighter-rouge">14KB free</code> | 10KB allocated | 1KB free | 1KB allocated | 30KB free | 4KB allocated | 2KB free 
+—|—|—|—|—|—|—|—</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-external-fragmentation" class="title-text">What is external fragmentation?<a class="anchor title-text" href="#what-is-external-fragmentation">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>In the example below, of the 64KB of heap memory, 17KB is allocated, and 47KB is free. However the largest available block is only 30KB because our available unallocated heap memory is fragmented into smaller pieces.</p>
+<p><code class="highlighter-rouge">16KB free</code> | 10KB allocated | 1KB free | 1KB allocated | 30KB free | 4KB allocated | 2KB free 
+—|—|—|—|—|—|—</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-effect-do-placement-strategies-have-on-external-fragmentation-and-performance" class="title-text">What effect do placement strategies have on external fragmentation and performance?<a class="anchor title-text" href="#what-effect-do-placement-strategies-have-on-external-fragmentation-and-performance">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Different strategies affect the fragmentation of heap memory in non-obvious ways, which only are discovered by mathematical analysis or careful simulations under real-world conditions (for example simulating the memory allocation requests of a database or webserver).
+For example, best-fit at first glance appears to be an excellent strategy however, if we can not find a perfectly-sized hole then this placement creates many tiny unusable holes, leading to high fragmentation. It also requires a scan of all possible holes.</p>
+<p>First fit has the advantage that it will not evaluate all possible placements and therefore be faster.</p>
+<p>Since Worst-fit targets the largest unallocated space, it is a poor choice if large allocations are required.</p>
+<p>In practice first-fit and next-fit (which is not discussed here) are often common placement strategy. Hybrid approaches and many other alternatives exist (see implementing a memory allocator page).</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-are-the-challenges-of-writing-a-heap-allocator" class="title-text">What are the challenges of writing a heap allocator?<a class="anchor title-text" href="#what-are-the-challenges-of-writing-a-heap-allocator">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The main challenges are,</p>
+<ul>
+  <li>Need to minimize fragmentation (i.e. maximize memory utilization)</li>
+  <li>Need high performance</li>
+  <li>Fiddly implementation (lots of pointer manipulation using linked lists and pointer arithmetic)</li>
+</ul>
+<p>Some additional comments:</p>
+<p>Both fragmentation and performance depend on the application allocation profile, which can be evaluated but not predicted and in practice, under-specific usage conditions, a special-purpose allocator can often out-perform a general purpose implementation.</p>
+<p>The allocator doesn’t know the program’s memory allocation requests in advance. Even if we did, this is the <a href="http://en.wikipedia.org/wiki/Knapsack_problem" class="fancy-link wiki-link">Knapsack problem</a> which is known to be NP hard!</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-you-implement-a-memory-allocator" class="title-text">How do you implement a memory allocator?<a class="anchor title-text" href="#how-do-you-implement-a-memory-allocator">#</a>
+</h2></div>
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Good question. <a href="/wikibook/memory-part-2-implementing-a-memory-allocator.html#" class="fancy-link wiki-link">Implementing a memory allocator</a></p></div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/memory-part-1-heap-memory-introduction.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

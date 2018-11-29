@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>C Programming: Review Questions</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              C Programming: Review Questions
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/C-Programming:-Review-Questions">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_warning---question-numbers-subject-to-change" href="#warning---question-numbers-subject-to-change" class="fancy-link">Warning - question numbers subject to change</a></li>
+<li><a id="toc_q11" href="#q11" class="fancy-link">Q1.1</a></li>
+<li><a id="toc_q-12" href="#q-12" class="fancy-link">Q 1.2</a></li>
+<li><a id="toc_q-13" href="#q-13" class="fancy-link">Q 1.3</a></li>
+<li><a id="toc_q-14" href="#q-14" class="fancy-link">Q 1.4</a></li>
+<li><a id="toc_q-14-1" href="#q-14-1" class="fancy-link">Q 1.4</a></li>
+<li><a id="toc_q-15" href="#q-15" class="fancy-link">Q 1.5</a></li>
+<li><a id="toc_q-16" href="#q-16" class="fancy-link">Q 1.6</a></li>
+<li><a id="toc_q-17" href="#q-17" class="fancy-link">Q 1.7</a></li>
+<li><a id="toc_q-18" href="#q-18" class="fancy-link">Q 1.8</a></li>
+<li><a id="toc_q-19" href="#q-19" class="fancy-link">Q 1.9</a></li>
+<li><a id="toc_q-110" href="#q-110" class="fancy-link">Q 1.10</a></li>
+<li><a id="toc_q-21" href="#q-21" class="fancy-link">Q 2.1</a></li>
+<li><a id="toc_q-31" href="#q-31" class="fancy-link">Q 3.1</a></li>
+<li><a id="toc_q-41" href="#q-41" class="fancy-link">Q 4.1</a></li>
+<li><a id="toc_q-51" href="#q-51" class="fancy-link">Q 5.1</a></li>
+<li><a id="toc_q-52" href="#q-52" class="fancy-link">Q 5.2</a></li>
+<li><a id="toc_q-53" href="#q-53" class="fancy-link">Q 5.3</a></li>
+<li><a id="toc_heap-memory" href="#heap-memory" class="fancy-link">Heap memory</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="warning---question-numbers-subject-to-change" class="title-text">Warning - question numbers subject to change<a class="anchor title-text" href="#warning---question-numbers-subject-to-change">#</a>
+</h2></div>
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="q11" class="title-text">Q1.1<a class="anchor title-text" href="#q11">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>In the example below, which variables are guaranteed to print the value of zero?</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="q-12" class="title-text">Q 1.2<a class="anchor title-text" href="#q-12">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>In the example below, which variables are guaranteed to print the value of zero?</p>
+<pre><code class="language-C"><span class="kt">void</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="q-13" class="title-text">Q 1.3<a class="anchor title-text" href="#q-13">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Explain the error in the following attempt to copy a string.</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="q-14" class="title-text">Q 1.4<a class="anchor title-text" href="#q-14">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Why does the following attempt to copy a string sometimes work and sometimes fail?</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="q-14-1" class="title-text">Q 1.4<a class="anchor title-text" href="#q-14-1">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Explain the two errors in the following code that attempts to copy a string.</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="q-15" class="title-text">Q 1.5<a class="anchor title-text" href="#q-15">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Which of the following is legal?</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="q-16" class="title-text">Q 1.6<a class="anchor title-text" href="#q-16">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Complete the function pointer typedef to declare a pointer to a function that takes a void* argument and returns a void*. Name your type ‘pthread_callback’</p>
+<pre><code class="language-C"><span class="k">typedef</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="q-17" class="title-text">Q 1.7<a class="anchor title-text" href="#q-17">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>In addition to the function arguments what else is stored on a thread’s stack?</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="q-18" class="title-text">Q 1.8<a class="anchor title-text" href="#q-18">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Implement a version of <code class="highlighter-rouge">char* strcat(char*dest, const char*src)</code> using only <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/strcpy" class="fancy-link">strcpy</a></code>  <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/strlen" class="fancy-link">strlen</a></code> and pointer arithmetic</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="q-19" class="title-text">Q 1.9<a class="anchor title-text" href="#q-19">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Implement version of size_t strlen(const char*) using a loop and no function calls.</p>
+<pre><code class="language-C"><span class="kt">size_t</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="q-110" class="title-text">Q 1.10<a class="anchor title-text" href="#q-110">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Identify the three bugs in the following implementation of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/strcpy" class="fancy-link">strcpy</a></code>.</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="q-21" class="title-text">Q 2.1<a class="anchor title-text" href="#q-21">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Spot the two errors!</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fprintf("You scored 100%");
+</code></pre></div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="q-31" class="title-text">Q 3.1<a class="anchor title-text" href="#q-31">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Complete the following code to print to a file. Print the name, a comma and the score to the file ‘result.txt’</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="q-41" class="title-text">Q 4.1<a class="anchor title-text" href="#q-41">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>How would you print the values of variables a,mesg,val and ptr to a string? Print a as an integer, mesg as C string, val as a double val and ptr as a hexadecimal pointer. You may assume the mesg points to a short C string(&lt;50 characters).
+Bonus: How would you make this code more robust or able to cope with?</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="q-51" class="title-text">Q 5.1<a class="anchor title-text" href="#q-51">#</a>
+</h2></div>
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Why should you check the return value of sscanf and scanf?</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="q-52" class="title-text">Q 5.2<a class="anchor title-text" href="#q-52">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Why is ‘gets’ dangerous?</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="q-53" class="title-text">Q 5.3<a class="anchor title-text" href="#q-53">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Write a complete program that uses <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/getline" class="fancy-link">getline</a></code>. Ensure your program has no memory leaks.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="heap-memory" class="title-text">Heap memory<a class="anchor title-text" href="#heap-memory">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>When would you use calloc not malloc? 
+When would realloc be useful?</p>
+<p>(Todo - move this question to another page)
+What mistake did the programmer make in the following code? Is it possible to fix it i) using heap memory? ii) using global (static) memory?</p>
+<pre><code class="language-C"><span class="k">static</span>
+</code></pre>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/c-programming-review-questions.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

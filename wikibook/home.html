@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Home</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Home
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/Home">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_0-introduction-resources-for-uiuc-students" href="#0-introduction-resources-for-uiuc-students" class="fancy-link">0. Introduction (resources for UIUC students)</a></li>
+<li><a id="toc_1-learning-c" href="#1-learning-c" class="fancy-link">1. Learning C</a></li>
+<li><a id="toc_2-processes" href="#2-processes" class="fancy-link">2. Processes</a></li>
+<li><a id="toc_3-memory-and-allocators" href="#3-memory-and-allocators" class="fancy-link">3. Memory and Allocators</a></li>
+<li><a id="toc_4-intro-to-pthreads" href="#4-intro-to-pthreads" class="fancy-link">4. Intro to Pthreads</a></li>
+<li><a id="toc_5-synchronization" href="#5-synchronization" class="fancy-link">5. Synchronization</a></li>
+<li><a id="toc_6-deadlock" href="#6-deadlock" class="fancy-link">6. Deadlock</a></li>
+<li><a id="toc_7-inter-process-communication--scheduling" href="#7-inter-process-communication--scheduling" class="fancy-link">7. Inter-process Communication &amp; Scheduling</a></li>
+<li><a id="toc_8-networking" href="#8-networking" class="fancy-link">8. Networking</a></li>
+<li><a id="toc_9-file-systems" href="#9-file-systems" class="fancy-link">9. File Systems</a></li>
+<li><a id="toc_10-signals" href="#10-signals" class="fancy-link">10. Signals</a></li>
+<li><a id="toc_11-virtualization-emulation-and-containers" href="#11-virtualization-emulation-and-containers" class="fancy-link">11. Virtualization, emulation, and containers</a></li>
+<li><a id="toc_uiuc-exam-practice-questions" href="#uiuc-exam-practice-questions" class="fancy-link">UIUC Exam Practice Questions</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<p>Welcome to Angrave’s crowd-sourced System Programming wiki-book!
+This wiki is being built by students and faculty from the University of Illinois and is a crowd-source authoring experiment by Lawrence Angrave from CS @ Illinois.</p>
+
+<p>This book is an introduction to programming in C, and system programming (processes, threads, synchronization, networking and more!). We assume you’ve already had some programming experience, in an earlier computer science course.</p>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="0-introduction-resources-for-uiuc-students" class="title-text">0. Introduction (resources for UIUC students)<a class="anchor title-text" href="#0-introduction-resources-for-uiuc-students">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li><a class="wiki-link" href="./hw0.html">HW0</a></li>
+  <li><a href="https://github-dev.cs.illinois.edu/angrave/cs241-lectures/" class="fancy-link wiki-link">Lecture Code and handouts</a></li>
+  <li><a class="wiki-link" href="./informal-glossary.html">Informal Glossary</a></li>
+  <li><a class="wiki-link" href="./piazza%20when%20and%20how%20to%20ask%20for%20help.html">#Piazza: When And How to Ask For Help</a></li>
+  <li><a class="wiki-link" href="./programming-tricks-part-1.html">Programming Tricks, Part 1</a></li>
+  <li><a class="wiki-link" href="./system-programming-short-stories-and-songs.html">System Programming Short Stories and Songs</a></li>
+  <li><a class="wiki-link" href="./systems-programming-bugs-in-industry.html">Systems Programming Bugs in Industry</a></li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="1-learning-c" class="title-text">1. Learning C<a class="anchor title-text" href="#1-learning-c">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li><a class="wiki-link" href="./c-programming-part-1-introduction.html">C Programming, Part 1: Introduction</a></li>
+  <li>
+<a class="wiki-link" href="./c-programming-part-2-text-input-and-output.html">C Programming, Part 2: Text Input And Output</a>
+    <ul>
+      <li><a href="/wikibook/c-programming-part-2-text-input-and-output.html#printing-to-streams" class="fancy-link wiki-link">Printing to/Reading from Streams</a></li>
+      <li><a href="/wikibook/c-programming-part-2-text-input-and-output.html#parsing-input" class="fancy-link wiki-link">Parsing Input</a></li>
+    </ul>
+  </li>
+  <li>
+<a class="wiki-link" href="./c-programming-part-3-common-gotchas.html">C Programming, Part 3: Common Gotchas</a>
+    <ul>
+      <li><a href="/wikibook/c-programming-part-3-common-gotchas.html#memory-mistakes" class="fancy-link wiki-link">Memory Mistakes</a></li>
+      <li><a href="/wikibook/c-programming-part-3-common-gotchas.html#logic-and-program-flow-mistakes" class="fancy-link wiki-link">Logic/Programming Flow</a></li>
+      <li><a href="/wikibook/c-programming-part-3-common-gotchas.html#other-gotchas" class="fancy-link wiki-link">Other Gotchas</a></li>
+    </ul>
+  </li>
+  <li>
+<a class="wiki-link" href="./c-programming-part-4-strings-and-structs.html">C Programming, Part 4: Strings and Structs</a>
+    <ul>
+      <li><a href="/wikibook/c-programming-part-4-strings-and-structs.html#strings-structs-and-gotchas" class="fancy-link wiki-link">Strings</a></li>
+      <li><a href="/wikibook/c-programming-part-4-strings-and-structs.html#so-whats-a-struct" class="fancy-link wiki-link">Structs</a></li>
+    </ul>
+  </li>
+  <li>
+<a class="wiki-link" href="./c-programming-part-5-debugging.html">C Programming, Part 5: Debugging</a>
+    <ul>
+      <li><a href="/wikibook/c-programming-part-5-debugging.html#in-code-debugging" class="fancy-link wiki-link">In Code Debugging</a></li>
+      <li><a href="/wikibook/c-programming-part-5-debugging.html#valgrind" class="fancy-link wiki-link">Valgrind</a></li>
+      <li><a href="/wikibook/c-programming-part-5-debugging.html#tsan" class="fancy-link wiki-link">Tsan</a></li>
+      <li><a href="/wikibook/c-programming-part-5-debugging.html#gdb" class="fancy-link wiki-link">GDB</a></li>
+    </ul>
+  </li>
+  <li><a class="wiki-link" href="./c-programming-review-questions.html">C Programming, Review Questions</a></li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="2-processes" class="title-text">2. Processes<a class="anchor title-text" href="#2-processes">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li><a class="wiki-link" href="./kernel-shells-terminals-oh-my!.html">Kernel, Shells, Terminals Oh My!</a></li>
+  <li>
+<a class="wiki-link" href="./processes-part-1-introduction.html">Processes, Part 1: Introduction</a>
+    <ul>
+      <li><a href="/wikibook/processes-part-1-introduction.html#overview" class="fancy-link wiki-link">Overview</a></li>
+      <li><a href="/wikibook/processes-part-1-introduction.html#process-contents" class="fancy-link wiki-link">Process Contents</a></li>
+      <li><a href="/wikibook/processes-part-1-introduction.html#process-functionslimitations-bonus" class="fancy-link wiki-link">Bonus: More Contents</a></li>
+    </ul>
+  </li>
+  <li>
+<a class="wiki-link" href="./forking-part-1-introduction.html">Forking, Part 1: Introduction</a>
+    <ul>
+      <li><a href="/wikibook/forking-part-1-introduction.html#intro-to-fork" class="fancy-link wiki-link">Introduction</a></li>
+      <li><a href="/wikibook/forking-part-1-introduction.html#waiting-and-execing" class="fancy-link wiki-link">Waiting and Execing</a></li>
+    </ul>
+  </li>
+  <li>
+<a class="wiki-link" href="./forking-part-2-fork-exec-wait.html">Forking, Part 2: Fork, Exec, Wait</a>
+    <ul>
+      <li><a href="/wikibook/forking-part-2-fork-exec-wait.html#the-pattern" class="fancy-link wiki-link">The Pattern</a></li>
+      <li><a href="/wikibook/forking-part-2-fork-exec-wait.html#zombies" class="fancy-link wiki-link">Zombies</a></li>
+    </ul>
+  </li>
+  <li>
+<a class="wiki-link" href="./process-control-part-1-wait-macros-using-signals.html">Process Control, Part 1: Wait macros, using signals</a>
+    <ul>
+      <li><a href="/wikibook/process-control-part-1-wait-macros-using-signals.html#wait-macros" class="fancy-link wiki-link">Wait Macros</a></li>
+      <li><a href="/wikibook/process-control-part-1-wait-macros-using-signals.html#signals" class="fancy-link wiki-link">Signals</a></li>
+    </ul>
+  </li>
+  <li><a class="wiki-link" href="./processes-review-questions.html">Processes Review Questions</a></li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="3-memory-and-allocators" class="title-text">3. Memory and Allocators<a class="anchor title-text" href="#3-memory-and-allocators">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>
+<a class="wiki-link" href="./memory-part-1-heap-memory-introduction.html">Memory, Part 1: Heap Memory Introduction</a>
+    <ul>
+      <li><a href="/wikibook/memory-part-1-heap-memory-introduction.html#c-dynamic-memory-allocation" class="fancy-link wiki-link">C Dynamic Memory Allocation</a></li>
+      <li><a href="/wikibook/memory-part-1-heap-memory-introduction.html#intro-to-allocating" class="fancy-link wiki-link">Introduction to Allocating</a></li>
+    </ul>
+  </li>
+  <li>
+<a class="wiki-link" href="./memory-part-2-implementing-a-memory-allocator.html">Memory, Part 2: Implementing a Memory Allocator</a>
+    <ul>
+      <li><a href="/wikibook/memory-part-2-implementing-a-memory-allocator.html#memory-allocator-tutorial" class="fancy-link wiki-link">Memory Allocator Tutorial</a></li>
+    </ul>
+  </li>
+  <li><a class="wiki-link" href="./memory-part-3-smashing-the-stack-example.html">Memory, Part 3: Smashing the Stack Example</a></li>
+  <li><a class="wiki-link" href="./memory-review-questions.html">Memory Review Questions</a></li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="4-intro-to-pthreads" class="title-text">4. Intro to Pthreads<a class="anchor title-text" href="#4-intro-to-pthreads">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>
+<a class="wiki-link" href="./pthreads-part-1-introduction.html">Pthreads, Part 1: Introduction</a>
+    <ul>
+      <li><a href="/wikibook/pthreads-part-1-introduction.html#intro-to-threads" class="fancy-link wiki-link">Intro to Threads</a></li>
+      <li><a href="/wikibook/pthreads-part-1-introduction.html#simple-usage" class="fancy-link wiki-link">Simple Pthreads</a></li>
+    </ul>
+  </li>
+  <li>
+<a class="wiki-link" href="./pthreads-part-2-usage-in-practice.html">Pthreads, Part 2: Usage in Practice</a>
+    <ul>
+      <li><a href="/wikibook/pthreads-part-2-usage-in-practice.html#more-pthread-functions" class="fancy-link wiki-link">More pthread Functions</a></li>
+      <li><a href="/wikibook/pthreads-part-2-usage-in-practice.html#intro-to-race-conditions" class="fancy-link wiki-link">Intro to Race Conditions</a></li>
+    </ul>
+  </li>
+  <li><a class="wiki-link" href="./pthreads-part-3-parallel-problems-(bonus).html">Pthreads, Part 3: Parallel Problems (Bonus)</a></li>
+  <li><a class="wiki-link" href="./pthread-review-questions.html">Pthread Review Questions</a></li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="5-synchronization" class="title-text">5. Synchronization<a class="anchor title-text" href="#5-synchronization">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>
+<a class="wiki-link" href="./synchronization-part-1-mutex-locks.html">Synchronization, Part 1: Mutex Locks</a>
+    <ul>
+      <li><a href="/wikibook/synchronization-part-1-mutex-locks.html#solving-critical-sections" class="fancy-link wiki-link">Solving Critical Sections</a></li>
+      <li><a href="/wikibook/synchronization-part-1-mutex-locks.html#mutex-gotchas" class="fancy-link wiki-link">Mutex Gotchas</a></li>
+    </ul>
+  </li>
+  <li><a class="wiki-link" href="./synchronization-part-2-counting-semaphores.html">Synchronization, Part 2: Counting Semaphores</a></li>
+  <li>
+<a class="wiki-link" href="./synchronization-part-3-working-with-mutexes-and-semaphores.html">Synchronization, Part 3: Working with Mutexes And Semaphores</a>
+    <ul>
+      <li><a href="/wikibook/synchronization-part-3-working-with-mutexes-and-semaphores.html#thread-safe-stack" class="fancy-link wiki-link">Thread Safe Stack</a></li>
+      <li><a href="/wikibook/synchronization-part-3-working-with-mutexes-and-semaphores.html#stack-semaphores" class="fancy-link wiki-link">Stack Semaphores</a></li>
+    </ul>
+  </li>
+  <li>
+<a class="wiki-link" href="./synchronization-part-4-the-critical-section-problem.html">Synchronization, Part 4: The Critical Section Problem</a>
+    <ul>
+      <li><a href="/wikibook/synchronization-part-4-the-critical-section-problem.html#candidate-solutions" class="fancy-link wiki-link">Candidate Solutions</a></li>
+      <li><a href="/wikibook/synchronization-part-4-the-critical-section-problem.html#working-solutions" class="fancy-link wiki-link">Working Solutions</a></li>
+      <li><a href="/wikibook/synchronization-part-4-the-critical-section-problem.html#hardware-solutions" class="fancy-link wiki-link">Hardware Solutions</a></li>
+    </ul>
+  </li>
+  <li>
+<a class="wiki-link" href="./synchronization-part-5-condition-variables.html">Synchronization, Part 5: Condition Variables</a>
+    <ul>
+      <li><a href="/wikibook/synchronization-part-5-condition-variables.html#intro-to-condition-variables" class="fancy-link wiki-link">Intro To Condition Variables</a></li>
+      <li><a href="/wikibook/synchronization-part-5-condition-variables.html#implementing-counting-semphore" class="fancy-link wiki-link">Implementing a Counting Semaphore</a></li>
+    </ul>
+  </li>
+  <li><a class="wiki-link" href="./synchronization-part-6-implementing-a-barrier.html">Synchronization, Part 6: Implementing a barrier</a></li>
+  <li><a class="wiki-link" href="./synchronization-part-7-the-reader-writer-problem.html">Synchronization, Part 7: The Reader Writer Problem</a></li>
+  <li><a class="wiki-link" href="./synchronization-part-8-ring-buffer-example.html">Synchronization, Part 8: Ring Buffer Example</a></li>
+  <li><a class="wiki-link" href="./synchronization-part-9-synchronization-across-processes.html">Synchronization, Part 9: Synchronization Across Processes</a></li>
+  <li><a class="wiki-link" href="./synchronization-review-questions.html">Synchronization Review Questions</a></li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="6-deadlock" class="title-text">6. Deadlock<a class="anchor title-text" href="#6-deadlock">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li><a class="wiki-link" href="./deadlock-part-1-resource-allocation-graph.html">Deadlock, Part 1: Resource Allocation Graph</a></li>
+  <li><a class="wiki-link" href="./deadlock-part-2-deadlock-conditions.html">Deadlock, Part 2: Deadlock Conditions</a></li>
+  <li>
+<a class="wiki-link" href="./deadlock-part-3-dining-philosophers.html">Deadlock, Part 3: Dining Philosophers</a>
+    <ul>
+      <li><a href="/wikibook/deadlock-part-3-dining-philosophers.html#failed-solutions" class="fancy-link wiki-link">Failed Solutions</a></li>
+      <li><a href="/wikibook/deadlock-part-3-dining-philosophers.html#viable-solutions" class="fancy-link wiki-link">Viable Solutions</a></li>
+    </ul>
+  </li>
+  <li><a class="wiki-link" href="./deadlock-review-questions.html">Deadlock Review Questions</a></li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="7-inter-process-communication--scheduling" class="title-text">7. Inter-process Communication &amp; Scheduling<a class="anchor title-text" href="#7-inter-process-communication--scheduling">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>
+<a class="wiki-link" href="./virtual-memory-part-1-introduction-to-virtual-memory.html">Virtual Memory, Part 1: Introduction to Virtual Memory</a>
+    <ul>
+      <li><a href="/wikibook/virtual-memory-part-1-introduction-to-virtual-memory.html#what-is-virtual-memory" class="fancy-link wiki-link">What is Virtual Memory?</a></li>
+      <li><a href="/wikibook/virtual-memory-part-1-introduction-to-virtual-memory.html#advanced-frames-and-page-protections" class="fancy-link wiki-link">Advanced Frames and Protections</a></li>
+    </ul>
+  </li>
+  <li><a class="wiki-link" href="./pipes-part-1-introduction-to-pipes.html">Pipes, Part 1: Introduction to pipes</a></li>
+  <li>
+<a class="wiki-link" href="./pipes-part-2-pipe-programming-secrets.html">Pipes, Part 2: Pipe programming secrets</a>
+    <ul>
+      <li><a href="/wikibook/pipes-part-2-pipe-programming-secrets.html#pipe-gotchas" class="fancy-link wiki-link">Pipe Gotchas</a></li>
+      <li><a href="/wikibook/pipes-part-2-pipe-programming-secrets.html#named-pipes" class="fancy-link wiki-link">Named Pipes</a></li>
+    </ul>
+  </li>
+  <li><a class="wiki-link" href="./files-part-1-working-with-files.html">Files, Part 1: Working with files</a></li>
+  <li>
+<a class="wiki-link" href="./scheduling-part-1-scheduling-processes.html">Scheduling, Part 1: Scheduling Processes</a>
+    <ul>
+      <li><a href="/wikibook/scheduling-part-1-scheduling-processes.html#thinking-about-scheduling" class="fancy-link wiki-link">Thinking about Scheduling</a></li>
+      <li><a href="/wikibook/scheduling-part-1-scheduling-processes.html#measures-of-efficiency" class="fancy-link wiki-link">Measures of Efficiency</a></li>
+    </ul>
+  </li>
+  <li><a class="wiki-link" href="./scheduling-part-2-scheduling-processes-algorithms.html">Scheduling, Part 2: Scheduling Processes: Algorithms</a></li>
+  <li><a class="wiki-link" href="./ipc-review-questions.html">IPC Review Questions</a></li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="8-networking" class="title-text">8. Networking<a class="anchor title-text" href="#8-networking">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li><a class="wiki-link" href="./posix-part-1-error-handling.html">POSIX, Part 1: Error handling</a></li>
+  <li><a class="wiki-link" href="./networking-part-1-introduction.html">Networking, Part 1: Introduction</a></li>
+  <li><a class="wiki-link" href="./networking-part-2-using-getaddrinfo.html">Networking, Part 2: Using getaddrinfo</a></li>
+  <li><a class="wiki-link" href="./networking-part-3-building-a-simple-tcp-client.html">Networking, Part 3: Building a simple TCP Client</a></li>
+  <li><a class="wiki-link" href="./networking-part-4-building-a-simple-tcp-server.html">Networking, Part 4: Building a simple TCP Server</a></li>
+  <li><a class="wiki-link" href="./networking-part-5-shutting-down-ports-reusing-ports-and-other-tricks.html">Networking, Part 5: Shutting down ports, reusing ports and other tricks</a></li>
+  <li><a class="wiki-link" href="./networking-part-6-creating-a-udp-server.html">Networking, Part 6: Creating a UDP server</a></li>
+  <li><a class="wiki-link" href="./networking-part-7-nonblocking-i-o-select()-and-epoll.html">Networking, Part 7: Nonblocking I O, select(), and epoll</a></li>
+  <li><a class="wiki-link" href="./networking-part-8-protocols-(tcp-handshaking-http-latency-heart-bleed).html">Networking, Part 8: Protocols (TCP Handshaking, HTTP latency, Heart Bleed)</a></li>
+  <li><a class="wiki-link" href="./rpc-part-1-introduction-to-remote-procedure-calls.html">RPC, Part 1: Introduction to Remote Procedure Calls</a></li>
+  <li><a class="wiki-link" href="./networking-review-questions.html">Networking Review Questions</a></li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="9-file-systems" class="title-text">9. File Systems<a class="anchor title-text" href="#9-file-systems">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>
+<a class="wiki-link" href="./file-system-part-1-introduction.html">File System, Part 1: Introduction</a>
+    <ul>
+      <li><a href="/wikibook/file-system-part-1-introduction.html#navigationterminology" class="fancy-link wiki-link">Navigation/Terminology</a></li>
+      <li><a href="/wikibook/file-system-part-1-introduction.html#so-whats-a-file-system" class="fancy-link wiki-link">What’s a File System?</a></li>
+    </ul>
+  </li>
+  <li><a class="wiki-link" href="./file-system-part-2-files-are-inodes.html">File System, Part 2: Files are inodes</a></li>
+  <li><a class="wiki-link" href="./file-system-part-3-permissions.html">File System, Part 3: Permissions</a></li>
+  <li><a class="wiki-link" href="./file-system-part-4-working-with-directories.html">File System, Part 4: Working with directories</a></li>
+  <li><a class="wiki-link" href="./file-system-part-5-virtual-file-systems.html">File System, Part 5: Virtual file systems</a></li>
+  <li><a class="wiki-link" href="./file-system-part-6-memory-mapped-files-and-shared-memory.html">File System, Part 6: Memory mapped files and Shared memory</a></li>
+  <li>
+<a class="wiki-link" href="./file-system-part-7-scalable-and-reliable-filesystems.html">File System, Part 7: Scalable and Reliable Filesystems</a>
+    <ul>
+      <li><a href="/wikibook/file-system-part-7-scalable-and-reliable-filesystems.html#reliable-single-disk-filesystems" class="fancy-link wiki-link">Reliability with a Single Disk</a></li>
+      <li><a href="/wikibook/file-system-part-7-scalable-and-reliable-filesystems.html#redundancy" class="fancy-link wiki-link">Redundancy</a></li>
+    </ul>
+  </li>
+  <li><a class="wiki-link" href="./file-system-part-8-removing-preinstalled-malware-from-an-android-device.html">File System, Part 8: Removing preinstalled malware from an Android device</a></li>
+  <li><a class="wiki-link" href="./file-system-part-9-disk-blocks-example.html">File System, Part 9: Disk blocks example</a></li>
+  <li><a class="wiki-link" href="./file-systems-review-questions.html">File Systems Review Questions</a></li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="10-signals" class="title-text">10. Signals<a class="anchor title-text" href="#10-signals">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>
+<a class="wiki-link" href="./process-control-part-1-wait-macros-using-signals.html">Process Control, Part 1: Wait macros, using signals</a>
+    <ul>
+      <li><a href="/wikibook/process-control-part-1-wait-macros-using-signals.html#wait-macros" class="fancy-link wiki-link">Wait Macros</a></li>
+      <li><a href="/wikibook/process-control-part-1-wait-macros-using-signals.html#signals" class="fancy-link wiki-link">Signals</a></li>
+    </ul>
+  </li>
+  <li>
+<a class="wiki-link" href="./signals-part-2-pending-signals-and-signal-masks.html">Signals, Part 2: Pending Signals and Signal Masks</a>
+    <ul>
+      <li><a href="/wikibook/signals-part-2-pending-signals-and-signal-masks.html#signals-in-depth" class="fancy-link wiki-link">Signals in Depth</a></li>
+      <li><a href="/wikibook/signals-part-2-pending-signals-and-signal-masks.html#disposition-in-threadschildren" class="fancy-link wiki-link">Disposition in Threads/Children</a></li>
+    </ul>
+  </li>
+  <li><a class="wiki-link" href="./signals-part-3-raising-signals.html">Signals, Part 3: Raising signals</a></li>
+  <li><a class="wiki-link" href="./signals-part-4-sigaction.html">Signals, Part 4: Sigaction</a></li>
+  <li><a class="wiki-link" href="./signals-review-questions.html">Signals Review Questions</a></li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="11-virtualization-emulation-and-containers" class="title-text">11. Virtualization, emulation, and containers<a class="anchor title-text" href="#11-virtualization-emulation-and-containers">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li><a class="wiki-link" href="./virtualization-part-1-machine-emulation.html">Virtualization, Part 1: Machine emulation</a></li>
+  <li><a class="wiki-link" href="./virtualization-part-2-virtual-machines.html">Virtualization, Part 2: Virtual machines</a></li>
+  <li><a class="wiki-link" href="./virtualization-part-3-linux-namespaces.html">Virtualization, Part 3: Linux namespaces</a></li>
+  <li><a class="wiki-link" href="./virtualization-part-4-docker-and-singularity-containers.html">Virtualization, Part 4: Docker and Singularity containers</a></li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="uiuc-exam-practice-questions" class="title-text">UIUC Exam Practice Questions<a class="anchor title-text" href="#uiuc-exam-practice-questions">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Warning these are good practice but not comprehensive. The UIUC CS241 final assumes you fully understand and can apply all topics of the course. Questions will focus mostly but not entirely on topics that you have used in the lab and programming assignments.</p>
+<ul>
+  <li><a class="wiki-link" href="./exam-topics.html">Exam Topics</a></li>
+  <li><a class="wiki-link" href="./c-programming-review-questions.html">C Programming: Review Questions</a></li>
+  <li>[[Multi-threaded Programming: Review Questions]]</li>
+  <li><a class="wiki-link" href="./synchronization-concepts-review-questions.html">Synchronization Concepts: Review Questions</a></li>
+  <li><a class="wiki-link" href="./memory-review-questions.html">Memory: Review Questions</a></li>
+  <li><a class="wiki-link" href="./pipe-review-questions.html">Pipe: Review Questions</a></li>
+  <li><a class="wiki-link" href="./filesystem-review-questions.html">Filesystem: Review Questions</a></li>
+  <li><a class="wiki-link" href="./networking-review-questions.html">Networking: Review Questions</a></li>
+  <li><a class="wiki-link" href="./signals-review-questions.html">Signals: Review Questions</a></li>
+  <li><a class="wiki-link" href="./system-programming-jokes.html">System Programming Jokes</a></li>
+</ul>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/home.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

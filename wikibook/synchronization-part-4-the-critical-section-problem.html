@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Synchronization, Part 4: The Critical Section Problem</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Synchronization, Part 4: The Critical Section Problem
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/Synchronization,-Part-4:-The-Critical-Section-Problem">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_what-is-the-critical-section-problem" href="#what-is-the-critical-section-problem" class="fancy-link">What is the Critical Section Problem?</a></li>
+<li><a id="toc_candidate-solutions-to-the-critical-section-problem" href="#candidate-solutions-to-the-critical-section-problem" class="fancy-link">Candidate solutions to the critical section problem.</a></li>
+<li><a id="toc_turn-based-solutions" href="#turn-based-solutions" class="fancy-link">Turn-based solutions</a></li>
+<li><a id="toc_desired-properties-for-solutions-to-the-critical-section-problem" href="#desired-properties-for-solutions-to-the-critical-section-problem" class="fancy-link">Desired properties for solutions to the Critical Section Problem?</a></li>
+<li><a id="toc_turn-and-flag-solutions" href="#turn-and-flag-solutions" class="fancy-link">Turn and Flag solutions</a></li>
+<li><a id="toc_what-is-petersons-solution" href="#what-is-petersons-solution" class="fancy-link">What is Peterson’s solution?</a></li>
+<li><a id="toc_was-petersons-solution-the-first-solution" href="#was-petersons-solution-the-first-solution" class="fancy-link">Was Peterson’s solution the first solution?</a></li>
+<li><a id="toc_can-i-just-implement-petersons-or-dekkers-algorithm-in-c-or-assembler" href="#can-i-just-implement-petersons-or-dekkers-algorithm-in-c-or-assembler" class="fancy-link">Can I just implement Peterson’s (or Dekkers) algorithm in C or assembler?</a></li>
+<li><a id="toc_how-would-you-implement-the-critical-section-problem-in-hardware" href="#how-would-you-implement-the-critical-section-problem-in-hardware" class="fancy-link">How would you implement the Critical Section Problem in hardware?</a></li>
+<li><a id="toc_how-do-we-really-implement-the-critical-section-problem-on-real-hardware-advanced-topic" href="#how-do-we-really-implement-the-critical-section-problem-on-real-hardware-advanced-topic" class="fancy-link">How do we really implement the Critical Section Problem on real hardware? (Advanced topic)</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-the-critical-section-problem" class="title-text">What is the Critical Section Problem?<a class="anchor title-text" href="#what-is-the-critical-section-problem">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>As already discussed in <a class="wiki-link" href="./synchronization-part-3-working-with-mutexes-and-semaphores.html">Synchronization, Part 3: Working with Mutexes And Semaphores</a>, there are critical parts of our code that can only be executed by one thread at a time. We describe this requirement as ‘mutual exclusion’; only one thread (or process) may have access to the shared resource.</p>
+<p>In multi-threaded programs we can wrap a critical section with mutex lock and unlock calls:</p>
+<pre><code class="language-C"><span class="n">pthread_mutex_lock</span>
+</code></pre>
+<p>How would we implement these lock and unlock calls? Can we create an algorithm that assures mutual exclusion? An incorrect implementation is shown below,</p>
+<pre><code class="language-C"><span class="n">pthread_mutex_lock</span>
+</code></pre>
+<p>At first glance, the code appears to work; if one thread attempts to locks the mutex, a later thread must wait until the lock is cleared. However this implementation <em>does not satisfy Mutual Exclusion</em>. Let’s take a close look at this ‘implementation’ from the point of view of two threads running around the same time. In the table below times runs from top to bottom-</p>
+<p>Time | Thread 1 | Thread 2
+—–|———-|———
+1 | <code class="highlighter-rouge">while(lock) {}</code>
+2 | | <code class="highlighter-rouge">while(lock) {} </code> | 
+3 | lock = 1 | lock = 1 |
+Ooops! There is a race condition. In the unfortunate case both threads checked the lock and read a false value and so we are unable to continue.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="candidate-solutions-to-the-critical-section-problem" class="title-text">Candidate solutions to the critical section problem.<a class="anchor title-text" href="#candidate-solutions-to-the-critical-section-problem">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>To simplify the discussion we consider only two threads. Note these arguments work for threads and processes and the classic CS literature discusses these problem in terms of two processes that need exclusive access (i.e. mutual exclusion) to a critical section or shared resource.</p>
+<p>Raising a flag represents a thread/process’s intention to enter the critical section.</p>
+<p>Remember that the psuedo-code outlined below is part of a larger program; the thread or process will typically need to enter the critical section many times during the lifetime of the process. So imagine each example as wrapped inside a loop where for a random amount of time the thread or process is working on something else.</p>
+<p>Is there anything wrong with candidate solution described below?</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// Candidate #1
+wait until your flag is lowered
+raise my flag
+// Do Critical Section stuff
+lower my flag 
+</code></pre></div></div>
+<p>Answer: Candidate solution #1 also suffers a race condition i.e. it does not satisfy Mutual Exclusion because both threads/processes could read each other’s flag value (=lowered) and continue.</p>
+<p>This suggests we should raise the flag <em>before</em> checking the other thread’s flag - which is candidate solution #2 below.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// Candidate #2
+raise my flag
+wait until your flag is lowered
+// Do Critical Section stuff
+lower my flag 
+</code></pre></div></div>
+<p>Candidate #2 satisfies mutual exclusion - it is impossible for two threads to be inside the critical section at the same time. However this code suffers from deadlock! Suppose two threads wish to enter the critical section at the same time:</p>
+<p>Time | Thread 1 | Thread 2
+—–|———-|———
+1 | raise flag
+2 | | raise flag
+3 | wait … | wait …
+Ooops both threads / processes are now waiting for the other one to lower their flags. Neither one will enter the critical section as both are now stuck forever!</p>
+<p>This suggests we should use a turn-based variable to try to resolve who should proceed.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="turn-based-solutions" class="title-text">Turn-based solutions<a class="anchor title-text" href="#turn-based-solutions">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The following candidate solution #3 uses a turn-based variable to politely allow one thread and then the other to continue</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// Candidate #3
+wait until my turn is myid
+// Do Critical Section stuff
+turn = yourid
+</code></pre></div></div>
+<p>Candidate #3 satisfies mutual exclusion (each thread or process gets exclusive access to the Critical Section), however both threads/processes must take a strict turn-based approach to using the critical section; i.e. they are forced into an alternating critical section access pattern. For example, if thread 1 wishes to read a hashtable every millisecond but another thread writes to a hashtable every second, then the reading thread would have to wait another 999ms before being able to read from the hashtable again. This ‘solution’ is not effective, because our threads should be able to make progress and enter the critical section if no other thread is currently in the critical section.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="desired-properties-for-solutions-to-the-critical-section-problem" class="title-text">Desired properties for solutions to the Critical Section Problem?<a class="anchor title-text" href="#desired-properties-for-solutions-to-the-critical-section-problem">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>There are three main desirable properties that we desire in a solution the critical section problem</p>
+<ul>
+  <li>Mutual Exclusion - the thread/process gets exclusive access; others must wait until it exits the critical section.</li>
+  <li>Bounded Wait - if the thread/process has to wait, then it should only have to wait for a finite,  amount of time (infinite waiting times are not allowed!). The exact definition of bounded wait is that there is an upper (non-infinite) bound on the number of times any other process can enter its critical section before the given process enters.</li>
+  <li>Progress - if no thread/process is inside the critical section, then the thread/process should be able to proceed (make progress) without having to wait.</li>
+</ul>
+<p>With these ideas in mind let’s examine another candidate solution that uses a turn-based flag only if two threads both required access at the same time.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="turn-and-flag-solutions" class="title-text">Turn and Flag solutions<a class="anchor title-text" href="#turn-and-flag-solutions">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Is the following a correct solution to CSP?</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>\\ Candidate #4
+raise my flag
+if your flag is raised, wait until my turn
+// Do Critical Section stuff
+turn = yourid
+lower my flag
+</code></pre></div></div>
+<p>One instructor and another CS faculty member initially thought so! However, analyzing these solutions is tricky. Even peer-reviewed papers on this specific subject contain incorrect solutions! At first glance it appears to satisfy Mutual Exclusion, Bounded Wait and Progress: The turn-based flag is only used in the event of a tie (so Progress and Bounded Wait is allowed) and mutual exclusion appears to be satisfied. However…. Perhaps you can find a counter-example?</p>
+<p>Candidate #4 fails because a thread does not wait until the other thread lowers their flag. After some thought (or inspiration) the following scenario can be created to demonstrate how Mutual Exclusion is not satisfied.</p>
+<p>Imagine the first thread runs this code twice (so the the turn flag now points to the second thread). While the first thread is still inside the Critical Section, the second thread arrives. The second thread can immediately continue into the Critical Section!</p>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Time</th>
+      <th>Turn</th>
+      <th>Thread #1</th>
+      <th>Thread #2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>2</td>
+      <td>raise my flag</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>2</td>
+      <td>if your flag is raised, wait until my turn</td>
+      <td>raise my flag</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>2</td>
+      <td>// Do Critical Section stuff</td>
+      <td>if your flag is raised, wait until my turn(TRUE!)</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>2</td>
+      <td>// Do Critical Section stuff</td>
+      <td>// Do Critical Section stuff - OOPS</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div></div>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-petersons-solution" class="title-text">What is Peterson’s solution?<a class="anchor title-text" href="#what-is-petersons-solution">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Peterson published his novel and surprisingly simple solution in a 2 page paper in 1981. 
+A version of his algorithm is shown below that uses a shared variable <code class="highlighter-rouge">turn</code>:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>\\ Candidate #5
+raise my flag
+turn = your_id
+wait while your flag is raised and turn is your_id
+// Do Critical Section stuff
+lower my flag
+</code></pre></div></div>
+<p>An equivalent pseudo-C version is below.</p>
+<pre><code class="language-C"><span class="err">\\</span>
+</code></pre>
+<p>This solution satisfies Mutual Exclusion, Bounded Wait and Progress. If thread #2 has set turn to 1 and is currently inside the critical section. Thread #1 arrives, <em>sets the turn back to 2</em> and now waits until thread 2 lowers the flag.</p>
+<p>A similar C-like version of Peterson’s implementation is discussed at Wikipedia <a href="https://en.wikipedia.org/wiki/Peterson%27s_algorithm#The_algorithm" class="fancy-link wiki-link">here</a>.</p>
+<p>Link to Peterson’s original article pdf:
+<a href="http://dl.acm.org/citation.cfm?id=945527" class="fancy-link wiki-link">G. L. Peterson: “Myths About the Mutual Exclusion Problem”, Information Processing Letters 12(3) 1981, 115–116</a></p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="was-petersons-solution-the-first-solution" class="title-text">Was Peterson’s solution the first solution?<a class="anchor title-text" href="#was-petersons-solution-the-first-solution">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>No, Dekkers Algorithm (1962) was the first provably correct solution. A version of the algorithm is below.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>raise my flag
+while(your flag is raised) :
+   if it's your turn to win :
+     lower my flag
+     wait while your turn
+     raise my flag
+// Do Critical Section stuff
+set your turn to win
+lower my flag
+</code></pre></div></div>
+<p>Notice how the process’s flag is always raised during the critical section no matter if the loop is iterated zero, once or more times. Further the flag can be interpreted as an immediate intent to enter the critical section. Only if the other process has also raised the flag will one process defer, lower their intent flag and wait.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="can-i-just-implement-petersons-or-dekkers-algorithm-in-c-or-assembler" class="title-text">Can I just implement Peterson’s (or Dekkers) algorithm in C or assembler?<a class="anchor title-text" href="#can-i-just-implement-petersons-or-dekkers-algorithm-in-c-or-assembler">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Yes - and with a bit searching it is possible even today to find it in production for specific simple mobile processors: Peterson’s algorithm is used to implement low-level Linux Kernel locks for the Tegra mobile processor (a system-on-chip ARM process and GPU core by Nvidia)
+https://android.googlesource.com/kernel/tegra.git/+/android-tegra-3.10/arch/arm/mach-tegra/sleep.S#58</p>
+<p>However in general, CPUs and C compilers can re-order CPU instructions or use CPU-core-specific local cache values that are stale if another core updates the shared variables. Thus a simple pseudo-code to C implementation is too naive for most platforms. You can stop reading now.</p>
+<p>Oh… you decided to keep reading. Well, here be dragons! Don’t say we didn’t warn you. Consider this advanced and gnarly topic but (spoiler alert) a happy ending.</p>
+<p>Consider the following code,</p>
+<pre><code class="language-C"><span class="k">while</span>
+</code></pre>
+<p>An efficient compiler would infer that <code class="highlighter-rouge">flag2</code> variable is never changed inside the loop, so that test can be optimized to <code class="highlighter-rouge">while(true)</code> 
+Using <code class="highlighter-rouge">volatile</code> goes someway to prevent compiler optimizations of this kind.</p>
+<p>Independent instructions can be re-ordered by an optimizing compiler or at runtime by an out-of-order execution optimization by the CPU. These sophisticated optimizations if the code requires variables to be modified and checked and a precise order.</p>
+<p>A related challenge is that CPU cores include a data cache to store recently read or modified main memory values. Modified values may not be written back to main memory or re-read from memory immediately. Thus data changes, such as the state of a flag and turn variable in the above examples, may not be shared between two CPU codes.</p>
+<p>But there is happy ending. Fortunately, modern hardware addresses these issues using ‘memory fences’ (also known as memory barrier) CPU instructions to ensure that main memory and the CPUs’ cache is in a reasonable and coherent state. Higher level synchronization primitives, such as <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_mutex_lock" class="fancy-link">pthread_mutex_lock</a></code> are will call these CPU instructions as part of their implementation. Thus, in practice, surrounding critical section with a mutex lock and unlock calls is sufficient to ignore these lower-level problems.</p>
+<p>Advanced Further reading: we suggest the following web post that discusses implementing Peterson’s algorithm on an x86 process and the linux documentation on memory barriers.</p>
+<p>http://bartoszmilewski.com/2008/11/05/who-ordered-memory-fences-on-an-x86/
+http://lxr.free-electrons.com/source/Documentation/memory-barriers.txt</p>
+</div></div></div>
+</div></div>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-would-you-implement-the-critical-section-problem-in-hardware" class="title-text">How would you implement the Critical Section Problem in hardware?<a class="anchor title-text" href="#how-would-you-implement-the-critical-section-problem-in-hardware">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>On a simple single CPU machine, a process with access to all CPU instructions, could temporarily disable interrupts.</p>
+<pre><code class="language-C"><span class="n">disable_interrupts</span>
+</code></pre>
+<p>If interrupts are disabled then the current thread cannot be interrupted! i.e. the CPU instructions of the critical section will complete.</p>
+<p>However most systems today have more than one CPU core and disabling interrupts is a privileged instruction - so the above technique is rarely appropriate.</p>
+<p>Instead, suppose the CPU provided us with a special atomic instruction <code class="highlighter-rouge">__exch</code> that swaps the values at two memory locations. We could support Critical sections by implementing mutex locks using the following pseudo code.</p>
+<pre><code class="language-C"><span class="n">my_mutex_init</span>
+</code></pre>
+<p>The exchange instruction must be atomic i.e. it behaves as a single <strong>uninterruptable</strong> and indivisible instruction. For example, if two threads both call <code class="highlighter-rouge">my_mutex_lock</code> (and then __exch) at the same time, then one thread _will_receive a value of 0, and the other thread will loose and get the newer value of 1 (so will continue to poll).</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-we-really-implement-the-critical-section-problem-on-real-hardware-advanced-topic" class="title-text">How do we really implement the Critical Section Problem on real hardware? (Advanced topic)<a class="anchor title-text" href="#how-do-we-really-implement-the-critical-section-problem-on-real-hardware-advanced-topic">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>A complete solution using C11 atomics is detailed here (this is a spinlock mutex, <a href="https://locklessinc.com/articles/mutex_cv_futex/" class="fancy-link wiki-link">futex</a> implementations can be found online).</p>
+<pre><code class="language-C"><span class="k">typedef</span>
+</code></pre>
+<p>This is the initialization code, nothing fancy here. We set the state of the mutex to unlocked and set the owner to locked.</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>Yikes! What does this code do? Well to start it it initializes a variable that we will keep as the unlocked state. <a href="https://en.wikipedia.org/wiki/Compare-and-swap" class="fancy-link wiki-link">Atomic Compare and Exchange</a> is an instruction supported by most modern architectures (on x86 it’s <code class="highlighter-rouge">lock cmpxchg</code>). The pseudocode for this operation looks like this</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>Except it is all done <em>atomically</em> meaning in one uninterruptible operation. What does the <em>weak</em> part mean? Well atomic instructions are also prone to <strong>spurious failures</strong> meaning that there are two versions to these atomic functions a <em>strong</em> and a <em>weak</em> part, strong guarantee the the success or failure while weak may fail. We are using weak because weak is faster and we are in a loop! That means we are okay if it fails a little bit more often because we will just keep spinning around anyway.</p>
+<p>What is this memory order business? We were talking about memory fences earlier, here it is! We won’t go into detail because it is outside the scope of this course but not the scope of <a href="https://gcc.gnu.org/wiki/Atomic/GCCMM/AtomicSync" class="fancy-link wiki-link">this article</a>.</p>
+<p>Inside the while loop, we have failed to grab the lock! We reset zero to unlocked and sleep for a little while. When we wake up we try to grab the lock again. Once we successfully swap, we are in the critical section! We set the mutex’s owner to the current thread for the unlock method and return successful.</p>
+<p>How does this guarantee mutual exclusion, when working with atomics we are not entirely sure! But in this simple example we can because the thread that is able to successfully expect the lock to be UNLOCKED (0) and swap it to a LOCKED (1) state is considered the winner. How do we implement unlock?</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>To satisfy the api, you can’t unlock the mutex unless you are the one who owns it. Then we unassign the mutex owner, because critical section is over after the atomic. We want a strong exchange because we don’t want to block (pthread_mutex_unlock doesn’t block). We expect the mutex to be locked, and we swap it to unlock. If the swap was successful, we unlocked the mutex. If the swap wasn’t, that means that the mutex was UNLOCKED and we tried to switch it from UNLOCKED to UNLOCKED, preserving the non blocking of unlock.</p>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/synchronization-part-4-the-critical-section-problem.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Extreme Edge Cases</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Extreme Edge Cases
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/illinois-cs241/assignment-docs/blob/master//extreme_edge_cases.md">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+              <div class="submission-wrapper">
+                
+                  <b>Entire Assignment</b> due <b>09/17 11:59pm</b><br/>
+                  
+                    <b>Graded files:</b>
+                    <ul>
+                      
+                        <li>camelCaser.c</li>
+                      
+                        <li>camelCaser_tests.c</li>
+                      
+                    </ul>
+                  
+                
+              </div>
+            
+            
+              <div class="schedule-wrapper">
+                
+                  <b>AG Schedule</b>
+                  <br/>
+                  <b>Pre-deadline Runs</b>
+                    <ul>
+                      
+                        <li>09/12 10:00 PM</li>
+                      
+                        <li>09/14 10:00 PM</li>
+                      
+                        <li>09/16 10:00 PM</li>
+                      
+                    </ul>
+                
+              </div>
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_backstory" href="#backstory" class="fancy-link">Backstory</a></li>
+<li><a id="toc_unit-testing" href="#unit-testing" class="fancy-link">Unit Testing</a></li>
+<li><a id="toc_camel-caser" href="#camel-caser" class="fancy-link">Camel Caser</a></li>
+<li><a id="toc_writing-unit-tests" href="#writing-unit-tests" class="fancy-link">Writing Unit Tests</a></li>
+<li><a id="toc_grading" href="#grading" class="fancy-link">Grading</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+  <div class="pad"><div class="card">
+<div class="title"><h2 id="learning-objectives" class="title-text">Learning Objectives<a class="anchor title-text" href="#learning-objectives">#</a>
+</h2></div>
+  
+  
+
+
+  <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>
+    The learning objectives for Extreme Edge Cases are: <br>
+    </p>
+<ul class="mdl-list">
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Test Driven Development</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Thinking of Edge Cases</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">String Manipulation</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">C Programming</span>
+        </li>
+      
+    </ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="suggested-readings" class="title-text">Suggested Readings<a class="anchor title-text" href="#suggested-readings">#</a>
+</h2></div>
+  
+  
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>
+    We suggest you read the following from the
+    <a href="https://github.com/angrave/SystemProgramming/wiki" class="fancy-link wiki-link">wikibook</a>
+    before starting Extreme Edge Cases: <br>
+    </p>
+<ul>
+      
+        <li>
+          <a href="/wikibook/c-programming-part-1-introduction.html#" target="_blank" class="fancy-link wiki-link">C Programming, Part 1: Introduction
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/c-programming-part-2-text-input-and-output.html#" target="_blank" class="fancy-link wiki-link">C Programming, Part 2: Text Input And Output
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/c-programming-part-3-common-gotchas.html#" target="_blank" class="fancy-link wiki-link">C Programming, Part 3: Common Gotchas
+          </a>
+        </li>
+      
+    </ul>
+</div></div></div>
+</div></div>
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="backstory" class="title-text">Backstory<a class="anchor title-text" href="#backstory">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>What makes code good? Is it camelCased strings? Good comments? Descriptive variable names, perhaps?</p>
+<p>One thing we know is that good code is generally modular - it consists of discrete “units” of functionality that are only responsible for very specific and certain behavior. In our case, working with C, these “units” are functions.</p>
+<p>For example, the C string function <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/strlen" class="fancy-link">strlen</a></code> is solely responsible for determining the length of a string; it doesn’t do any I/O or networking, or anything else. A function that knows all and tries to do all would be bad design, and testing whether that kind of function adheres to expectations would be nontrivial.</p>
+<p>A programmer might ask, “do my units of work behave the way I expect?” or “if my function expects a string, how does it behave when given NULL?”. These are crucial questions, since ensuring that units of code work exactly the way one would expect makes it easy to build reliable and robust software. An unreliable unit in a large system can affect the entire system significantly. Imagine if <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/strcpy" class="fancy-link">strcpy</a></code>, for example, did not behave properly on all inputs; all of the higher-level units that use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/strcpy" class="fancy-link">strcpy</a></code>, and all of the units that interact with those units, would in-turn have unpredictable behavior, and so the unreliability would propagate through the whole system.</p>
+<p>Enter unit testing.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="unit-testing" class="title-text">Unit Testing<a class="anchor title-text" href="#unit-testing">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Unit testing is a ubiquitous and crucial software development method used heavily in industry. <a href="http://artofunittesting.com/definition-of-a-unit-test/" class="fancy-link wiki-link">According to artofunittesting.com</a>, “a unit test is an automated piece of code that invokes a <em>unit of work</em> in the system <em>and then checks a single assumption about the behavior of that unit of work</em>”. This sounds like testing - leave it to the QAs, right? Actually, developers, much to their chagrin, are expected to write their own unit tests.</p>
+<p>In order to write effective unit tests, all possible cases of input to a unit (mainly functions, in C), including edge cases, should be tested. Good unit tests test (extreme) edge cases, making sure that the discrete unit of functionality performs as specified with unexpected inputs.</p>
+<p>In this MP, your goal is to create and test the behavior of an arbitrary string manipulation function to determine if it is reliable, predictable, and correct. While writing your functions, try to write modular code, as this will make your life easier when you test it. You’ll learn how to write effective test cases - an incredibly helpful skill for the rest of the course. Finally, you’ll be able to take these skills to Facenovel for your next internship and impress your coworkers.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="camel-caser" class="title-text">Camel Caser<a class="anchor title-text" href="#camel-caser">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>We have chosen</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>char **camel_caser(const char* input)
+</code></pre></div></div>
+<p>as your arbitrary string manipulation function.</p>
+<p>Your manager at Facenovel, to celebrate Hump Day, has asked all of the interns to implement a brand new camelCaser to convert sentences into <a href="https://en.wikipedia.org/wiki/Camel_case" class="fancy-link wiki-link">camelCase</a>. To give you a chance to earn your return offer, he also assigned you to write test cases for all the other interns’ implementations of camelCaser, with the implementations hidden from you.</p>
+<p>Let’s say I want to get a sequence of sentences in camelCase. This is the string passed into your method:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"The Heisenbug is an incredible creature. Facenovel servers get their power from its indeterminism. Code smell can be ignored with INCREDIBLE use of air freshener. God objects are the new religion."
+</code></pre></div></div>
+<p>Your method should return the following:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>["theHeisenbugIsAnIncredibleCreature",
+"facenovelServersGetTheirPowerFromItsIndeterminism",
+"codeSmellCanBeIgnoredWithIncredibleUseOfAirFreshener",
+"godObjectsAreTheNewReligion",
+NULL]
+</code></pre></div></div>
+<p>The brackets denote that the above is an array of those strings.</p>
+<p>Here is a formal description of how your camelCaser should behave:</p>
+<ul>
+  <li>You can’t camelCase a NULL pointer, so if <code class="highlighter-rouge">input</code> is a NULL pointer, return a NULL pointer.</li>
+  <li>If <code class="highlighter-rouge">input</code> is NOT NULL, then it is a NULL-terminated array of characters (a standard C string).</li>
+  <li>A input sentence, <code class="highlighter-rouge">input_s</code>, is defined as any <em>MAXIMAL</em> substring of the input string that ends with a punctuation mark. This means that all strings in the camel cased output should not contain punctuation marks.
+    <ul>
+      <li>This means that “Hello.World.” gets split into 2 sentences “Hello” and “World” and NOT “Hello.World”.</li>
+    </ul>
+  </li>
+  <li>Let the camelCasing of <code class="highlighter-rouge">input_s</code> be called <code class="highlighter-rouge">output_s</code>
+</li>
+  <li>
+<code class="highlighter-rouge">output_s</code> is the the concatenation of all words <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/w" class="fancy-link">w</a></code> in <code class="highlighter-rouge">input_s</code> after <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/w" class="fancy-link">w</a></code> has been camelcased
+    <ul>
+      <li>The punctuation from <code class="highlighter-rouge">input_s</code> is <strong>not</strong> added to <code class="highlighter-rouge">output_s</code>.</li>
+    </ul>
+  </li>
+  <li>Words are:
+    <ul>
+      <li>delimited by the MAXIMAL amount of whitespace.
+        <ul>
+          <li>This means that “hello world” is split into “hello” and world” and NOT “hello “, “ “, “ world” or any other combination of whitespaces</li>
+        </ul>
+      </li>
+      <li>considered uppercased if all of its letters are uppercased.</li>
+      <li>considered lowercased if all of its letters are lowercased.</li>
+    </ul>
+  </li>
+  <li>a word <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/w" class="fancy-link">w</a></code> is camelCased if and only if:
+    <ul>
+      <li>it is the first word and it is lowercased</li>
+      <li>it is any word after the first word and its first letter is uppercased</li>
+    </ul>
+  </li>
+  <li>Punctuation marks, whitespace, and letters are defined by <code class="highlighter-rouge">ispunct()</code>, <code class="highlighter-rouge">isspace()</code>, and <code class="highlighter-rouge">isalpha()</code> respectively.
+    <ul>
+      <li>These are parts of the C standard, so you can <code class="highlighter-rouge">man ispunct</code> for more information.</li>
+      <li>If <code class="highlighter-rouge">input_s</code> has ANY non-{punctuation, letter, whitespace} characters, they go straight into <code class="highlighter-rouge">output_s</code> without any modifications. <strong>ALL</strong> ASCII characters are valid input. Your camelCaser does not need to handle all of Unicode.</li>
+    </ul>
+  </li>
+  <li>
+<code class="highlighter-rouge">camel_caser</code> returns an array of <code class="highlighter-rouge">output_s</code> for every <code class="highlighter-rouge">input_s</code> in the input string,  terminated by a NULL pointer.</li>
+</ul>
+<p><em>Hint:</em> <code class="highlighter-rouge">ctype.h</code> has a lot of useful functions for this.</p>
+<p>Your implementation goes in camelCaser.c, and you may not leak any memory.</p>
+<p>We have also included a <em>reference implementation</em>. It is there to help you answer questions like, “What should be the result of inputting <code class="highlighter-rouge">&lt;blah&gt;</code> into <code class="highlighter-rouge">camel_caser()</code>?”  You can start the program with <code class="highlighter-rouge">./camelCaser-reference</code> and the program will take your input and return it camelCased when you press Enter. You should not add quotes around the strings you test (unless you want to try camelCasing actual quotation marks).</p>
+<div class="pad"><div class="card">
+<h4 id="destroy">Destroy</h4>
+
+<p>You must also implement <code class="highlighter-rouge">destroy(char **result)</code>, a function that takes in the output of your <code class="highlighter-rouge">camel_caser</code> and frees up any memory used by it. We will be calling this in our test cases and checking for memory leaks in your implementation, so remember to test this!</p>
+
+<h3 id="camel-caser-result-in-memory" class="title-text">Camel Caser Result In Memory</h3>
+
+<p>camelCaser takes in a C string, which represents an arbitrary number of sentences, and returns a pointer to a NULL-terminated array of C strings where each sentence has been camelCased. It is up to you how the resulting structure is allocated, but it must be completely deallocated by your <code class="highlighter-rouge">destroy</code> function.</p>
+
+<p>For those who like pictures, here is what the return value of camelCaser looks like in memory:</p>
+
+<p><img src="./images/char_double_pointer.jpg" alt=""></p>
+
+<p>In the above picture, you can see that we have a <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/char" class="fancy-link">char</a></code> double pointer called ‘array’. In this scenario, the <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/char" class="fancy-link">char</a></code> double pointer points to the beginning of a NULL-terminated array of character pointers. Each of the character pointers in the array points to the beginning of a NULL-terminated <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/char" class="fancy-link">char</a></code> array that can be anywhere in memory.</p>
+
+<p>These arrays are NULL-terminated because your user will need to know when these arrays end so they do not start reading garbage values. This means that <code class="highlighter-rouge">array[0]</code> will return a character pointer. Dereferencing that character pointer gets you an actual character. For demonstration purposes, here is how to grab the character “s” in “as”:</p>
+
+<pre><code class="language-C"><span class="c1">// Take array and move it over by 3 times the size of a char pointer.</span>
+</code></pre>
+
+<h3 id="escape-sequences" class="title-text">Escape Sequences</h3>
+
+<p>If you want to see how the reference implementation handles ASCII characters that cannot be typed directly, you can use <a href="https://en.wikipedia.org/wiki/Escape_sequences_in_C" class="fancy-link wiki-link">escape sequences</a>. You are likely already familiar with the <code class="highlighter-rouge">\n</code> escape sequence for representing newlines in <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code>, but there are <a href="https://en.wikipedia.org/wiki/Escape_sequences_in_C#Table_of_escape_sequences" class="fancy-link wiki-link">many others available</a>.</p>
+
+<p>For example, you can see that newlines are treated as whitespace:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; hello\nworld.
+{
+  "helloWorld",
+  NULL
+}
+</code></pre></div></div>
+
+<p>Be warned: in the reference, if you type <code class="highlighter-rouge">\n</code>, the reference sees it as two bytes (<code class="highlighter-rouge">\</code> and <code class="highlighter-rouge">n</code>), and will replace it with the ASCII line feed character (ASCII value 0x0A) before checking what type of character it is (punctuation, whitespace, alphanumeric, etc).</p>
+
+<p><strong>You should <em>not</em> do this in your implementation.</strong></p>
+
+<p>The reference does this so that you can test different escape sequences and how they should behave.</p>
+
+<p>If you want to test escape characters in <em>your</em> camel caser, you can simply do <code class="highlighter-rouge">camel_case("foo\tbar")</code> in your test function(s). The C compiler will correctly compile the <code class="highlighter-rouge">\t</code> into the ASCII tab character rather than a <code class="highlighter-rouge">\</code> followed by a <code class="highlighter-rouge">t</code>. To <em>your</em> camel caser, the <code class="highlighter-rouge">\t</code> will appear as <strong>one</strong> character, and will be correctly identified as whitespace by <code class="highlighter-rouge">isspace('\t')</code>.</p>
+
+<p><strong>In conclusion</strong>: you should not parse escape sequences yourself by putting together <code class="highlighter-rouge">\</code> and <code class="highlighter-rouge">t</code>; they will appear as one character to your camel caser.</p>
+
+</div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="writing-unit-tests" class="title-text">Writing Unit Tests<a class="anchor title-text" href="#writing-unit-tests">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Your goal is to show that the other interns’ implementations of camelCaser - which, of course, you can’t see directly - fail on some extreme test cases, and, in the meantime, demonstrate to the head honcho at Facenovel exactly how robust your own function is.</p>
+<p>Facenovel promises to pass in C-strings. Likewise, you promise to return a dynamically allocated NULL-terminated array of strings that can be deallocated with your <code class="highlighter-rouge">destroy</code> function.</p>
+<p>What kinds of edge cases might come up?</p>
+<p>Run <code class="highlighter-rouge">make camelCaser</code> to test. You will have to fill in tests in camelCaser_tests.c.</p>
+<p>Because Facenovel values their testing server time, you may not try more than 16 different inputs, and each input must be less than 256 characters (only characters). This does NOT mean your implementation can assume input of 256 characters or less.</p>
+<p>Also, it is not in the spirit of unit testing to diff your implementation with the one you are testing. Therefore, you may <strong>NOT</strong> call your own camel_caser function when implementing your test cases.</p>
+<p>Other helpful resources: <a href="http://wiki.c2.com/?TestDrivenDevelopment" class="fancy-link wiki-link">Test-Driven Development</a></p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="grading" class="title-text">Grading<a class="anchor title-text" href="#grading">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Grading is split up into two parts.</p>
+<h3 id="your-implementation" class="title-text">Your Implementation</h3>
+<p>The first portion of the test cases test <em>your implementation</em> of <code class="highlighter-rouge">camel_caser</code>. We pass in some input, and check that your output matches the expectations laid out in this document. Essentially, your code is put up against <strong>our</strong> unit tests, which means you can write as-good (or even better) unit tests to ensure that your <code class="highlighter-rouge">camel_caser</code> passes ours.</p>
+<h3 id="your-unit-tests" class="title-text">Your Unit Tests</h3>
+<p>The second portion of the test cases test <em>your unit tests</em>. We have a handful of <code class="highlighter-rouge">camel_caser</code> implementations, some that work, and some that don’t. To test your unit tests, we feed each of our <code class="highlighter-rouge">camel_caser</code> implementations through your <code class="highlighter-rouge">test_camelCaser</code> function (found in <code class="highlighter-rouge">camelCaser_tests.c</code>) and see if it correctly identifies its validity.</p>
+<p>For each of the <code class="highlighter-rouge">camel_caser</code> implementations that you correctly identify - marking a good one as good, or a bad one as bad - you get a point. To prevent guessing, randomization, or marking them all the same, any incorrect identification <strong>loses</strong> you a point. However, after each autograde run, we <em>will</em> tell you how many good ones you correctly identified and how many bad ones you identified, so you know which unit tests may need improvement.</p>
+<p>If your unit test segfaults or otherwise crashes, our test will interpret that as evaluating that implementation as a bad one.</p>
+<p>You cannot assume <em>anything</em> about the input, other than the input string being NULL-terminated, just like all good strings in C.</p>
+<div class="pad"><div class="card">
+<h4 id="example">Example</h4>
+
+<p>Let’s say there are five good implementations and five bad implementations. If you correctly say all five good are good, then you’d get +5 points. If you correctly identify three of the bad ones as bad, then you would get +3 for those and -2 for incorrectly labeling the others. In this case, you’d get a 6/10.</p>
+
+<p>Good luck!</p>
+</div></div>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="submission-instructions" class="title-text">Submission Instructions<a class="anchor title-text" href="#submission-instructions">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Please read details on <a href="/#academic-integrity" class="fancy-link wiki-link">Academic Integrity</a> fully. These are shared by all assignments in CS 241.</p>
+<p>We will be using GitHub as our hand-in system this semester. Our grading system will checkout your most recent (pre-deadline) commit for grading. Therefore, to hand in your code, all you have to do is commit and push to your Github repository.</p>
+<p>To check out the provided code for <code class="highlighter-rouge">extreme_edge_cases</code> from the class repository, go to your cs241 directory (the one you checked out for “know your tools”) and run:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git pull release master
+</code></pre></div></div>
+<p>If you run <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/ls" class="fancy-link">ls</a></code> you will now see a <code class="highlighter-rouge">extreme_edge_cases</code> folder, where you can find this assignment! To commit your changes (send them to us), type:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git add extreme_edge_cases
+git commit -m "extreme_edge_cases submission"
+git push origin master
+</code></pre></div></div>
+<p>Your repository directory can be viewed from a web browser from the following URL: 
+<a href="https://github-dev.cs.illinois.edu/cs241-fa18/NETID/tree/master/extreme_edge_cases" class="fancy-link wiki-link">https://github-dev.cs.illinois.edu/cs241-fa18/NETID/tree/master/extreme_edge_cases</a> where NETID is your University NetID. It is important to check that the files you expect to be graded are present and up to date in your remote git copy.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="assignment-feedback" class="title-text">Assignment Feedback<a class="anchor title-text" href="#assignment-feedback">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>We strive to provide the best assignments that we can for this course, and we would like your feedback on them!</p>
+<p>This is the form we will use to evaluate our assignments. We appreciate the time you take to give us your honest feedback and we promise to keep improving the course to make your experience in CS 241 the best it can be.</p>
+<p><a href="https://goo.gl/forms/hREf0ojFWumYfQF12" class="fancy-link wiki-link">https://goo.gl/forms/hREf0ojFWumYfQF12</a></p>
+</div></div></div>
+</div></div>
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_docs/extreme_edge_cases.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Syllabus</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Syllabus
+
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_course-introduction" href="#course-introduction" class="fancy-link">Course Introduction</a></li>
+<li><a id="toc_formal-course-description" href="#formal-course-description" class="fancy-link">Formal Course Description</a></li>
+<li><a id="toc_skills-earned" href="#skills-earned" class="fancy-link">Skills Earned</a></li>
+<li><a id="toc_learning-goals" href="#learning-goals" class="fancy-link">Learning Goals</a></li>
+<li><a id="toc_resources" href="#resources" class="fancy-link">Resources</a></li>
+<li><a id="toc_grading" href="#grading" class="fancy-link">Grading</a></li>
+<li><a id="toc_exams" href="#exams" class="fancy-link">Exams</a></li>
+<li><a id="toc_coding-assignments" href="#coding-assignments" class="fancy-link">Coding Assignments</a></li>
+<li><a id="toc_absences" href="#absences" class="fancy-link">Absences</a></li>
+<li><a id="toc_how-to-succeed" href="#how-to-succeed" class="fancy-link">How to Succeed</a></li>
+<li><a id="toc_autograding-policy" href="#autograding-policy" class="fancy-link">Autograding Policy</a></li>
+<li><a id="toc_academic-integrity" href="#academic-integrity" class="fancy-link">Academic Integrity</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="course-introduction" class="title-text">Course Introduction<a class="anchor title-text" href="#course-introduction">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>This course is designed to challenge you as a programmer and new computer scientist at the University of Illinois. Rather than the sand-boxed, contained, and simple problems of your previous courses that used significant scaffolding and pre-built libraries, you will be interacting with a much more complex environment: the entire system and even computing networks.</p>
+<p>Further, you will need to fully understand how memory is allocated, used, and re-used within a process. You will also need to know how input and output can be optionally buffered between processes and files. In short, it is time to remove the training wheels of and instead fling open the doors, welcoming you to the big, wide world of computing.</p>
+<p>Oh, and did we mention the challenge of concurrency and solving asynchronous problems, so that your program can take advantage of the multi-core CPU inside each machine?</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="formal-course-description" class="title-text">Formal Course Description<a class="anchor title-text" href="#formal-course-description">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>This course is an introduction to System Programming. System Programming refers to writing code that prioritizes operating system support for programmers.</p>
+<p>A computer needs an operating system to manage its resources and provide support for common functions, such as accessing peripherals. There are two categories of “customers” that an operating system must support.</p>
+<p>The first category is the community of users. We have all used computers, and you may recognize operating systems’ functions such as creating folders (directories) and moving files around. These are examples of operating system support for users. User support is not the objective of this course.</p>
+<p>The second category of users is programmers. This course addresses this category. When you write a program, it may have to interact with physical hardware (memory, flash storage, screen, network, etc.). For example, you may want to get input from a keyboard or mouse; you may want to read some configuration file stored on disk; you may want to output data to a screen or printer; or you may want to access a remote server across a network.</p>
+<p>The operating system presents common interfaces for programmers to perform these functions. It also provides useful abstractions such as “tasks” (also called processes), “threads”, and “semaphores”. You can make the computer multi-task by creating new tasks or new threads. You can make these tasks coordinate and synchronize by using semaphores. You can tell the computer the order in which you want tasks to be executed by using a scheduling policy. Finally, you can manage computer memory by calling on the function for memory management.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="skills-earned" class="title-text">Skills Earned<a class="anchor title-text" href="#skills-earned">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>By the end of this course, you should be proficient at writing programs that take full advantage of operating system support.</p>
+<p>Specifically, we need to fix an operating system and a programming language. We chose the C language running on a Linux/UNIX operating system, which implements the POSIX standard interface. This pairing of C and UNIX/Linux is used heavily by software that must provide high performance and low-level control of the program’s execution. By the end of the course, you should be proficient with this environment and should be able to write non-trivial pieces of software from web server code to your own multiplayer Internet games.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="learning-goals" class="title-text">Learning Goals<a class="anchor title-text" href="#learning-goals">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>Identify the basic components of an operating system, describe their purpose, and explain how they function.</li>
+  <li>Write, compile, debug, and execute C programs that correctly use system interfaces provided by UNIX or a UNIX-like operating system.</li>
+  <li>Be familiar with important UNIX system calls and invoke them correctly from within C programs.</li>
+  <li>Describe the difference between programs, processes, and threads.</li>
+  <li>Write a memory allocator or <a href="./malloc_hall_of_fame.html" class="fancy-link wiki-link">malloc</a>.</li>
+  <li>Explain the meaning and purpose of process control blocks and other mechanisms that the operating system uses to implement the process and thread abstractions.</li>
+  <li>Write, compile, debug, and execute C programs that create, manage and terminate processes and threads on UNIX.</li>
+  <li>Define concurrency and explain the problems that may arise because of concurrent execution of multiple processes or threads. Explain how these problems can be avoided. Write code that avoids these problems.</li>
+  <li>Define semaphores, mutexes, and other synchronization primitives. Also, explain their purpose, and describe their internal implementation.</li>
+  <li>Describe possible problems that arise from improper use of synchronization primitives (such as deadlocks) and present their solutions.</li>
+  <li>Write, compile, debug, and execute C programs that use UNIX synchronization primitives.</li>
+  <li>Describe operating system scheduling and use UNIX interfaces to set and modify scheduling policy parameters.</li>
+  <li>Define UNIX signals and signal handlers, and describe their use.</li>
+  <li>Write, compile, debug, and execute C programs with processes and threads that interact by invoking and catching signals.</li>
+  <li>Describe, configure, and use operating system timers and clocks.</li>
+  <li>Describe the concepts of I/O devices, files, directories.</li>
+  <li>Explain the internal implementation of files systems and operating system I/O.</li>
+  <li>Write, compile, debug, and execute C programs that use files and I/O on UNIX.</li>
+  <li>Describe the machine memory hierarchy, describe its components such as caches and virtual memory, and explain memory management mechanisms pertaining to these components such as paging and segmentation.</li>
+  <li>Write, compile, debug, and execute C programs that make use of memory management functions.</li>
+  <li>Describe the protocols (such as TCP and IP) and interfaces (such as sockets) used for communication among different computers.</li>
+  <li>Write distributed applications that communicate across a network.</li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="resources" class="title-text">Resources<a class="anchor title-text" href="#resources">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p><strong>If you added late, check <a href="./late_add.html" class="fancy-link wiki-link">this page</a> to get caught up.</strong></p>
+<p>An introduction to system programming is Angrave’s <a href="https://github.com/angrave/SystemProgramming/wiki" class="fancy-link wiki-link">CS 241 Crowd-Sourced Wikibook</a>.</p>
+<p>Angrave’s mini searchable video-introduction and playful <em>system programming-in-the-browser</em> environment is at:
+<a href="http://cs-education.github.io/sys/" class="fancy-link wiki-link">mini lectures</a> (Firefox and Chrome recommended).</p>
+<p>No formal textbook is required, but if you really want to buy some books, we recommend the following custom book Angrave put together in 2007:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Introduction to Systems Concepts and Systems Programming
+University of Illinois Custom Edition
+Copyright 2007 by Pearson Custom Publishing
+ISBN 0-536-48928-9
+</code></pre></div></div>
+<p>We also have some general guides to development in this class:</p>
+<ul>
+  <li><a href="./debugging.html" class="fancy-link wiki-link">Debugging Tutorial</a></li>
+  <li><a href="./development.html" class="fancy-link wiki-link">Development Tutorial</a></li>
+  <li><a href="./emacs.html" class="fancy-link wiki-link">Emacs Tutorial</a></li>
+  <li><a href="./sshfs.html" class="fancy-link wiki-link">SSHFS Workflow Tutorial</a></li>
+  <li><a href="./shell_fu.html" class="fancy-link wiki-link">Shell Tutorial</a></li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="grading" class="title-text">Grading<a class="anchor title-text" href="#grading">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The following is subject to minor changes:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Final Exam : 25%
+Quizzes/CBTF: 25%
+
+MP Programming Assignments : 35%
+Lab Programming Assignments: 12%
+
+Lab Attendance &amp; other items: 3%
+</code></pre></div></div>
+<p>We publish the following thresholds:</p>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Points</th>
+      <th>Minimum Grade</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>[92 - 100]</td>
+      <td>A-</td>
+    </tr>
+    <tr>
+      <td>[82 - 92)</td>
+      <td>B-</td>
+    </tr>
+    <tr>
+      <td>[72 - 82)</td>
+      <td>C-</td>
+    </tr>
+  </tbody>
+</table>
+<p>All lab programming assignments are equally weighted. MP programming assignments are weighted by the time given to complete them. This means that three week MPs are worth triple one week.</p>
+<p>For grading, we will drop your lowest quiz score, lowest lab score, and two lab attendance grades. Sickness, vacation, sleep, <em>whatever</em>; we don’t care. we don’t care. Exceptions in rare circumstances can been arranged with the course administrator (<a href="mailto:cs241admin@illinois.edu" class="fancy-link wiki-link">cs241admin@illinois.edu</a>), or Director of Undergrad studies.</p>
+<p>At the end of the semester there will be a last chance regrade option for two weeks of machine problem grades. To be able to take advantage of this opportunity you will need to have a perfect attendance grade after the drops. <strong>You must attend your lab section</strong>. If you submit a <a href="./regrade_test" class="fancy-link wiki-link">test case for an assignment</a> that accurately matches the assignment <em>description</em> not the documentation along with a justification for why, then you may get one more week of machine problem regrade – this is up to the course staff’s discretion.</p>
+<p>The 3-hour handwritten final exam is comprehensive and will test all CS 241 topics, including programming topics covered in the MP and Labs. Do not book your flights until the exam date is known. Early exams will not be offered. Conflict final exams will be offered if you have three exams in a 24 hour period, or you have an exam in another, smaller enrollment course at the same time.</p>
+<p>Grading issues should be raised with your TA during section or by email. Missing scores need to be reported on or before the next section.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="exams" class="title-text">Exams<a class="anchor title-text" href="#exams">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The quizzes are approximately every other week. Quizzes include a mix of multiple choice questions and at least one short coding problem. In the coding problem, you will be asked to create programs similar to the MPs and labs using a standard Linux machine with local tools (<code class="highlighter-rouge"><a href="https://linux.die.net/man/1/gedit" class="fancy-link">gedit</a></code>, <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/vim" class="fancy-link">vim</a></code>, <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/gcc" class="fancy-link">gcc</a></code>, <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/man" class="fancy-link">man</a></code>, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/make" class="fancy-link">make</a></code>, <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/bash" class="fancy-link">bash</a></code>, etc) but in an exam environment. Runnable tests will be provided.</p>
+<p>This course uses the College of Engineering Computer-Based Testing Facility (CBTF) for its quizzes<a href="https://cbtf.engr.illinois.edu/sched/" class="fancy-link wiki-link">https://cbtf.engr.illinois.edu/sched/</a>.</p>
+<p>The policies of the CBTF are the policies of this course, and academic integrity infractions related to the CBTF are infractions in this course.</p>
+<p>If you have accommodations identified by the <a href="http://www.disability.illinois.edu/" class="fancy-link wiki-link">Division of Rehabilitation-Education Services (DRES)</a> for exams, please take your Letter of Accommodation (LOA) to the CBTF proctors in person before you make your first exam reservation. The proctors will advise you as to whether the CBTF provides your accommodations or whether you will need to make other arrangements with your instructor.</p>
+<p>Any problem with testing in the CBTF <strong>must</strong> be reported to CBTF staff at the time the problem occurs. If you do not inform a proctor of a problem during the test then you <strong>forfeit</strong> all rights to redress.</p>
+<p>The Fall 2018 schedule as of August 22 is below. The complete and authoritative CBTF detailed schedule is available at the <a href="CBTF%20website" class="fancy-link wiki-link">https://cbtf.engr.illinois.edu/</a>.</p>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Quiz</th>
+      <th>First day</th>
+      <th>Last day</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Quiz 1 (Week 2)</td>
+      <td>Tue, Sep 4</td>
+      <td>Fri, Sep 7</td>
+    </tr>
+    <tr>
+      <td>Quiz 2 (Week 4)</td>
+      <td>Tue, Sep 18</td>
+      <td>Fri, Sep 21</td>
+    </tr>
+    <tr>
+      <td>Quiz 3 (Week 6)</td>
+      <td>Tue, Oct 2</td>
+      <td>Fri, Oct 5</td>
+    </tr>
+    <tr>
+      <td>Quiz 4 (Week 8)</td>
+      <td>Tue, Oct 16</td>
+      <td>Fri, Oct 19</td>
+    </tr>
+    <tr>
+      <td>Quiz 5 (Week 10)</td>
+      <td>Tue, Oct 30</td>
+      <td>Fri, Nov 2</td>
+    </tr>
+    <tr>
+      <td>Quiz 6 (Week 12)</td>
+      <td>Tue, Nov 13</td>
+      <td>Fri, Nov 16</td>
+    </tr>
+    <tr>
+      <td>Quiz 7 (Week 14)</td>
+      <td>Tue, Nov 27</td>
+      <td>Fri, Nov 30</td>
+    </tr>
+    <tr>
+      <td>Quiz 8 (Week 15)</td>
+      <td>Tue, Dec 4</td>
+      <td>Fri, Dec 7</td>
+    </tr>
+  </tbody>
+</table>
+<p>The final exam will be scantron and paper-based and during the finals exam period. The date and time will be published by the university when the exam schedule has been finalized. Check <a href="https://courses.illinois.edu/schedule/DEFAULT/DEFAULT" class="fancy-link wiki-link">the final exam schedule</a>. The topics of a quiz can be seen at <a href="/quiz_topics" class="fancy-link wiki-link">The topics page</a>.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="coding-assignments" class="title-text">Coding Assignments<a class="anchor title-text" href="#coding-assignments">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>There are two different types of coding assignments in this course labs and machine problems.</p>
+<p>Labs are primarily teaching exercises designed either to prepare you for the machine problems or to allow you to explore a topic of systems in a hands on manner. Labs may be done in a collaborative manner. You are allowed to work with each other so as to learn in the best manner for you. This can include sharing code, debugging each other’s code, and discussing the assignment at any level. You still may not publicly publish either your solutions or our code. Finally you should have a comment block with any students or other resources you used in the completion of your lab assignments. This block will not be used for grading but is needed the same way that citing your sources is required when writing a paper.</p>
+<p>Machine Problems are different. While they are a key learning experience MPs are also a key assessment of your skills. These are solo exercises and you must work alone. For MPs, you may not share code in any way. This includes show, share, email, or debug each others code. You may have high level discussions with each other on the ideas in the assignments but that is it. You are responsible for keeping the code for you machine problems private this includes not letting people view your code. You may not publish your code on any open website.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="absences" class="title-text">Absences<a class="anchor title-text" href="#absences">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>If your absence is unplanned – a sudden illness or have a sudden death in the family – we will deal with your situation on a case-by-case basis via the course admin (<a href="mailto:cs241admin@illinois.edu" class="fancy-link wiki-link">cs241admin@illinois.edu</a>).</p>
+<p>For illness-related excuses, you will need a doctor’s note of some kind verifying your illness. <em>No</em> illness-related excuses will be accepted without a dated <a href="http://odos.illinois.edu/community-of-care/student-assistance-center/" class="fancy-link wiki-link">Emergency Dean’s</a> note stating that you contacted the Emergency Dean.</p>
+<p>Please note: we offer two lab attendance drops at the end of the semester with no penalty.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-to-succeed" class="title-text">How to Succeed<a class="anchor title-text" href="#how-to-succeed">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Is this course hard? Yes, but you are bright. You’re taking computer science at UIUC. Schedule the time to do it. The two big changes from CS 225:</p>
+<ul>
+  <li>Your code is now much smaller than the complexity of the system around it.</li>
+  <li>No, we will not debug your code for you.</li>
+</ul>
+<p>With lecture content, one lab, one MP, and one Quiz/Midterm every week or two, it can get easy to fall behind.</p>
+<p>How to fail: some students do not take the time to learn how to debug and reason about system code and then end up complaining that office hours is too busy before deadlines. If you can’t write correct solutions, you need to learn <em>exactly</em> how C works, the <em>details</em> of the system calls you are using, learn <em>better debugging</em> skills and <em>reason</em> behind synchronization. Only then can you spot and fix mistakes. Hard? Yes. Impossible? No.</p>
+<p>There are no shortcuts to mastery, but we can help you get there. We recommend the <a href="https://www.youtube.com/watch?v=tkm0TNFzIeg" class="fancy-link wiki-link">Feynman technique</a> to learning. Remember, simply recognizing some text in a past exam or in the wikibook is not mastery of those concepts! Find ways to deeply engage your brain with the ideas by working actively with those ideas. Yes, this requires effort. Start the assignments early; expect to get stuck. Write code <em>slowly</em>; reason about every line of code you write. Experiment with your own mind hacks so that you have fun spending “time on task” with these materials.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="autograding-policy" class="title-text">Autograding Policy<a class="anchor title-text" href="#autograding-policy">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>You walk into the investor meeting ready to show your demo. You ship your code ready for a million Internet of things. You deploy your code to the Internet backbone. It had better compile and be functional.</p>
+<p>Forgot to commit or your committed code that does not compile? Zero. The basic headline is that you’re not in Kansas anymore (to quote Dorothy). Don’t leave it until the last minute.</p>
+<p>We will test your code on a multi-core machine; testing on your own laptop is insufficient. Don’t be surprised if race conditions that go undetected on a different machine cause your code to fail. We encourage you to develop and test your code on your CS 241 VM, which is near-identical to the grading machine. We will attempt to give you some partial credit if your code passes the tests.</p>
+<p>If you have a question about your personal autograder results after the final autograde run, then feel free to make a private Piazza post titled “&lt;assignment name&gt; Autograde Question” with the folders/tags/labels <code class="highlighter-rouge">autograder</code> and <code class="highlighter-rouge">&lt;assignment name&gt;</code> selected.</p>
+<ul>
+  <li>It will take time to go through autograder questions, so please do not expect an immediate (or even same day or same week) response. We will try to answer you as quickly as possible.</li>
+  <li><em>You must show us your test cases first. If they are not close to exhaustive, we reserve to right to not answer your question.</em></li>
+  <li>We will not tell you the details of specific tests, beyond what the test description already says.</li>
+  <li>These questions should be for “I have exhaustive test cases for <em>X</em>, so how am I failing <em>Y</em>?”</li>
+  <li>Please mention your NetID in the post, so we can look up your code if needed.</li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="academic-integrity" class="title-text">Academic Integrity<a class="anchor title-text" href="#academic-integrity">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>CS 241 is considered a critical step in your ability to create useful programs for your later classes and beyond. Unfortunately for grading purposes, a minority of students submit code that was created by others. Cheating is taken very seriously, and all cases of cheating will be brought to the University, your department, and your college. You should understand how <a href="https://wiki.cites.illinois.edu/wiki/display/undergradProg/Honor+Code" class="fancy-link wiki-link">academic integrity</a> applies to Computer Science courses.</p>
+<p><strong>Rule of Thumb:</strong> If at any point you submit an assignment that does not reflect your understanding of the material, then you have probably cheated.</p>
+<p>In the cases of labs, you are allowed to collaborate with others in the class. All you need to do is put your partners netid at the top.
+ This can include detailed debugging and code sharing.</p>
+<p><strong>EVERY MACHINE PROBLEM IS A SOLO ASSIGNMENT IN THIS CLASS!</strong></p>
+<p>This means you are not allowed to split the work with a partner.
+ You are, however, allowed to discuss the assignments at a very high level.
+ If you are found to have shared code work on any machine problem, you will receive a zero on that assignment and a 10% penalty in the course for each incident where you are found to have used material that is not yours.</p>
+<p>Additionally, you may not publish your solutions or leave them in “plain view”, thereby leaving your programs open to copying, which constitutes cheating.
+ If your code (or a variation of it) is found publicly accessible, then you will receive a letter grade reduction in the class for each assignment.
+ For example, if we find your code on GitHub for one MP then you will receive 10% penalty in the course if your code is there for two you will get a 20% penalty.
+ You also may not publish our code anywhere publicly and you will receive the same penalty for sharing our code.
+ If you are confused on what it means to be “publicly accessible”, then do not put your code anywhere besides your private course repository and take measures to ensure that nobody can copy your code, so that you are not charged with a violation.</p>
+<p>In the case of quizzes in the CBTF, it is a violation of our course policy to access or provide access to the quiz material outside your registered window.
+ Cheating at CBTF may also result in immediate failure of the course and further action by the college of engineering.
+ If you are found to have done so you will receive a zero on the quiz and a 10% penalty in the course.
+ This includes seeking descriptions of the questions from students who have taken the quiz, as well as any other method that would give you access to the quiz outside your scheduled time.
+ If there is prep material provided in lecture or on Piazza, you are welcome to share that material freely.</p>
+<p>We want you to get the most out your education, and cheating not only affects your peers, but also your level of knowledge and ability.</p>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_pages/index.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

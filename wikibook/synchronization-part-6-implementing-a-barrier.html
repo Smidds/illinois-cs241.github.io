@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Synchronization, Part 6: Implementing a barrier</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Synchronization, Part 6: Implementing a barrier
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/Synchronization,-Part-6:-Implementing-a-barrier">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc"><li><a id="toc_how-do-i-wait-for-n-threads-to-reach-a-certain-point-before-continuing-onto-the-next-step" href="#how-do-i-wait-for-n-threads-to-reach-a-certain-point-before-continuing-onto-the-next-step" class="fancy-link">How do I wait for N threads to reach a certain point before continuing onto the next step?</a></li></ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper"><div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-wait-for-n-threads-to-reach-a-certain-point-before-continuing-onto-the-next-step" class="title-text">How do I wait for N threads to reach a certain point before continuing onto the next step?<a class="anchor title-text" href="#how-do-i-wait-for-n-threads-to-reach-a-certain-point-before-continuing-onto-the-next-step">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Suppose we wanted to perform a multi-threaded calculation that has two stages, but we don’t want to advance to the second stage until the first stage is completed.</p>
+<p>We could use a synchronization method called a <strong>barrier</strong>. When a thread reaches a barrier, it will wait at the barrier until all the threads reach the barrier, and then they’ll all proceed together.</p>
+<p>Think of it like being out for a hike with some friends.  You agree to wait for each other at the top of each hill (and you make a mental note how many are in your group). Say you’re the first one to reach the top of the first hill. You’ll wait there at the top for your friends. One by one, they’ll arrive at the top, but nobody will continue until the last person in your group arrives.  Once they do, you’ll all proceed.</p>
+<p>Pthreads has a function <code class="highlighter-rouge">pthread_barrier_wait()</code> that implements this. You’ll need to declare a <code class="highlighter-rouge">pthread_barrier_t</code> variable and initialize it with <code class="highlighter-rouge">pthread_barrier_init()</code>.  <code class="highlighter-rouge">pthread_barrier_init()</code> takes the number of threads that will be participating in the barrier as an argument.  <a href="/wikibook/sample-program-using-pthread-barriers.html#" class="fancy-link wiki-link">Here’s an example.</a></p>
+<p>Now let’s implement our own barrier and use it to keep all the threads in sync in a large calculation.</p>
+<pre><code class="language-C"><span class="kt">double</span>
+</code></pre>
+<p>The thread function has four main parts-</p>
+<pre><code class="language-C"><span class="kt">void</span>
+</code></pre>
+<p>Our main thread will create the 16 threads and we will divide each calculation into 16 separate pieces.  Each thread will be given a unique value (0,1,2,..15), so it can work on its own block.
+Since a (void*) type can hold small integers, we will pass the value of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/i" class="fancy-link">i</a></code> by casting it to a void pointer.</p>
+<pre><code class="language-C"><span class="cp">#define N (16)
+</span>
+</code></pre>
+<p>Note, we will never dereference this pointer value as an actual memory location - we will just cast it straight back to an integer:</p>
+<pre><code class="language-C"><span class="kt">void</span>
+</code></pre>
+<p>After calculation 1 completes, we need to wait for the slower threads (unless we are the last thread!).
+So, keep track of the number of threads that have arrived at our barrier aka ‘checkpoint’:</p>
+<pre><code class="language-C"><span class="c1">// Global: </span>
+</code></pre>
+<p>However the above code has a race condition (two threads might try to decrement <code class="highlighter-rouge">remain</code>) and the loop is a busy loop. We can do better! Let’s use a condition variable and then we will use a broadcast/signal functions to wake up the sleeping threads.</p>
+<p>A reminder, that a condition variable is similar to a house! Threads go there to sleep (<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_wait" class="fancy-link">pthread_cond_wait</a></code>). You can choose to wake up one thread (<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_signal" class="fancy-link">pthread_cond_signal</a></code>) or all of them (<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_broadcast" class="fancy-link">pthread_cond_broadcast</a></code>).  If there are no threads currently waiting then these two calls have no effect.</p>
+<p>A condition variable version is usually very similar to a busy loop incorrect solution - as we will show next. First, let’s add a mutex and condition global variables and don’t forget to initialize them in <code class="highlighter-rouge">main</code> …</p>
+<pre><code class="language-C"><span class="c1">//global variables</span>
+</code></pre>
+<p>We will use the mutex to ensure that only one thread modifies <code class="highlighter-rouge">remain</code> at a time.
+The last arriving thread needs to wake up <em>all</em> sleeping threads - so we will use <code class="highlighter-rouge">pthread_cond_broadcast(&amp;cv)</code> not <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_signal" class="fancy-link">pthread_cond_signal</a></code></p>
+<pre><code class="language-C"><span class="n">pthread_mutex_lock</span>
+</code></pre>
+<p>When a thread enters <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_wait" class="fancy-link">pthread_cond_wait</a></code>, it releases the mutex and sleeps. At some point in the future, it will be awoken. Once we bring a thread back from its sleep, before returning it must wait until it can lock the mutex. Notice that even if a sleeping thread wakes up early, it will check the while loop condition and re-enter wait if necessary.</p>
+<p><strong>The above barrier is not reusable</strong> Meaning that if we stick it into any old calculation loop there is a good chance that the code will encounter a condition where the barrier either deadlocks or a thread races ahead one iteration faster. Think about how you can make the above barrier reusable, meaning that if mutliple threads call <code class="highlighter-rouge">barrier_wait</code> in a loop then one can guarantee that they are on the same iteration.</p>
+</div></div></div>
+</div></div></div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/synchronization-part-6-implementing-a-barrier.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

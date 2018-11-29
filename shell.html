@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Shell</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Shell
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/illinois-cs241/assignment-docs/blob/master//shell.md">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+              <div class="submission-wrapper">
+                
+                  <b>Entire Assignment</b> due <b>10/1/2018 11:59pm</b><br>
+                  
+                    <b>Graded files:</b>
+                    <ul>
+                      
+                        <li>shell.c</li>
+                      
+                    </ul>
+                  
+                
+              </div>
+            
+            
+              <div class="schedule-wrapper">
+                
+                  <b>AG Schedule</b>
+                  <br>
+                  <b>Pre-deadline Runs</b>
+                    <ul>
+                      
+                        <li>09/25 10:00 PM</li>
+                      
+                        <li>09/27 10:00 PM</li>
+                      
+                        <li>09/29 10:00 PM</li>
+                      
+                        <li>09/30 10:00 PM</li>
+                      
+                        <li>10/01 12:00 PM (noon)</li>
+                      
+                    </ul>
+                
+              </div>
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_backstory" href="#backstory" class="fancy-link">Backstory</a></li>
+<li><a id="toc_notices" href="#notices" class="fancy-link">Notices</a></li>
+<li><a id="toc_overview" href="#overview" class="fancy-link">Overview</a></li>
+<li><a id="toc_interaction" href="#interaction" class="fancy-link">Interaction</a></li>
+<li><a id="toc_commands" href="#commands" class="fancy-link">Commands</a></li>
+<li><a id="toc_built-in-commands" href="#built-in-commands" class="fancy-link">Built-in Commands</a></li>
+<li><a id="toc_external-commands" href="#external-commands" class="fancy-link">External Commands</a></li>
+<li><a id="toc_logical-operators" href="#logical-operators" class="fancy-link">Logical Operators</a></li>
+<li><a id="toc_memory" href="#memory" class="fancy-link">Memory</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+  <div class="pad"><div class="card">
+<div class="title"><h2 id="learning-objectives" class="title-text">Learning Objectives<a class="anchor title-text" href="#learning-objectives">#</a>
+</h2></div>
+  
+  
+
+
+  <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>
+    The learning objectives for Shell are: <br>
+    </p>
+<ul class="mdl-list">
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Learning How a Shell Works</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Fork, Exec, Wait</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Signals</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Processes</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Zombie Processes</span>
+        </li>
+      
+    </ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="suggested-readings" class="title-text">Suggested Readings<a class="anchor title-text" href="#suggested-readings">#</a>
+</h2></div>
+  
+  
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>
+    We suggest you read the following from the
+    <a href="https://github.com/angrave/SystemProgramming/wiki" class="fancy-link wiki-link">wikibook</a>
+    before starting Shell: <br>
+    </p>
+<ul>
+      
+        <li>
+          <a href="/wikibook/forking-part-1-introduction.html#" target="_blank" class="fancy-link wiki-link">Forking, Part 1: Introduction
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/forking-part-2-fork-exec-wait.html#" target="_blank" class="fancy-link wiki-link">Forking, Part 2: Fork, Exec, Wait
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/process-control-part-1-wait-macros-using-signals.html#" target="_blank" class="fancy-link wiki-link">Process Control, Part 1: Wait macros, using signals
+          </a>
+        </li>
+      
+    </ul>
+</div></div></div>
+</div></div>
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="backstory" class="title-text">Backstory<a class="anchor title-text" href="#backstory">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Well, we’ll keep it short – you got fired. Your boss brought you in for a code review and was more than disappointed. Apparently, she wanted a text editor like this <a href="https://www.sublimetext.com" class="fancy-link wiki-link">one</a>: we didn’t get the memo. Now it’s time to prove your worth. Your boss wants something fully functional and we’ve got a great idea. You’re going to drop a <img class="emoji" title=":fire:" alt=":fire:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f525.png" height="20" width="20"> <img class="emoji" title=":fire:" alt=":fire:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f525.png" height="20" width="20"> shell on her to get rehired.</p>
+<p>The basic function of a shell is to accept commands as inputs and execute the corresponding programs in response. You will be provided the <code class="highlighter-rouge">vector</code> and <code class="highlighter-rouge">format.c</code> libraries for your use. Hopefully, this will make things right and you can resume your work at <em>insert hot tech company here</em>. Feel free to refer to the Unix shell as a rough reference.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="notices" class="title-text">Notices<a class="anchor title-text" href="#notices">#</a>
+</h2></div>
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<div class="pad"><div class="card">
+<h4 id="fork-bombs">Fork Bombs</h4>
+
+<p><img class="emoji" title=":fork_and_knife:" alt=":fork_and_knife:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f374.png" height="20" width="20"> <img class="emoji" title=":bomb:" alt=":bomb:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4a3.png" height="20" width="20"> <img class="emoji" title=":bangbang:" alt=":bangbang:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/203c.png" height="20" width="20"></p>
+
+<p>If your code fork-bombs on <em>any</em> autograde, then you will automatically fail this MP. Please make sure that your <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code> code is correct before committing your code for the nightly autograder.</p>
+
+<p>To prevent you from fork bombing your own VM, we recommend looking into <a href="https://ss64.com/bash/ulimit.html" class="fancy-link wiki-link"><code class="highlighter-rouge">ulimit</code></a>. This will allow you to set a limit for how many times you can fork.</p>
+
+<p>Since a learning objective of this assignment is to use the fork-exec-wait pattern, if you use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/system" class="fancy-link">system</a></code>, you will automatically fail this MP.</p>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="formatting">Formatting</h4>
+
+<p>Since this MP <strong>requires</strong> your programs to print a variety of things like error messages, we have provided you with our own highly customized formatting library. You should not be printing out to stdout and stderr at all; instead, all output and errors should be printed using the functions provided in <code class="highlighter-rouge">format.c</code> and <code class="highlighter-rouge">format.h</code>. In <code class="highlighter-rouge">format.h</code> you can find documentation about what each function does, and you should use them whenever appropriate.</p>
+
+<p><strong>Note</strong>: don’t worry if you don’t use all of the functions in <code class="highlighter-rouge">format.c</code>, but you should use them whenever their documented purpose matches the situation.</p>
+
+</div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="overview" class="title-text">Overview<a class="anchor title-text" href="#overview">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The shell is responsible for providing a command line for users to execute programs or scripts. You should be very familiar with <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/bash" class="fancy-link">bash</a></code> by now, which will be the basis for your own shell.</p>
+<div class="pad"><div class="card">
+<h4 id="starting-your-shell">Starting Your Shell</h4>
+
+<p>The shell should run in a loop like this executing multiple commands:</p>
+
+<ul>
+  <li>Print a command prompt</li>
+  <li>Read the command from standard input</li>
+  <li>Print the PID of the process executing the command (with the exception of built-in commands), and run the command</li>
+</ul>
+
+<p>The shell must support the following two optional arguments:</p>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="history">History</h4>
+
+<p><code class="highlighter-rouge">-h</code> takes the filename of the history file. The shell should load in the history file as its history. If the file does not exist, you should treat it as an empty file and write all the commands that were executed in the terminal to the output file on exit. Upon exit, the exact same history file should be updated, even if the shell is in a different working directory than where it started.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./shell -h &lt;filename&gt;
+</code></pre></div></div>
+
+<p>If the the <code class="highlighter-rouge">-h</code> flag is not specified, the shell will still keep a history of commands run, but will not read/write from/to a history file. Just think of it like private browsing mode for your terminal.</p>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="file">File</h4>
+
+<p><code class="highlighter-rouge">-f</code> takes the name of the file to be executed by the shell. The shell will both print and run the commands in the file in sequential order until the end of the file. See the following example file and execution:</p>
+
+<p><code class="highlighter-rouge">commands.txt</code>:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd cs241
+echo Hey!
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./shell -f commands.txt
+(pid=1234)/home/user$ cd cs241
+(pid=1234)/home/user/cs241$ echo Hey!
+Command executed by pid=1235
+Hey!
+</code></pre></div></div>
+
+<p>If the user supplies an incorrect number of arguments, or the script file cannot be found, your shell should print the appropriate error from <code class="highlighter-rouge">format.h</code> and exit.</p>
+
+<p>The <a href="http://linux.die.net/man/3/getopt" class="fancy-link wiki-link">getopt</a> function may come in handy. <img class="emoji" title=":smile:" alt=":smile:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f604.png" height="20" width="20"></p>
+
+</div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="interaction" class="title-text">Interaction<a class="anchor title-text" href="#interaction">#</a>
+</h2></div>
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<div class="pad"><div class="card">
+<h4 id="prompting">Prompting</h4>
+
+<p>When prompting for a command, the shell will print a prompt in the following format (from <code class="highlighter-rouge">format.h</code>):</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(pid=&lt;pid&gt;)&lt;path&gt;$
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">&lt;pid&gt;</code> is the current process ID, and <code class="highlighter-rouge">&lt;path&gt;</code> is a path to the current working directory. Note the lack of a newline at the end of this prompt.</p>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="reading-in-the-command">Reading in the Command</h4>
+
+<p>The shell will read in a command from <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stdin" class="fancy-link">stdin</a></code> (or a file if <code class="highlighter-rouge">-f</code> was specified).</p>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="running-the-command">Running the Command</h4>
+
+<p>The shell should run the command that was read in previously.</p>
+
+<p>If the command is run by a new process, the PID of the process should be printed like this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Command executed by pid=&lt;pid&gt;
+</code></pre></div></div>
+
+<p>This should be printed before any of the output of the command is printed (prints to be used are in <code class="highlighter-rouge">format.c/h</code>).</p>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="keeping-history">Keeping History</h4>
+
+<p>Your shell should store the command that was just executed, so the user can repeat it later if they wish. Every command should be stored unless otherwise noted. A vector may be useful here.</p>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="backgrounding">Backgrounding</h4>
+<p>An <em>external</em> command suffixed with <code class="highlighter-rouge">&amp;</code> should be run in the background. In other words, the shell should be ready to take the next command before the given command has finished running. There is no limit on the number of background processes you can have running at one time (aside from any limits set by the system).</p>
+
+<p>There may or may not be a single space between the rest of the command and <code class="highlighter-rouge">&amp;</code>. For example, <code class="highlighter-rouge">pwd&amp;</code> and <code class="highlighter-rouge">pwd &amp;</code> are both valid.</p>
+
+<p>Since spawning a background process introduces a race condition, it is okay if the prompt gets misaligned as in the following example:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(pid=1873)/home/user$ pwd &amp;	
+Command executed by pid=1874	
+(pid=1873)/home/user$	
+/home/user	
+When I type, it shows up on this line	
+</code></pre></div></div>
+
+<p>While the shell should be usable after calling the command, after the process finishes, the parent is still responsible for waiting on the child (hint: catch a signal). Avoid creating zombies! Think about what happens when multiple children finish around the same time.</p>
+
+<p>Backgrounding will <strong>not</strong> be chained with the logical operators.</p>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="catching-ctrlc">Catching Ctrl+C</h4>
+
+<p>Usually when we do <code class="highlighter-rouge">Ctrl+C</code>, the current running program will exit. However, we want the shell itself to ignore the <code class="highlighter-rouge">Ctrl+C</code> signal (<code class="highlighter-rouge">SIGINT</code>). Instead, it should check if there is a currently running foreground process, and if so, it should kill that foreground process using SIGINT (the <code class="highlighter-rouge">kill()</code> function might come in handy, here and elsewhere).</p>
+
+<p>Note that we want this signal sent to the foreground process, not to any backgrounded processes. As such, you will want to use <a href="http://man7.org/linux/man-pages/man2/setpgid.2.html" class="fancy-link wiki-link"><code class="highlighter-rouge">setpgid</code></a> to assign each background process to its own process group when forking:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pid_t pid = fork();
+if (pid &gt; 0) {
+  // ...
+
+  // assign the child's process group id to be its pid
+  if (setpgid(pid, pid) == -1) {
+    print_setpgid_failed();
+    exit(1);
+  }
+
+  // ...
+} else if ( ... ) {
+  // ...
+}
+</code></pre></div></div>
+
+<p>Yes, we are giving you code that you will want to put somewhere in your program. Use it appropriately for free points!</p>
+
+</div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="commands" class="title-text">Commands<a class="anchor title-text" href="#commands">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Shell supports two types of commands: built-in and external (i.e. non-built-in). While built-in commands are executed without creating a new process, an external command <em>must</em> create a new process to execute the program for that particular command.</p>
+<p>Command arguments will be space-separated without trailing whitespace. Your shell does not need to support quotes (for example, <code class="highlighter-rouge">echo "hello there"</code>).</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="built-in-commands" class="title-text">Built-in Commands<a class="anchor title-text" href="#built-in-commands">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>There are several built-in commands your shell is expected to support.</p>
+<div class="pad"><div class="card">
+<h4 id="cd-path"><code class="highlighter-rouge">cd &lt;path&gt;</code></h4>
+
+<p>Changes the current working directory of the shell to <code class="highlighter-rouge">&lt;path&gt;</code>. Paths not starting with <code class="highlighter-rouge">/</code> should be followed relative to the current directory. If the directory does not exist, then print the appropriate error. Unlike your regular shell, the <code class="highlighter-rouge">&lt;path&gt;</code> argument is mandatory here. A missing path should be treated as a nonexistent directory.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(pid=1234)/home/user$ cd code
+(pid=1234)/home/user/code$ cd imaginary_directory
+imaginary_directory: No such file or directory
+(pid=1234)/home/user/code$
+</code></pre></div></div>
+
+<p>There is a system call that may be helpful here.</p>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="history-1"><code class="highlighter-rouge">!history</code></h4>
+
+<p>Prints out each command in the history, in order.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(pid=1234)/home/user$ !history
+0    ls -l
+1    pwd
+2    ps
+(pid=1234)/home/user$
+</code></pre></div></div>
+
+<p><img class="emoji" title=":warning:" alt=":warning:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/26a0.png" height="20" width="20"> This command is not stored in history.</p>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="n"><code class="highlighter-rouge">#&lt;n&gt;</code></h4>
+
+<p>Prints and executes the <i>n</i>th command in history (in chronological order, from earliest to most recent), where <em>n</em> is a non-negative integer. Other values of <em>n</em> will not be tested. The command run should be stored in the history. If <em>n</em> is not a valid index, then print the appropriate error and do not store anything in the history.</p>
+
+<p>The following example assumes a fresh history:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(pid=1234)/home/user$ echo Echo This!
+Command executed by pid=1235
+Echo This!
+(pid=1234)/home/user$ echo Another echo
+Command executed by pid=1236
+Another echo
+(pid=1234)/home/user$ !history
+0    echo Echo This!
+1    echo Another echo
+(pid=1234)/home/user$ #1
+echo Another echo
+Command executed by pid=1237
+Another echo
+(pid=1234)/home/user$ #9001
+Invalid Index
+(pid=1234)/home/user$ !history
+0    echo Echo This!
+1    echo Another echo
+2    echo Another echo
+(pid=1234)/home/user$
+</code></pre></div></div>
+
+<p><img class="emoji" title=":warning:" alt=":warning:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/26a0.png" height="20" width="20"> Print out the command before executing if there is a match.</p>
+
+<p><img class="emoji" title=":warning:" alt=":warning:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/26a0.png" height="20" width="20"> The <code class="highlighter-rouge">#&lt;n&gt;</code> command itself is <strong>not</strong> stored in history, but the command being executed (if any) <strong>is</strong>.</p>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="prefix"><code class="highlighter-rouge">!&lt;prefix&gt;</code></h4>
+
+<p>Prints and executes the last command that has the specified prefix. If no match is found, print the appropriate error and do not store anything in the history. The prefix may be empty. The following example assumes a fresh history:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(pid=1234)/home/user$ echo Echo This!
+Command executed by pid=1235
+Echo This!
+(pid=1234)/home/user$ echo Another echo
+Command executed by pid=1236
+Another echo
+(pid=1234)/home/user$ !e
+echo Another echo
+Command executed by pid=1237
+Another echo
+(pid=1234)/home/user$ !echo E
+echo Echo This!
+Command executed by pid=1238
+Echo This!
+(pid=1234)/home/user$ !d
+No Match
+(pid=1234)/home/user$ !
+echo Echo This!
+Command executed by pid=1239
+Echo This!
+(pid=1234)/home/user$ !history
+0       echo Echo This!
+1       echo Another echo
+2       echo Another echo
+3       echo Echo This!
+4       echo Echo This!
+(pid=1234)/home/user$
+</code></pre></div></div>
+
+<p><img class="emoji" title=":warning:" alt=":warning:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/26a0.png" height="20" width="20"> Print out the command before executing if there is a match.</p>
+
+<p><img class="emoji" title=":warning:" alt=":warning:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/26a0.png" height="20" width="20"> The <code class="highlighter-rouge">!&lt;prefix&gt;</code> command itself is <strong>not</strong> stored in history, but the command being executed (if any) <strong>is</strong>.</p>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="ps"><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/ps" class="fancy-link">ps</a></code></h4>
+
+<p>Like our good old <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/ps" class="fancy-link">ps</a></code>, your shell should print out information about all currently executing processes. You should include the shell and its immediate children, but don’t worry about grandchildren or other processes. Make sure you use <code class="highlighter-rouge">print_process_info()</code>!</p>
+
+<p><em>Note:</em> while <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/ps" class="fancy-link">ps</a></code> is normally a separate binary, it is a built-in command for your shell. (This is not “execing <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/ps" class="fancy-link">ps</a></code>”, this is you implementing it in the code. Thus you have to keep track of process statuses and such.)</p>
+
+<p>Some things to keep in mind:</p>
+
+<ul>
+  <li>The order in which you print the processes does not matter.</li>
+  <li>The ‘command’ for <code class="highlighter-rouge">print_process_info</code> should be the full command you executed. The <code class="highlighter-rouge">&amp;</code> for background processes is optional. For the main shell process <em>only</em>, you do not need to include the command-line flags.</li>
+</ul>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="kill-pid"><code class="highlighter-rouge">kill &lt;pid&gt;</code></h4>
+
+<p>The ever-useful panic button. Send <code class="highlighter-rouge">SIGTERM</code> to the specified process.</p>
+
+<p>Use the appropriate prints from <code class="highlighter-rouge">format.h</code> for:</p>
+<ul>
+  <li>Successfully sending <code class="highlighter-rouge">SIGTERM</code> to process</li>
+  <li>No process with <code class="highlighter-rouge">pid</code> exists</li>
+  <li>
+<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/kill" class="fancy-link">kill</a></code> was ran without a <code class="highlighter-rouge">pid</code>
+</li>
+</ul>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="stop-pid"><code class="highlighter-rouge">stop &lt;pid&gt;</code></h4>
+
+<p>This command will allow your shell to stop a currently executing process by sending it the <code class="highlighter-rouge">SIGTSTP</code> signal. It may be resumed by using the command <code class="highlighter-rouge">cont</code>.</p>
+
+<p>Use the appropriate prints from <code class="highlighter-rouge">format.h</code> for:</p>
+<ul>
+  <li>Process was successfully sent <code class="highlighter-rouge">SIGTSTP</code>
+</li>
+  <li>No such process exists</li>
+  <li>
+<code class="highlighter-rouge">stop</code> was ran without a <code class="highlighter-rouge">pid</code>
+</li>
+</ul>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="cont-pid"><code class="highlighter-rouge">cont &lt;pid&gt;</code></h4>
+
+<p>This command resumes the specified process by sending it <code class="highlighter-rouge">SIGCONT</code>.</p>
+
+<p>Use the appropriate prints from <code class="highlighter-rouge">format.h</code> for:</p>
+<ul>
+  <li>No such process exists</li>
+  <li>
+<code class="highlighter-rouge">cont</code> was ran without a <code class="highlighter-rouge">pid</code>
+</li>
+</ul>
+
+<p><strong>Any <code class="highlighter-rouge">&lt;pid&gt;</code> used in <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/kill" class="fancy-link">kill</a></code>, <code class="highlighter-rouge">stop</code>, or, <code class="highlighter-rouge">cont</code> will either be a process that is a direct child of your shell or a non-existent process. You do not have to worry about killing other processes.</strong></p>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="exit"><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exit" class="fancy-link">exit</a></code></h4>
+
+<p>The shell will exit once it receives the <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exit" class="fancy-link">exit</a></code> command or once it receives an <code class="highlighter-rouge">EOF</code>. An <code class="highlighter-rouge">EOF</code> is sent by typing <code class="highlighter-rouge">Ctrl-D</code> from your terminal. It is also sent automatically from a script file (as used with the <code class="highlighter-rouge">-f</code> flag) once the end of the file is reached. This should cause your shell to exit with exit status 0.</p>
+
+<p>If there are currently stopped or running background processes when your shell receives <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exit" class="fancy-link">exit</a></code> or <code class="highlighter-rouge">Control-D</code> (EOF), you should kill and cleanup each of those children before your shell exits. You do not need to worry about SIGTERM.</p>
+
+<p><img class="emoji" title=":warning:" alt=":warning:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/26a0.png" height="20" width="20"> If you don’t handle <code class="highlighter-rouge">EOF</code> to exit, you will fail many of our test cases!</p>
+
+<p><img class="emoji" title=":warning:" alt=":warning:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/26a0.png" height="20" width="20"> Do <strong>not</strong> store <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exit" class="fancy-link">exit</a></code> in history!</p>
+
+<h3 id="invalid-built-in-commands" class="title-text">Invalid Built-in Commands</h3>
+
+<p>You should be printing appropriate errors in cases where built-in commands fail; for example, if the user tries to <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/cd" class="fancy-link">cd</a></code> into a nonexistent directory.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(pid=1234)/home/user$ cd /imaginary_directory
+/imaginary_directory: No such file or directory
+(pid=1234)/home/user$
+</code></pre></div></div>
+
+</div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="external-commands" class="title-text">External Commands<a class="anchor title-text" href="#external-commands">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>For commands that are not built-in, the shell should consider the command name to be the name of a file that contains executable binary code. Such a code must be executed in a process different from the one executing the shell. You must use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code>, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code>, and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/wait" class="fancy-link">wait</a></code>/<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/waitpid" class="fancy-link">waitpid</a></code>.</p>
+<p>The <code class="highlighter-rouge">fork/exec/wait</code> paradigm is as follows: <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code> a child process. The child process must execute the command with <code class="highlighter-rouge">exec*</code>, while the parent must <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/wait" class="fancy-link">wait</a></code> for the child to terminate before printing the next prompt.</p>
+<p>You are responsible of cleaning up all the child processes upon termination of your program. It is important to note that, upon a successful execution of the command, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code> never returns to the child process. <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code> only returns to the child process when the command fails to execute successfully. If any of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code>, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code>, or <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/wait" class="fancy-link">wait</a></code> fail, the appropriate error should be printed and your program should <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exit" class="fancy-link">exit</a></code> with exit status 1. For example, if <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code> fails:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(pid=1234)/home/user$ echo hello world
+Fork Failed!
+$
+</code></pre></div></div>
+<p>Some external commands you may test to see whether your shell works are:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/bin/ls
+echo hello
+</code></pre></div></div>
+<p>It is good practice to flush the standard output stream before the fork to be able to correctly display the output.</p>
+<p><img class="emoji" title=":bangbang:" alt=":bangbang:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/203c.png" height="20" width="20"> Please read the disclaimer at the top of the page! We don’t want to have to give any failing grades. <img class="emoji" title=":bangbang:" alt=":bangbang:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/203c.png" height="20" width="20"></p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="logical-operators" class="title-text">Logical Operators<a class="anchor title-text" href="#logical-operators">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Like <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/bash" class="fancy-link">bash</a></code>, your shell should support <code class="highlighter-rouge">&amp;&amp;</code>, <code class="highlighter-rouge">||</code>, and <code class="highlighter-rouge">;</code> in between two commands. This will require only a minimal amount of string parsing that you have to do yourself.</p>
+<p><strong>Important</strong>: each input can have at most <em>one</em> of <code class="highlighter-rouge">&amp;&amp;</code>, <code class="highlighter-rouge">||</code>, or <code class="highlighter-rouge">;</code>. You do <em>not</em> have to support chaining (e.g. <code class="highlighter-rouge">x &amp;&amp; y || z; w</code>).</p>
+<p><strong>Important</strong>: you should <em>not</em> try to handle the combination of the <code class="highlighter-rouge">!history</code>, <code class="highlighter-rouge">#&lt;n&gt;</code>, <code class="highlighter-rouge">!&lt;prefix&gt;</code>, or <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exit" class="fancy-link">exit</a></code> commands with any logical operators. Rather, you can assume these commands will always be run on a line by themselves.</p>
+<div class="pad"><div class="card">
+<h4 id="and">AND</h4>
+
+<p><code class="highlighter-rouge">&amp;&amp;</code> is the AND operator.</p>
+
+<p>Input: <code class="highlighter-rouge">x &amp;&amp; y</code></p>
+<ul>
+  <li>The shell first runs <code class="highlighter-rouge">x</code>, then checks the exit status.</li>
+  <li>If <code class="highlighter-rouge">x</code> exited successfully (status = 0), run <code class="highlighter-rouge">y</code>.</li>
+  <li>If <code class="highlighter-rouge">x</code> did not exit successfully (status ≠ 0), do <em>not</em> run <code class="highlighter-rouge">y</code>. This is also known as <a href="https://en.wikipedia.org/wiki/Short-circuit_evaluation" class="fancy-link wiki-link">short-circuiting</a>.</li>
+</ul>
+
+<p>This mimics short-circuiting AND in boolean algebra: if <code class="highlighter-rouge">x</code> is false, we know the result will be false <em>without</em> having to run <code class="highlighter-rouge">y</code>.</p>
+
+<p><img class="emoji" title=":question:" alt=":question:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/2753.png" height="20" width="20"> This is often used to run multiple commands in a sequence and stop early if one fails. For example, <code class="highlighter-rouge">make &amp;&amp; ./shell</code> will run your shell only if <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/make" class="fancy-link">make</a></code> succeeds.</p>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="or">OR</h4>
+
+<p><code class="highlighter-rouge">||</code> is the OR operator.</p>
+
+<p>Input: <code class="highlighter-rouge">x || y</code></p>
+<ul>
+  <li>The shell first runs <code class="highlighter-rouge">x</code>, then checks the exit status.</li>
+  <li>If <code class="highlighter-rouge">x</code> exited successfully, the shell does <em>not</em> run <code class="highlighter-rouge">y</code>. This is short-circuiting.</li>
+  <li>If <code class="highlighter-rouge">x</code> did not exit successfully, run <code class="highlighter-rouge">y</code>.</li>
+</ul>
+
+<p>Boolean algebra: if <code class="highlighter-rouge">x</code> is true, we can return true right away <em>without</em> having to run <code class="highlighter-rouge">y</code>.</p>
+
+<p><img class="emoji" title=":question:" alt=":question:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/2753.png" height="20" width="20"> This is often used to recover after errors. For example, <code class="highlighter-rouge">make || echo 'Make failed!'</code> will run <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/echo" class="fancy-link">echo</a></code> only if <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/make" class="fancy-link">make</a></code> does not succeed.</p>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="separator">Separator</h4>
+
+<p><code class="highlighter-rouge">;</code> is the command separator.</p>
+
+<p>Input: <code class="highlighter-rouge">x; y</code></p>
+<ul>
+  <li>The shell first runs <code class="highlighter-rouge">x</code>.</li>
+  <li>The shell then runs <code class="highlighter-rouge">y</code>.</li>
+</ul>
+
+<p><img class="emoji" title=":question:" alt=":question:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/2753.png" height="20" width="20"> The two commands are run regardless of whether the first one succeeds.</p>
+
+</div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="memory" class="title-text">Memory<a class="anchor title-text" href="#memory">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>As usual, you may not have any memory leaks or errors.</p></div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="submission-instructions" class="title-text">Submission Instructions<a class="anchor title-text" href="#submission-instructions">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Please read details on <a href="/#academic-integrity" class="fancy-link wiki-link">Academic Integrity</a> fully. These are shared by all assignments in CS 241.</p>
+<p>We will be using GitHub as our hand-in system this semester. Our grading system will checkout your most recent (pre-deadline) commit for grading. Therefore, to hand in your code, all you have to do is commit and push to your Github repository.</p>
+<p>To check out the provided code for <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/shell" class="fancy-link">shell</a></code> from the class repository, go to your cs241 directory (the one you checked out for “know your tools”) and run:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git pull release master
+</code></pre></div></div>
+<p>If you run <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/ls" class="fancy-link">ls</a></code> you will now see a <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/shell" class="fancy-link">shell</a></code> folder, where you can find this assignment! To commit your changes (send them to us), type:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git add shell
+git commit -m "shell submission"
+git push origin master
+</code></pre></div></div>
+<p>Your repository directory can be viewed from a web browser from the following URL: 
+<a href="https://github-dev.cs.illinois.edu/cs241-fa18/NETID/tree/master/shell" class="fancy-link wiki-link">https://github-dev.cs.illinois.edu/cs241-fa18/NETID/tree/master/shell</a> where NETID is your University NetID. It is important to check that the files you expect to be graded are present and up to date in your remote git copy.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="assignment-feedback" class="title-text">Assignment Feedback<a class="anchor title-text" href="#assignment-feedback">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>We strive to provide the best assignments that we can for this course, and we would like your feedback on them!</p>
+<p>This is the form we will use to evaluate our assignments. We appreciate the time you take to give us your honest feedback and we promise to keep improving the course to make your experience in CS 241 the best it can be.</p>
+<p><a href="https://goo.gl/forms/hREf0ojFWumYfQF12" class="fancy-link wiki-link">https://goo.gl/forms/hREf0ojFWumYfQF12</a></p>
+</div></div></div>
+</div></div>
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_docs/shell.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28%2020:00:31%20-0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</script>
+</div></body>
+</html>

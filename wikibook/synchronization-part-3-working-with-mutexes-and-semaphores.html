@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Synchronization, Part 3: Working with Mutexes And Semaphores</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Synchronization, Part 3: Working with Mutexes And Semaphores
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/Synchronization,-Part-3:-Working-with-Mutexes-And-Semaphores">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_what-is-an-atomic-operation" href="#what-is-an-atomic-operation" class="fancy-link">What is an atomic operation?</a></li>
+<li><a id="toc_how-do-i-use-mutex-lock-to-make-my-data-structure-thread-safe" href="#how-do-i-use-mutex-lock-to-make-my-data-structure-thread-safe" class="fancy-link">How do I use mutex lock to make my data-structure thread-safe?</a></li>
+<li><a id="toc_how-can-i-force-my-threads-to-wait-if-the-stack-is-empty-or-full" href="#how-can-i-force-my-threads-to-wait-if-the-stack-is-empty-or-full" class="fancy-link">How can I force my threads to wait if the stack is empty or full?</a></li>
+<li><a id="toc_what-are-the-common-mutex-gotchas" href="#what-are-the-common-mutex-gotchas" class="fancy-link">What are the common Mutex Gotchas?</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-an-atomic-operation" class="title-text">What is an atomic operation?<a class="anchor title-text" href="#what-is-an-atomic-operation">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>To paraphrase Wikipedia,</p>
+<blockquote>
+  <p>An operation (or set of operations) is atomic or uninterruptible if it appears to the rest of the system to occur instantaneously.
+Without locks, only simple CPU instructions (“read this byte from memory”) are atomic (indivisible). On a single CPU system, one could temporarily disable interrupts (so a sequence of operations cannot be interrupted) but in practice atomicity is achieved by using synchronization primitives, typically a mutex lock.</p>
+</blockquote>
+<p>Incrementing a variable (<code class="highlighter-rouge">i++</code>) is <em>not</em> atomic because it requires three distinct steps: Copying the bit pattern from memory into the CPU; performing a calculation using the CPU’s registers; copying the bit pattern back to memory. During this increment sequence, another thread or process can still read the old value and other writes to the same memory would also be over-written when the increment sequence completes.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-use-mutex-lock-to-make-my-data-structure-thread-safe" class="title-text">How do I use mutex lock to make my data-structure thread-safe?<a class="anchor title-text" href="#how-do-i-use-mutex-lock-to-make-my-data-structure-thread-safe">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Note, this is just an introduction - writing high-performance thread-safe data structures requires its own book! Here’s a simple data structure (a stack) that is not thread-safe:</p>
+<pre><code class="language-C"><span class="c1">// A simple fixed-sized stack (version 1)</span>
+</code></pre>
+<p>Version 1 of the stack is not thread-safe because if two threads call push or pop at the same time then the results or the stack can be inconsistent. For example, imagine if two threads call pop at the same time then both threads may read the same value, both may read the original count value.</p>
+<p>To turn this into a thread-safe data structure we need to identify the <em>critical sections</em> of our code  i.e. which section(s) of the code must only have one thread at a time. In the above example the <code class="highlighter-rouge">push</code>,<code class="highlighter-rouge">pop</code> and <code class="highlighter-rouge">is_empty</code> functions access the same variables (i.e. memory) and all critical sections for the stack.</p>
+<p>While <code class="highlighter-rouge">push</code> (and <code class="highlighter-rouge">pop</code>) is executing, the datastructure is an inconsistent state (for example the count may not have been written to, so may still contain the original value). By wrapping these methods with a mutex we can ensure that only one thread at a time can update (or read) the stack.</p>
+<p>A candidate ‘solution’ is shown below. Is it correct? If not, how will it fail?</p>
+<pre><code class="language-C"><span class="c1">// An attempt at a thread-safe stack (version 2)</span>
+</code></pre>
+<p>The above code (‘version 2’) contains at least one error. Take a moment to see if you can the error(s) and work out the consequence(s).</p>
+<p>If three threads called <code class="highlighter-rouge">push()</code> at the same time the lock <code class="highlighter-rouge">m1</code> ensures that only one thread at time manipulates the stack (two threads will need to wait until the first thread completes (calls unlock), then a second thread will be allowed to continue into the critical section and finally the third thread will be allowed to continue once the second thread has finished).</p>
+<p>A similar argument applies to concurrent calls (calls at the same time) to <code class="highlighter-rouge">pop</code>. However version 2 does not prevent push and pop from running at the same time because <code class="highlighter-rouge">push</code> and <code class="highlighter-rouge">pop</code> use two different mutex locks.</p>
+<p>The fix is simple in this case - use the same mutex lock for both the push and pop functions.</p>
+<p>The code has a second error; <code class="highlighter-rouge">is_empty</code> returns after the comparison and will not unlock the mutex. However the error would not be spotted immediately. For example, suppose one thread calls <code class="highlighter-rouge">is_empty</code> and a second thread later calls <code class="highlighter-rouge">push</code>. This thread would mysteriously stop. Using debugger you can discover that the thread is stuck at the lock() method inside the <code class="highlighter-rouge">push</code> method because the lock was never unlocked by the earlier <code class="highlighter-rouge">is_empty</code> call. Thus an oversight in one thread led to problems much later in time in an arbitrary other thread.</p>
+<p>A better version is shown below -</p>
+<pre><code class="language-C"><span class="c1">// An attempt at a thread-safe stack (version 3)</span>
+</code></pre>
+<p>Version 3 is thread-safe (we have ensured mutual exclusion for all of the critical sections) however there are two points of note:</p>
+<ul>
+  <li>
+<code class="highlighter-rouge">is_empty</code> is thread-safe but its result may already be out-of date i.e. the stack may no longer be empty by the time the thread gets the result!</li>
+  <li>There is no protection against underflow (popping on an empty stack) or overflow (pushing onto an already-full stack)</li>
+</ul>
+<p>The latter point can be fixed using counting semaphores.</p>
+<p>The implementation assumes a single stack.  A more general purpose version might include the mutex as part of the memory struct and use pthread_mutex_init to initialize the mutex. For example,</p>
+<pre><code class="language-C"><span class="c1">// Support for multiple stacks (each one has a mutex)</span>
+</code></pre>
+<p>Example use:</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+</div></div></div>
+</div></div>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-can-i-force-my-threads-to-wait-if-the-stack-is-empty-or-full" class="title-text">How can I force my threads to wait if the stack is empty or full?<a class="anchor title-text" href="#how-can-i-force-my-threads-to-wait-if-the-stack-is-empty-or-full">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Use counting semaphores! Use a counting semaphore to keep track of how many spaces remain and another semaphore to keep to track the number of items in the stack. We will call these two semaphores ‘sremain’ and ‘sitems’. Remember <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_wait" class="fancy-link">sem_wait</a></code> will wait if the semaphore’s count has been decremented to zero (by another thread calling sem_post).</p>
+<pre><code class="language-C"><span class="c1">// Sketch #1</span>
+</code></pre>
+<p>Sketch #2  has implemented the <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/post" class="fancy-link">post</a></code> too early. Another thread waiting in push can erroneously attempt to write into a full stack (and similarly a thread waiting in the pop() is allowed to continue too early).</p>
+<pre><code class="language-C"><span class="c1">// Sketch #2 (Error!)</span>
+</code></pre>
+<p>Sketch 3 implements the correct semaphore logic but can you spot the error?</p>
+<pre><code class="language-C"><span class="c1">// Sketch #3 (Error!)</span>
+</code></pre>
+<p>Sketch 3 correctly enforces buffer full and buffer empty conditions using semaphores. However there is no <em>mutual exclusion</em>: Two threads can be in the <em>critical section</em> at the same time, which would corrupt the data structure (or least lead to data loss). The fix is to wrap a mutex around the critical section:</p>
+<pre><code class="language-C"><span class="c1">// Simple single stack - see above example on how to convert this into a multiple stacks.</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-are-the-common-mutex-gotchas" class="title-text">What are the common Mutex Gotchas?<a class="anchor title-text" href="#what-are-the-common-mutex-gotchas">#</a>
+</h2></div>
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>Locking/unlocking the wrong mutex (due to a silly typo)</li>
+  <li>Not unlocking a mutex (due to say an early return during an error condition)</li>
+  <li>Resource leak (not calling <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_mutex_destroy" class="fancy-link">pthread_mutex_destroy</a></code>)</li>
+  <li>Using an uninitialized mutex (or using a mutex that has already been destroyed)</li>
+  <li>Locking a mutex twice on a thread (without unlocking first)</li>
+  <li>Deadlock and Priority Inversion (we will talk about these later)</li>
+</ul></div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/synchronization-part-3-working-with-mutexes-and-semaphores.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

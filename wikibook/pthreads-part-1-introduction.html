@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Pthreads, Part 1: Introduction</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Pthreads, Part 1: Introduction
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/Pthreads,-Part-1:-Introduction">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_what-is-a-thread" href="#what-is-a-thread" class="fancy-link">What is a thread?</a></li>
+<li><a id="toc_what-is-a-lightweight-process-lwp-how-does-it-relate-to-threads" href="#what-is-a-lightweight-process-lwp-how-does-it-relate-to-threads" class="fancy-link">What is a Lightweight Process (LWP)? How does it relate to threads?</a></li>
+<li><a id="toc_how-does-the-threads-stack-work" href="#how-does-the-threads-stack-work" class="fancy-link">How does the thread’s stack work?</a></li>
+<li><a id="toc_how-many-threads-can-my-process-have" href="#how-many-threads-can-my-process-have" class="fancy-link">How many threads can my process have?</a></li>
+<li><a id="toc_hello-world-pthread-example" href="#hello-world-pthread-example" class="fancy-link">Hello world pthread example</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-a-thread" class="title-text">What is a thread?<a class="anchor title-text" href="#what-is-a-thread">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>A thread is short for ‘thread-of-execution’. It represents the sequence of instructions that the CPU has (and will) execute. To remember how to return from function calls, and to store the values of automatic variables and  parameters a thread uses a stack.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-a-lightweight-process-lwp-how-does-it-relate-to-threads" class="title-text">What is a Lightweight Process (LWP)? How does it relate to threads?<a class="anchor title-text" href="#what-is-a-lightweight-process-lwp-how-does-it-relate-to-threads">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Well for all intents and purposes a thread is a process (meaning that creating a thread is similar to <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code>) except there is <strong>no copying</strong> meaning no copy on write. What this allows is for a process to share the same address space, variables, heap, file descriptors and etc.</p>
+<p>The actual system call to create a thread is similar to <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code>; it’s <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/clone" class="fancy-link">clone</a></code>. We won’t go into the specifics but you can read the <a href="http://man7.org/linux/man-pages/man2/clone.2.html" class="fancy-link wiki-link">man pages</a> keeping in mind that it is outside the direct scope of this course.</p>
+<p>LWP or threads are preferred to forking for a lot of scenarios because there is a lot less overhead creating them. But in some cases (notably python uses this) multiprocessing is the way to make your code faster.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-does-the-threads-stack-work" class="title-text">How does the thread’s stack work?<a class="anchor title-text" href="#how-does-the-threads-stack-work">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Your main function (and other functions you might call) has automatic variables. We will store them in memory using a stack and keep track of how large the stack is by using a simple pointer (the “stack pointer”). If the thread calls another function, we move our stack pointer down, so that we have more space for parameters and automatic variables. Once it returns from a function, we can move the stack pointer back up to its previous value. We keep a copy of the old stack pointer value - on the stack! This is why returning from a function is very quick - it’s easy to ‘free’ the memory used by automatic variables - we just need to change the stack pointer.</p>
+<p>In a multi threaded program, there are multiple stack but only one address space. The pthread library allocates some stack space (either in the heap or using a part of the main program’s stack) and uses the <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/clone" class="fancy-link">clone</a></code> function call to start the thread at that stack address. The total address space may look something like this.</p>
+<p><img src="https://i.imgur.com/ac2QDwu.png" alt=""></p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-many-threads-can-my-process-have" class="title-text">How many threads can my process have?<a class="anchor title-text" href="#how-many-threads-can-my-process-have">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>You can have more than one thread running inside a process. You get the first thread for free! It runs the code you write inside ‘main’. If you need more threads you can call <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_create" class="fancy-link">pthread_create</a></code> to create a new thread using the pthread library. You’ll need to pass a pointer to a function so that the thread knows where to start.</p>
+<p>The threads you create all live inside the same virtual memory because they are part of the same process. Thus they can all see the heap, the global variables and the program code etc. Thus you can have two (or more) CPUs working on your program at the same time and inside the same process. It’s up to the operating system to assign the threads to CPUs. If you have more active threads than CPUs then the kernel will assign the thread to a CPU for a short duration (or until it runs out of things to do) and then will automatically switch the CPU to work on another thread. 
+For example, one CPU might be processing the game AI while another thread is computing the graphics output.</p>
+</div></div></div>
+</div></div>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="hello-world-pthread-example" class="title-text">Hello world pthread example<a class="anchor title-text" href="#hello-world-pthread-example">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>To use pthreads you will need to include <code class="highlighter-rouge">pthread.h</code> AND you need to compile with <code class="highlighter-rouge">-pthread</code> (or <code class="highlighter-rouge">-lpthread</code>) compiler option. This option tells the compiler that your program requires threading support</p>
+<p>To create a thread use the function <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_create" class="fancy-link">pthread_create</a></code>. This function takes four arguments:</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<ul>
+  <li>The first is a pointer to a variable that will hold the id of the newly created thread.</li>
+  <li>The second is a pointer to attributes that we can use to tweak and tune some of the advanced features of pthreads.</li>
+  <li>The third is a pointer to a function that we want to run</li>
+  <li>Fourth is a pointer that will be given to our function</li>
+</ul>
+<p>The argument <code class="highlighter-rouge">void *(*start_routine) (void *)</code> is difficult to read! It means a pointer that takes a <code class="highlighter-rouge">void *</code> pointer and returns a <code class="highlighter-rouge">void *</code> pointer. It looks like a function declaration except that the name of the function is wrapped with <code class="highlighter-rouge">(* .... )</code></p>
+<p>Here’s the simplest example:</p>
+<pre><code class="language-C"><span class="cp">#include &lt;stdio.h&gt;
+#include &lt;pthread.h&gt;
+</span>
+</code></pre>
+<p>If we want to wait for our thread to finish use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_join" class="fancy-link">pthread_join</a></code></p>
+<pre><code class="language-C"><span class="kt">void</span>
+</code></pre>
+<p>In the above example, <code class="highlighter-rouge">result</code> will be <code class="highlighter-rouge"><a href="https://linux.die.net/man/4/null" class="fancy-link">null</a></code> because the busy function returned <code class="highlighter-rouge"><a href="https://linux.die.net/man/4/null" class="fancy-link">null</a></code>.
+We need to pass the address-of result because <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_join" class="fancy-link">pthread_join</a></code> will be writing into the contents of our pointer.</p>
+<p>See <a href="/wikibook/pthreads-part-2-usage-in-practice.html#" class="fancy-link wiki-link">Pthreads Part 2</a></p>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/pthreads-part-1-introduction.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Networking, Part 7: Nonblocking I O, select(), and epoll</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Networking, Part 7: Nonblocking I O, select(), and epoll
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/Networking,-Part-7:-Nonblocking-I-O,-select(),-and-epoll">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_epoll" href="#epoll" class="fancy-link">epoll</a></li>
+<li><a id="toc_interesting-blogpost-about-edge-cases-with-select" href="#interesting-blogpost-about-edge-cases-with-select" class="fancy-link">Interesting Blogpost about edge cases with select</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<h3 id="dont-waste-time-waiting" class="title-text">Don’t waste time waiting</h3>
+
+<p>Normally, when you call <code class="highlighter-rouge">read()</code>, if the data is not available yet it will wait until the data is ready before the function returns.  When you’re reading data from a disk, that delay may not be long, but when you’re reading from a slow network connection it may take a long time for that data to arrive, if it ever arrives.</p>
+
+<p>POSIX lets you set a flag on a file descriptor such that any call to <code class="highlighter-rouge">read()</code> on that file descriptor will return immediately, whether it has finished or not.  With your file descriptor in this mode, your call to <code class="highlighter-rouge">read()</code> will start
+the read operation, and while it’s working you can do other useful work.  This is called “nonblocking” mode,
+since the call to <code class="highlighter-rouge">read()</code> doesn’t block.</p>
+
+<p>To set a file descriptor to be nonblocking:</p>
+<pre><code class="language-C"><span class="c1">// fd is my file descriptor</span>
+</code></pre>
+<p>For a socket, you can create it in nonblocking mode by adding <code class="highlighter-rouge">SOCK_NONBLOCK</code> to the second argument to <code class="highlighter-rouge">socket()</code>:</p>
+<pre><code class="language-C"><span class="n">fd</span>
+</code></pre>
+<p>When a file is in nonblocking mode and you call <code class="highlighter-rouge">read()</code>, it will return immediately with whatever bytes are available.
+Say 100 bytes have arrived from the server at the other end of your socket and you call <code class="highlighter-rouge">read(fd, buf, 150)</code>.
+Read will return immediately with a value of 100, meaning it read 100 of the 150 bytes you asked for.
+Say you tried to read the remaining data with a call to <code class="highlighter-rouge">read(fd, buf+100, 50)</code>, but the last 50 bytes still hadn’t
+arrived yet.  <code class="highlighter-rouge">read()</code> would return -1 and set the global error variable <strong>errno</strong> to either
+EAGAIN or EWOULDBLOCK.  That’s the system’s way of telling you the data isn’t ready yet.</p>
+
+<p><code class="highlighter-rouge">write()</code> also works in nonblocking mode.  Say you want to send 40,000 bytes to a remote server using a socket.
+The system can only send so many bytes at a time. Common systems can send about 23,000 bytes at a time. In nonblocking mode, <code class="highlighter-rouge">write(fd, buf, 40000)</code> would return the number of bytes it was able to
+send immediately, or about 23,000.  If you called <code class="highlighter-rouge">write()</code> right away again, it would return -1 and set errno to
+EAGAIN or EWOULDBLOCK. That’s the system’s way of telling you it’s still busy sending the last chunk of data,
+and isn’t ready to send more yet.</p>
+
+<h3 id="how-do-i-check-when-the-io-has-finished" class="title-text">How do I check when the I/O has finished?</h3>
+
+<p>There are a few ways.  Let’s see how to do it using <em>select</em> and <em>epoll</em>.</p>
+
+<div class="pad"><div class="card">
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<h4 id="select">select</h4>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>Given three sets of file descriptors, <code class="highlighter-rouge">select()</code> will wait for any of those file descriptors to become ‘ready’.</p>
+<ul>
+  <li>
+<code class="highlighter-rouge">readfds</code> - a file descriptor in <code class="highlighter-rouge">readfds</code> is ready when there is data that can be read or EOF has been reached.</li>
+  <li>
+<code class="highlighter-rouge">writefds</code> - a file descriptor in <code class="highlighter-rouge">writefds</code> is ready when a call to write() will succeed.</li>
+  <li>
+<code class="highlighter-rouge">exceptfds</code> - system-specific, not well-defined.  Just pass NULL for this.</li>
+</ul>
+<p><code class="highlighter-rouge">select()</code> returns the total number of file descriptors that are ready.  If none of them become
+ready during the time defined by <em>timeout</em>, it will return 0.  After <code class="highlighter-rouge">select()</code> returns, the 
+caller will need to loop through the file descriptors in readfds and/or writefds to see which
+ones are ready. As readfds and writefds act as both input and output parameters, when <code class="highlighter-rouge">select()</code>
+indicates that there are file descriptors which are ready, it would have overwritten them to
+reflect only the file descriptors which are ready. Unless it is the caller’s intention to call
+<code class="highlighter-rouge">select()</code> only once, it would be a good idea to save a copy of readfds and writefds before
+calling it.</p>
+<pre><code class="language-C"><span class="n">fd_set</span>
+</code></pre>
+<p><a href="http://pubs.opengroup.org/onlinepubs/9699919799/functions/select.html" class="fancy-link wiki-link">For more information on select()</a></p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="epoll" class="title-text">epoll<a class="anchor title-text" href="#epoll">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p><em>epoll</em> is not part of POSIX, but it is supported by Linux.  It is a more efficient way to wait for many
+file descriptors.  It will tell you exactly which descriptors are ready. It even gives you a way to store
+a small amount of data with each descriptor, like an array index or a pointer, making it easier to access
+your data associated with that descriptor.</p>
+<p>To use epoll, first you must create a special file descriptor with <a href="http://linux.die.net/man/2/epoll_create" class="fancy-link wiki-link">epoll_create()</a>.  You won’t read or write to this file
+descriptor; you’ll just pass it to the other epoll_xxx functions and call
+close() on it at the end.</p>
+<pre><code class="language-C"><span class="n">epfd</span>
+</code></pre>
+<p>For each file descriptor you want to monitor with epoll, you’ll need to add it 
+to the epoll data structures 
+using <a href="http://linux.die.net/man/2/epoll_ctl" class="fancy-link wiki-link">epoll_ctl()</a> with the <code class="highlighter-rouge">EPOLL_CTL_ADD</code> option.  You can add any
+number of file descriptors to it.</p>
+<pre><code class="language-C"><span class="k">struct</span>
+</code></pre>
+<p>To wait for some of the file descriptors to become ready, use <a href="http://linux.die.net/man/2/epoll_wait" class="fancy-link wiki-link">epoll_wait()</a>.
+The epoll_event struct that it fills out will contain the data you provided in event.data when you
+added this file descriptor. This makes it easy for you to look up your own data associated
+with this file descriptor.</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>Say you were waiting to write data to a file descriptor, but now you want to wait to read data from it.
+Just use <code class="highlighter-rouge">epoll_ctl()</code> with the <code class="highlighter-rouge">EPOLL_CTL_MOD</code> option to change the type of operation you’re monitoring.</p>
+<pre><code class="language-C"><span class="n">event</span>
+</code></pre>
+<p>To unsubscribe one file descriptor from epoll while leaving others active, use <code class="highlighter-rouge">epoll_ctl()</code> with the <code class="highlighter-rouge">EPOLL_CTL_DEL</code> option.</p>
+<pre><code class="language-C"><span class="n">epoll_ctl</span>
+</code></pre>
+<p>To shut down an epoll instance, close its file descriptor.</p>
+<pre><code class="language-C"><span class="n">close</span>
+</code></pre>
+<p>In addition to nonblocking <code class="highlighter-rouge">read()</code> and <code class="highlighter-rouge">write()</code>, any calls to <code class="highlighter-rouge">connect()</code> on a nonblocking socket will also be
+nonblocking. To wait for the connection to complete, use <code class="highlighter-rouge">select()</code> or epoll to wait for the socket to be writable.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="interesting-blogpost-about-edge-cases-with-select" class="title-text">Interesting Blogpost about edge cases with select<a class="anchor title-text" href="#interesting-blogpost-about-edge-cases-with-select">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>https://idea.popcount.org/2017-01-06-select-is-fundamentally-broken/</p></div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/networking-part-7-nonblocking-i-o-select()-and-epoll.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

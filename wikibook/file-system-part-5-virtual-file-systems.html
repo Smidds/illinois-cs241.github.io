@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>File System, Part 5: Virtual file systems</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              File System, Part 5: Virtual file systems
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/File-System,-Part-5:-Virtual-file-systems">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_virtual-file-systems" href="#virtual-file-systems" class="fancy-link">Virtual file systems</a></li>
+<li><a id="toc_how-do-i-find-out-what-filesystems-are-currently-available-mounted" href="#how-do-i-find-out-what-filesystems-are-currently-available-mounted" class="fancy-link">How do I find out what filesystems are currently available (mounted)?</a></li>
+<li><a id="toc_differences-between-random-and-urandom" href="#differences-between-random-and-urandom" class="fancy-link">Differences between random and urandom?</a></li>
+<li><a id="toc_other-filesystems" href="#other-filesystems" class="fancy-link">Other Filesystems</a></li>
+<li><a id="toc_mounting-a-filesystem" href="#mounting-a-filesystem" class="fancy-link">Mounting a filesystem</a></li>
+<li><a id="toc_how-do-i-mount-a-disk-image" href="#how-do-i-mount-a-disk-image" class="fancy-link">How do I mount a disk image?</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="virtual-file-systems" class="title-text">Virtual file systems<a class="anchor title-text" href="#virtual-file-systems">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>POSIX systems, such as Linux and Mac OSX (which is based on BSD) include several virtual filesystems that are mounted (available) as part of the file-system. Files inside these virtual filesystems do not exist on the disk; they are generated dynamically by the kernel when a process requests a directory listing.
+Linux provides 3 main virtual filesystems</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/dev  - A list of physical and virtual devices (for example network card, cdrom, random number generator)
+/proc - A list of resources used by each process and (by tradition) set of system information
+/sys - An organized list of internal kernel entities
+</code></pre></div></div>
+<p>For example if I want a continuous stream of 0s, I can <code class="highlighter-rouge">cat /dev/zero</code>.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-find-out-what-filesystems-are-currently-available-mounted" class="title-text">How do I find out what filesystems are currently available (mounted)?<a class="anchor title-text" href="#how-do-i-find-out-what-filesystems-are-currently-available-mounted">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Use <code class="highlighter-rouge"><a href="https://linux.die.net/man/2/mount" class="fancy-link">mount</a></code>
+Using mount without any options generates a list (one filesystem per line) of mounted filesystems including networked, virtual and local (spinning disk / SSD-based) filesystems. Here is a typical output of mount</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mount
+/dev/mapper/cs241--server_sys-root on / type ext4 (rw)
+proc on /proc type proc (rw)
+sysfs on /sys type sysfs (rw)
+devpts on /dev/pts type devpts (rw,gid=5,mode=620)
+tmpfs on /dev/shm type tmpfs (rw,rootcontext="system_u:object_r:tmpfs_t:s0")
+/dev/sda1 on /boot type ext3 (rw)
+/dev/mapper/cs241--server_sys-srv on /srv type ext4 (rw)
+/dev/mapper/cs241--server_sys-tmp on /tmp type ext4 (rw)
+/dev/mapper/cs241--server_sys-var on /var type ext4 (rw)rw,bind)
+/srv/software/Mathematica-8.0 on /software/Mathematica-8.0 type none (rw,bind)
+engr-ews-homes.engr.illinois.edu:/fs1-homes/angrave/linux on /home/angrave type nfs (rw,soft,intr,tcp,noacl,acregmin=30,vers=3,sec=sys,sloppy,addr=128.174.252.102)
+</code></pre></div></div>
+<p>Notice that each line includes the filesystem type source of the filesystem and mount point.
+To reduce this output we can pipe it into <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/grep" class="fancy-link">grep</a></code> and only see lines that match a regular expression.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;mount | grep proc  # only see lines that contain 'proc'
+proc on /proc type proc (rw)
+none on /proc/sys/fs/binfmt_misc type binfmt_misc (rw)
+</code></pre></div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="differences-between-random-and-urandom" class="title-text">Differences between random and urandom?<a class="anchor title-text" href="#differences-between-random-and-urandom">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>/dev/random is a file which contains number generator where the entropy is determined from environmental noise. Random will block/wait until enough entropy is collected from the environment.</p>
+<p>/dev/urandom is like random, but differs in the fact that it allows for repetition (lower entropy threshold), thus wont block.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="other-filesystems" class="title-text">Other Filesystems<a class="anchor title-text" href="#other-filesystems">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cat /proc/sys/kernel/random/entropy_avail
+$ hexdump /dev/random
+$ hexdump /dev/urandom
+
+$ cat /proc/meminfo
+$ cat /proc/cpuinfo
+$ cat /proc/cpuinfo | grep bogomips
+
+$ cat /proc/meminfo | grep Swap
+
+$ cd /proc/self
+$ echo $$; cd /proc/12345; cat maps
+</code></pre></div></div></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="mounting-a-filesystem" class="title-text">Mounting a filesystem<a class="anchor title-text" href="#mounting-a-filesystem">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Let’s say I have a filesystem hooked up on <code class="highlighter-rouge">/dev/cdrom</code> that I want to read from. I have to mound it to a directory before I can do any operations.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo mount /dev/cdrom /media/cdrom
+$ mount
+$ mount | grep proc
+</code></pre></div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-mount-a-disk-image" class="title-text">How do I mount a disk image?<a class="anchor title-text" href="#how-do-i-mount-a-disk-image">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Suppose you had downloaded a bootable linux disk image…</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget http://cosmos.cites.illinois.edu/pub/archlinux/iso/2015.04.01/archlinux-2015.04.01-dual.iso
+</code></pre></div></div>
+<p>Before putting the filesystem on a CD, we can mount the file as a filesystem and explore its contents. Note, mount requires root access, so let’s run it using sudo</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mkdir arch
+$ sudo mount -o loop archlinux-2015.04.01-dual.iso ./arch
+$ cd arch
+</code></pre></div></div>
+<p>Before the mount command, the arch directory is new and obviously empty. After mounting, the contents of <code class="highlighter-rouge">arch/</code> will be drawn from the files and directories stored in the filesystem stored inside the <code class="highlighter-rouge">archlinux-2014.11.01-dual.iso</code> file.
+The <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/loop" class="fancy-link">loop</a></code> option is required because we want to mount a regular file not a block device such as a physical disk.</p>
+<p>The loop option wraps the original file as a block device - in this example we will find out below that the file system is provided under <code class="highlighter-rouge">/dev/loop0</code> : We can check the filesystem type and mount options by running the mount command without any parameters. We will pipe the output into <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/grep" class="fancy-link">grep</a></code> so that we only see the relevant output line(s) that contain ‘arch’</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mount | grep arch
+/home/demo/archlinux-2014.11.01-dual.iso on /home/demo/arch type iso9660 (rw,loop=/dev/loop0)
+</code></pre></div></div>
+<p>The iso9660 filesystem is a read-only filesystem originally designed for optical storage media (i.e. CDRoms). Attempting to change the contents of the filesystem will fail</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ touch arch/nocando
+touch: cannot touch `/home/demo/arch/nocando': Read-only file system
+</code></pre></div></div>
+<p><a href="/wikibook/file-system-part-6-memory-mapped-files-and-shared-memory.html#" class="fancy-link wiki-link">Go to File System: Part 6</a></p>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/file-system-part-5-virtual-file-systems.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

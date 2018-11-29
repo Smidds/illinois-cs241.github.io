@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Forking, Part 2: Fork, Exec, Wait</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Forking, Part 2: Fork, Exec, Wait
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/Forking,-Part-2:-Fork,-Exec,-Wait">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_what-does-the-following-exec-example-do" href="#what-does-the-following-exec-example-do" class="fancy-link">What does the following ‘exec’ example do?</a></li>
+<li><a id="toc_subtle-forkbomb-bug" href="#subtle-forkbomb-bug" class="fancy-link">Subtle forkbomb bug</a></li>
+<li><a id="toc_what-does-the-child-inherit-from-the-parent" href="#what-does-the-child-inherit-from-the-parent" class="fancy-link">What does the child inherit from the parent?</a></li>
+<li><a id="toc_what-is-different-in-the-child-process-than-the-parent-process" href="#what-is-different-in-the-child-process-than-the-parent-process" class="fancy-link">What is different in the child process than the parent process?</a></li>
+<li><a id="toc_how-do-i-wait-for-my-child-to-finish" href="#how-do-i-wait-for-my-child-to-finish" class="fancy-link">How do I wait for my child to finish?</a></li>
+<li><a id="toc_what-is-the-fork-exec-wait-pattern" href="#what-is-the-fork-exec-wait-pattern" class="fancy-link">What is the fork-exec-wait pattern</a></li>
+<li><a id="toc_how-do-i-start-a-background-process-that-runs-at-the-same-time" href="#how-do-i-start-a-background-process-that-runs-at-the-same-time" class="fancy-link">How do I start a background process that runs at the same time?</a></li>
+<li><a id="toc_good-parents-dont-let-their-children-become-zombies" href="#good-parents-dont-let-their-children-become-zombies" class="fancy-link">Good parents don’t let their children become zombies!</a></li>
+<li><a id="toc_what-would-be-effect-of-too-many-zombies" href="#what-would-be-effect-of-too-many-zombies" class="fancy-link">What would be effect of too many zombies?</a></li>
+<li><a id="toc_what-does-the-system-do-to-help-prevent-zombies" href="#what-does-the-system-do-to-help-prevent-zombies" class="fancy-link">What does the system do to help prevent zombies?</a></li>
+<li><a id="toc_how-do-i-prevent-zombies-warning-simplified-answer" href="#how-do-i-prevent-zombies-warning-simplified-answer" class="fancy-link">How do I prevent zombies? (Warning: Simplified answer)</a></li>
+<li><a id="toc_how-can-i-asynchronously-wait-for-my-child-using-sigchld-advanced" href="#how-can-i-asynchronously-wait-for-my-child-using-sigchld-advanced" class="fancy-link">How can I asynchronously wait for my child using SIGCHLD? (ADVANCED)</a></li>
+<li><a id="toc_so-what-are-environment-variables" href="#so-what-are-environment-variables" class="fancy-link">So what are environment variables?</a></li>
+<li><a id="toc_right-so-how-do-these-environment-variables-mean-anything-to-parentchild" href="#right-so-how-do-these-environment-variables-mean-anything-to-parentchild" class="fancy-link">Right, so how do these environment variables mean anything to parent/child?</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-does-the-following-exec-example-do" class="title-text">What does the following ‘exec’ example do?<a class="anchor title-text" href="#what-does-the-following-exec-example-do">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<pre><code class="language-C"><span class="cp">#include &lt;unistd.h&gt;
+#include &lt;fcntl.h&gt; // O_CREAT, O_APPEND etc. defined here
+</span>
+</code></pre>
+<p>There’s no error checking in the above code (we assume close,open,chdir etc works as expected).</p>
+<ul>
+  <li>open: will use the lowest available file descriptor (i.e. 1) ; so standard out now goes to the log file.</li>
+  <li>chdir : Change the current directory to /usr/include</li>
+  <li>execl : Replace the program image with /bin/ls and call its main() method</li>
+  <li>perror : We don’t expect to get here - if we did then exec failed.</li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="subtle-forkbomb-bug" class="title-text">Subtle forkbomb bug<a class="anchor title-text" href="#subtle-forkbomb-bug">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>What’s wrong with this code</p>
+<pre><code class="language-C"><span class="cp">#include &lt;unistd.h&gt;
+#define HELLO_NUMBER 10
+</span>
+</code></pre>
+<p>We misspelled <code class="highlighter-rouge">ehco</code>, so we can’t <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code> it. What does this mean? Instead of creating 10 processes we just created 2**10 processes, fork bombing our machine. How could we prevent this? Put an exit right after exec so in case exec fails we won’t end up fork bombing our machine.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-does-the-child-inherit-from-the-parent" class="title-text">What does the child inherit from the parent?<a class="anchor title-text" href="#what-does-the-child-inherit-from-the-parent">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<ul>
+  <li>Open file handles. If the parent later seeks, say, to the back to the beginning of the file then this will affect the child too (and vice versa).</li>
+  <li>Signal handlers</li>
+  <li>Current working directory</li>
+  <li>Environment variables</li>
+</ul>
+<p>See the <a href="http://linux.die.net/man/2/fork" class="fancy-link wiki-link">fork man page</a> for more details.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-different-in-the-child-process-than-the-parent-process" class="title-text">What is different in the child process than the parent process?<a class="anchor title-text" href="#what-is-different-in-the-child-process-than-the-parent-process">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>The process id is different. In the child calling <code class="highlighter-rouge">getppid()</code> (notice the two ‘p’s) will give the same result as calling getpid() in the parent. See the fork man page for more details.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-wait-for-my-child-to-finish" class="title-text">How do I wait for my child to finish?<a class="anchor title-text" href="#how-do-i-wait-for-my-child-to-finish">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/waitpid" class="fancy-link">waitpid</a></code> or <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/wait" class="fancy-link">wait</a></code>. The parent process will pause until <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/wait" class="fancy-link">wait</a></code> (or <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/waitpid" class="fancy-link">waitpid</a></code>) returns. Note this explanation glosses over the restarting discussion.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-the-fork-exec-wait-pattern" class="title-text">What is the fork-exec-wait pattern<a class="anchor title-text" href="#what-is-the-fork-exec-wait-pattern">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>A common programming pattern is to call <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code> followed by <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exec" class="fancy-link">exec</a></code> and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/wait" class="fancy-link">wait</a></code>. The original process calls fork, which creates a child process. The child process then uses exec to start execution of a new program. Meanwhile the parent uses <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/wait" class="fancy-link">wait</a></code> (or <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/waitpid" class="fancy-link">waitpid</a></code>) to wait for the child process to finish.
+See below for a complete code example.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-start-a-background-process-that-runs-at-the-same-time" class="title-text">How do I start a background process that runs at the same time?<a class="anchor title-text" href="#how-do-i-start-a-background-process-that-runs-at-the-same-time">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Don’t wait for them! Your parent process can continue to execute code without having to wait for the child process. Note in practice background processes can also be disconnected from the parent’s input and output streams by calling <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/close" class="fancy-link">close</a></code> on the open file descriptors before calling exec.</p>
+<p>However child processes that finish before their parent finishes can become zombies. See the zombie page for more information.</p>
+</div></div></div>
+</div></div>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="good-parents-dont-let-their-children-become-zombies" class="title-text">Good parents don’t let their children become zombies!<a class="anchor title-text" href="#good-parents-dont-let-their-children-become-zombies">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Note, the word ‘zombie’ in this instance sheds some light as to what they actually represent. When a child finishes (or terminates) it still takes up a slot in the kernel process table. Furthermore, they still contain information about the process that got terminated, such as process id, exit status, etc. (i.e. a skeleton of the original process still remains).
+Only when the child has been ‘waited on’ will the slot be available and the remaining information can be accessed by the parent.</p>
+<p>A long running program could create many zombies by continually creating processes and never <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/wait" class="fancy-link">wait</a></code>-ing for them.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-would-be-effect-of-too-many-zombies" class="title-text">What would be effect of too many zombies?<a class="anchor title-text" href="#what-would-be-effect-of-too-many-zombies">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Eventually there would be insufficient space in the kernel process table to create a new processes. Thus <code class="highlighter-rouge">fork()</code> would fail and could make the system difficult / impossible to use - for example just logging in requires a new process!</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-does-the-system-do-to-help-prevent-zombies" class="title-text">What does the system do to help prevent zombies?<a class="anchor title-text" href="#what-does-the-system-do-to-help-prevent-zombies">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Once a process completes, any of its children will be assigned to “init” - the first process with pid of 1. Thus these children would see getppid() return a value of 1. These orphans will eventually finish and for a brief moment become a zombie. Fortunately, the init process automatically waits for all of its children, thus removing these zombies from the system.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-prevent-zombies-warning-simplified-answer" class="title-text">How do I prevent zombies? (Warning: Simplified answer)<a class="anchor title-text" href="#how-do-i-prevent-zombies-warning-simplified-answer">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Wait on your child!</p>
+<pre><code class="language-C"><span class="n">waitpid</span>
+</code></pre>
+<p>Note we assume that the only reason to get a SIGCHLD event is that a child has finished (this is not quite true - see man page for more details).</p>
+<p>A robust implementation would also check for interrupted status and include the above in a loop.
+Read on for a discussion of a more robust implementation.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-can-i-asynchronously-wait-for-my-child-using-sigchld-advanced" class="title-text">How can I asynchronously wait for my child using SIGCHLD? (ADVANCED)<a class="anchor title-text" href="#how-can-i-asynchronously-wait-for-my-child-using-sigchld-advanced">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Warning: This section uses signals which we have not yet fully introduced.
+The parent gets the signal SIGCHLD when a child completes, so the signal handler can wait on the process. A slightly simplified version is shown below.</p>
+<pre><code class="language-C"><span class="n">pid_t</span>
+</code></pre>
+<p>The above example however misses a couple of subtle points:</p>
+<ul>
+  <li>More than one child may have finished but the parent will only get one SIGCHLD signal (signals are not queued)</li>
+  <li>SIGCHLD signals can be sent for other reasons (e.g. a child process is temporarily stopped)</li>
+</ul>
+<p>A more robust code to reap zombies is shown below.</p>
+<pre><code class="language-C"><span class="kt">void</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="so-what-are-environment-variables" class="title-text">So what are environment variables?<a class="anchor title-text" href="#so-what-are-environment-variables">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Environment variables are variables that the system keeps for all processes to use. Your system has these set up right now! In Bash, you can check some of these</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ echo $HOME
+/home/bhuvy
+$ echo $PATH
+/usr/local/sbin:/usr/bin:...
+</code></pre></div></div>
+<p>How would you get these in C/C++? You can use the <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/getenv" class="fancy-link">getenv</a></code> and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/setenv" class="fancy-link">setenv</a></code> function</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="right-so-how-do-these-environment-variables-mean-anything-to-parentchild" class="title-text">Right, so how do these environment variables mean anything to parent/child?<a class="anchor title-text" href="#right-so-how-do-these-environment-variables-mean-anything-to-parentchild">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Well each process gets its own dictionary of environment variables that are copied over to the child. Meaning, if the parent changes their environment variables it won’t be transferred to the child and vice versa. This is important in the fork-exec-wait trilogy if you want to exec a program with different environment variables than your parent (or any other process).</p>
+<p>For example, you can write a C program that loops through all of the time zones and executes the <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/date" class="fancy-link">date</a></code> command to print out the date and time in all locals. Environment variables are used for all sorts of programs so modifying them is important.</p>
+<div align="center">
+<a href="/wikibook/forking-part-1-introduction.html#" class="fancy-link wiki-link">
+Back: Forking, Part 1: Introduction
+</a> |
+<a href="/wikibook/process-control-part-1-wait-macros-using-signals.html#" class="fancy-link wiki-link">
+Next: Process Control, Part 1: Wait macros, using signals
+</a>
+</div>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/forking-part-2-fork-exec-wait.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

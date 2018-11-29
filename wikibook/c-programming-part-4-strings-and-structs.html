@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>C Programming, Part 4: Strings and Structs</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              C Programming, Part 4: Strings and Structs
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/C-Programming,-Part-4:-Strings-and-Structs">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_two-places-for-strings" href="#two-places-for-strings" class="fancy-link">Two places for strings</a></li>
+<li><a id="toc_memory-mismanagement" href="#memory-mismanagement" class="fancy-link">Memory Mismanagement</a></li>
+<li><a id="toc_remember-the-null-byte" href="#remember-the-null-byte" class="fancy-link">Remember the NULL byte!</a></li>
+<li><a id="toc_where-can-i-find-an-in-depth-and-assignment-comprehensive-explanation-of-all-of-these-functions" href="#where-can-i-find-an-in-depth-and-assignment-comprehensive-explanation-of-all-of-these-functions" class="fancy-link">Where can I find an In-Depth and Assignment-Comprehensive explanation of all of these functions?</a></li>
+<li><a id="toc_string-informationcomparison-strlen-strcmp" href="#string-informationcomparison-strlen-strcmp" class="fancy-link">String Information/Comparison: <code class="highlighter-rouge">strlen</code> <code class="highlighter-rouge">strcmp</code></a></li>
+<li><a id="toc_string-alteration-strcpy-strcat-strdup" href="#string-alteration-strcpy-strcat-strdup" class="fancy-link">String Alteration: <code class="highlighter-rouge">strcpy</code> <code class="highlighter-rouge">strcat</code> <code class="highlighter-rouge">strdup</code></a></li>
+<li><a id="toc_string-search-strchr-strstr" href="#string-search-strchr-strstr" class="fancy-link">String Search: <code class="highlighter-rouge">strchr</code> <code class="highlighter-rouge">strstr</code></a></li>
+<li><a id="toc_string-tokenize-strtok" href="#string-tokenize-strtok" class="fancy-link">String Tokenize: <code class="highlighter-rouge">strtok</code></a></li>
+<li><a id="toc_memory-movement-memcpy-and-memmove" href="#memory-movement-memcpy-and-memmove" class="fancy-link">Memory Movement: <code class="highlighter-rouge">memcpy</code> and <code class="highlighter-rouge">memmove</code></a></li>
+<li><a id="toc_what-do-these-offsets-mean" href="#what-do-these-offsets-mean" class="fancy-link">What do these offsets mean?</a></li>
+<li><a id="toc_but-not-all-structs-are-perfect" href="#but-not-all-structs-are-perfect" class="fancy-link">But not all structs are perfect</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+
+
+
+<p><img src="https://i.imgur.com/CgsxyZb.png" alt="String"></p>
+
+<p>In C we have <a href="https://en.wikipedia.org/wiki/Null-terminated_string" class="fancy-link wiki-link">Null Terminated</a> strings rather than <a href="https://en.wikipedia.org/wiki/String_(computer_science)#Length-prefixed" class="fancy-link wiki-link">Length Prefixed</a> for historical reasons. What that means for your average everyday programming is that you need to remember the null character! A string in C is defined as a bunch of bytes until you reach ‘\0’ or the Null Byte.</p>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="two-places-for-strings" class="title-text">Two places for strings<a class="anchor title-text" href="#two-places-for-strings">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Whenever you define a constant string (ie one in the form <code class="highlighter-rouge">char* str = "constant"</code>) That string is stored in the <em>data</em> or <em>code</em> segment that is <strong>read-only</strong> meaning that any attempt to modify the string will cause a segfault.</p>
+<p>If one, however, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code>’s space, one can change that string to be whatever they want.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="memory-mismanagement" class="title-text">Memory Mismanagement<a class="anchor title-text" href="#memory-mismanagement">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>One common gotcha is when you write the following</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+<p>What did we do? We allocated space for 14 bytes, reassigned the pointer and successfully segfaulted! Remember to keep track of what your pointers are doing. What you probably wanted to do was use a <code class="highlighter-rouge">string.h</code> function <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/strcpy" class="fancy-link">strcpy</a></code>.</p>
+<pre><code class="language-C"><span class="n">strcpy</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="remember-the-null-byte" class="title-text">Remember the NULL byte!<a class="anchor title-text" href="#remember-the-null-byte">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Forgetting to NULL terminate a string is a big affect on the strings! Bounds checking is important. The heart bleed bug mentioned earlier in the wiki book is partially because of this.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="where-can-i-find-an-in-depth-and-assignment-comprehensive-explanation-of-all-of-these-functions" class="title-text">Where can I find an In-Depth and Assignment-Comprehensive explanation of all of these functions?<a class="anchor title-text" href="#where-can-i-find-an-in-depth-and-assignment-comprehensive-explanation-of-all-of-these-functions">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p><a href="https://linux.die.net/man/3/string" class="fancy-link wiki-link">Right Here!</a></p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="string-informationcomparison-strlen-strcmp" class="title-text">String Information/Comparison: <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/strlen" class="fancy-link">strlen</a></code> <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/strcmp" class="fancy-link">strcmp</a></code><a class="anchor title-text" href="#string-informationcomparison-strlen-strcmp">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p><code class="highlighter-rouge">int strlen(const char *s)</code> returns the length of the string not including the null byte</p>
+<p><code class="highlighter-rouge">int strcmp(const char *s1, const char *s2)</code> returns an integer determining the lexicographic order of the strings. If s1 where to come before s2 in a dictionary, then a -1 is returned. If the two strings are equal, then 0. Else, 1.</p>
+<p>With most of these functions, they expect the strings to be readable and not NULL but there is undefined behavior when you pass them NULL.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="string-alteration-strcpy-strcat-strdup" class="title-text">String Alteration: <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/strcpy" class="fancy-link">strcpy</a></code> <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/strcat" class="fancy-link">strcat</a></code> <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/strdup" class="fancy-link">strdup</a></code><a class="anchor title-text" href="#string-alteration-strcpy-strcat-strdup">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p><code class="highlighter-rouge">char *strcpy(char *dest, const char *src)</code> Copies the string at <code class="highlighter-rouge">src</code> to <code class="highlighter-rouge">dest</code>. <strong>assumes dest has enough space for src</strong></p>
+<p><code class="highlighter-rouge">char *strcat(char *dest, const char *src)</code> Concatenates the string at <code class="highlighter-rouge">src</code> to the end of destination. <strong>This function assumes that there is enough space for <code class="highlighter-rouge">src</code> at the end of destination including the NULL byte</strong></p>
+<p><code class="highlighter-rouge">char *strdup(const char *dest)</code> Returns a <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code>‘ed copy of the string.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="string-search-strchr-strstr" class="title-text">String Search: <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/strchr" class="fancy-link">strchr</a></code> <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/strstr" class="fancy-link">strstr</a></code><a class="anchor title-text" href="#string-search-strchr-strstr">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p><code class="highlighter-rouge">char *strchr(const char *haystack, int needle)</code> Returns a pointer to the first occurrence of <code class="highlighter-rouge">needle</code> in the <code class="highlighter-rouge">haystack</code>. If none found, <code class="highlighter-rouge">NULL</code> is returned.</p>
+<p><code class="highlighter-rouge">char *strstr(const char *haystack, const char *needle)</code> Same as above but this time a string!</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="string-tokenize-strtok" class="title-text">String Tokenize: <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/strtok" class="fancy-link">strtok</a></code><a class="anchor title-text" href="#string-tokenize-strtok">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>A dangerous but useful function strtok takes a string and tokenizes it. Meaning that it will transform the strings into separate strings. This function has a lot of specs so please read the man pages a contrived example is below.</p>
+<pre><code class="language-C"><span class="cp">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+</span>
+</code></pre>
+<p><strong>Output</strong></p>
+<pre><code class="language-C"><span class="n">strtok</span>
+</code></pre>
+<p>What happens when I change <code class="highlighter-rouge">upped</code> like this?</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="memory-movement-memcpy-and-memmove" class="title-text">Memory Movement: <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/memcpy" class="fancy-link">memcpy</a></code> and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/memmove" class="fancy-link">memmove</a></code><a class="anchor title-text" href="#memory-movement-memcpy-and-memmove">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Why are <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/memcpy" class="fancy-link">memcpy</a></code> and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/memmove" class="fancy-link">memmove</a></code> both in <code class="highlighter-rouge">&lt;string.h&gt;</code>? Because strings are essentially raw memory with a null byte at the end of them!</p>
+<p><code class="highlighter-rouge">void *memcpy(void *dest, const void *src, size_t n)</code> moves <code class="highlighter-rouge">n</code> bytes starting at <code class="highlighter-rouge">src</code> to <code class="highlighter-rouge">dest</code>. <strong>Be careful</strong>, there is undefined behavior when the memory regions overlap. This is one of the classic works on my machine examples because many times valgrind won’t be able to pick it up because it will look like it works on your machine. When the autograder hits, fail. Consider the safer version which is.</p>
+<p><code class="highlighter-rouge">void *memmove(void *dest, const void *src, size_t n)</code> does the same thing as above, but if the memory regions overlap then it is guaranteed that all the bytes will get copied over correctly.</p>
+<p>In low-level terms, a struct is just a piece of contiguous memory, nothing more. Just like an array, a struct has enough space to keep all of its members. But unlike an array, it can store different types. Consider the contact struct declared above</p>
+<pre><code class="language-C"><span class="k">struct</span>
+</code></pre>
+<p><strong>Brief aside</strong></p>
+<pre><code class="language-C"><span class="cm">/* a lot of times we will do the following typdef
+ so we can just write contact contact1 */</span>
+</code></pre>
+<p>If you compile the code without any optimizations and reordering, you can expect the addresses of each of the variables to look like this.</p>
+<pre><code class="language-C"><span class="o">&amp;</span>
+</code></pre>
+<p>Because all your compiler does is say ‘hey reserve this much space, and I will go and calculate the offsets of whatever variables you want to write to’.</p>
+</div></div></div>
+</div></div>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-do-these-offsets-mean" class="title-text">What do these offsets mean?<a class="anchor title-text" href="#what-do-these-offsets-mean">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The offsets are where the variable starts at. The phone variables starts at the <code class="highlighter-rouge">0x128</code>th bytes and continues for sizeof(int) bytes, but not always. <strong>Offsets don’t determine where the variable ends though</strong>. Consider the following hack that you see in a lot of kernel code.</p>
+<pre><code class="language-C"><span class="k">typedef</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="but-not-all-structs-are-perfect" class="title-text">But not all structs are perfect<a class="anchor title-text" href="#but-not-all-structs-are-perfect">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Structs may require something called <a href="http://www.catb.org/esr/structure-packing/" class="fancy-link wiki-link">padding</a> (tutorial). **We do not expect you to pack structs in this course, just know that it is there This is because in the early days (and even now) when you have to an address from memory you have to do it in 32bit or 64bit blocks. This also meant that you could only request addresses that were multiples of that. Meaning that</p>
+<pre><code class="language-C"><span class="k">struct</span>
+</code></pre>
+<p>Would conceptually look like this</p>
+<pre><code class="language-C"><span class="k">struct</span>
+</code></pre>
+<p>This is on a 64-bit system. This is not always the case because sometimes your processor supports unaligned accesses. What does this mean? Well there are two options you can set an attribute</p>
+<pre><code class="language-C"><span class="k">struct</span>
+</code></pre>
+<p>But now, every time I want to access <code class="highlighter-rouge">data</code> or <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/encoding" class="fancy-link">encoding</a></code>, I have to do two memory accesses. The other thing you can do is reorder the struct, although this is not always possible</p>
+<pre><code class="language-C"><span class="k">struct</span>
+</code></pre>
+<div align="center">
+<a href="/wikibook/c-programming-part-3-common-gotchas.html#" class="fancy-link wiki-link">
+Back: C Programming, Part 3: Common Gotchas
+</a> |
+<a href="/wikibook/c-programming-part-5-debugging.html#" class="fancy-link wiki-link">
+Next: C Programming, Part 5: Debugging
+</a>
+</div>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/c-programming-part-4-strings-and-structs.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

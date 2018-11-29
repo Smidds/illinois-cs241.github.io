@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>HW0</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              HW0
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/HW0">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_so-you-want-to-master-system-programming-and-get-a-better-grade-than-b" href="#so-you-want-to-master-system-programming-and-get-a-better-grade-than-b" class="fancy-link">So you want to master System Programming? And get a better grade than B?</a></li>
+<li><a id="toc_watch-the-videos-and-write-up-your-answers-to-the-following-questions" href="#watch-the-videos-and-write-up-your-answers-to-the-following-questions" class="fancy-link">Watch the videos and write up your answers to the following questions</a></li>
+<li><a id="toc_chapter-1" href="#chapter-1" class="fancy-link">Chapter 1</a></li>
+<li><a id="toc_chapter-2" href="#chapter-2" class="fancy-link">Chapter 2</a></li>
+<li><a id="toc_chapter-3" href="#chapter-3" class="fancy-link">Chapter 3</a></li>
+<li><a id="toc_chapter-4" href="#chapter-4" class="fancy-link">Chapter 4</a></li>
+<li><a id="toc_chapter-5" href="#chapter-5" class="fancy-link">Chapter 5</a></li>
+<li><a id="toc_c-development" href="#c-development" class="fancy-link">C Development</a></li>
+<li><a id="toc_optional-just-for-fun" href="#optional-just-for-fun" class="fancy-link">Optional (Just for fun)</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<pre><code class="language-C"><span class="c1">// First, can you guess which lyrics have been transformed into this C-like system code?</span>
+</code></pre>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="so-you-want-to-master-system-programming-and-get-a-better-grade-than-b" class="title-text">So you want to master System Programming? And get a better grade than B?<a class="anchor title-text" href="#so-you-want-to-master-system-programming-and-get-a-better-grade-than-b">#</a>
+</h2></div>
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><pre><code class="language-C"><span class="kt">int</span>
+</code></pre></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="watch-the-videos-and-write-up-your-answers-to-the-following-questions" class="title-text">Watch the videos and write up your answers to the following questions<a class="anchor title-text" href="#watch-the-videos-and-write-up-your-answers-to-the-following-questions">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p><strong>Important!</strong></p>
+<p>The virtual machine-in-your-browser and the videos you need for HW0 are here:</p>
+<p>http://cs-education.github.io/sys/</p>
+<p>The course wikibook:</p>
+<p>https://github.com/angrave/SystemProgramming/wiki</p>
+<p>Questions? Comments? Use Piazza:
+https://piazza.com/illinois/fall2018/cs241</p>
+<p>The in-browser virtual machine runs entirely in Javascript and is fastest in Chrome. Note the VM and any code you write is reset when you reload the page, <em>so copy your code to a separate document.</em> The post-video challenges (e.g. Haiku poem) are not part of homework 0 but you learn the most by doing (rather than just passively watching) - so we suggest you have some fun with each end-of-video challenge.</p>
+<p>HW0 questions are below. Copy your answers into a text document sd you’ll need to submit them later in the course.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="chapter-1" class="title-text">Chapter 1<a class="anchor title-text" href="#chapter-1">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>In which our intrepid hero battles standard out, standard error, file descriptors and writing to files</p>
+<h3 id="hello-world-system-call-style" class="title-text">Hello, World! (system call style)</h3>
+<ol>
+  <li>Write a program that uses <code class="highlighter-rouge">write()</code> to print out “Hi! My name is <code class="highlighter-rouge">&lt;Your Name&gt;</code>”.
+    <h3 id="hello-standard-error-stream" class="title-text">Hello, Standard Error Stream!</h3>
+  </li>
+  <li>Write a function to print out a triangle of height <code class="highlighter-rouge">n</code> to standard error.
+    <ul>
+      <li>Your function should have the signature <code class="highlighter-rouge">void write_triangle(int n)</code> and should use <code class="highlighter-rouge">write()</code>.</li>
+      <li>The triangle should look like this, for n = 3:
+        <pre><code class="language-C"><span class="o">*</span>
+</code></pre>
+        <h3 id="writing-to-files" class="title-text">Writing to files</h3>
+      </li>
+    </ul>
+  </li>
+  <li>Take your program from “Hello, World!” modify it write to a file called <code class="highlighter-rouge">hello_world.txt</code>.
+    <ul>
+      <li>Make sure to to use correct flags and a correct mode for <code class="highlighter-rouge">open()</code> (<code class="highlighter-rouge">man 2 open</code> is your friend).
+        <h3 id="not-everything-is-a-system-call" class="title-text">Not everything is a system call</h3>
+      </li>
+    </ul>
+  </li>
+  <li>Take your program from “Writing to files” and replace <code class="highlighter-rouge">write()</code> with <code class="highlighter-rouge">printf()</code>.
+    <ul>
+      <li>Make sure to print to the file instead of standard out!</li>
+    </ul>
+  </li>
+  <li>What are some differences between <code class="highlighter-rouge">write()</code> and <code class="highlighter-rouge">printf()</code>?</li>
+</ol>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="chapter-2" class="title-text">Chapter 2<a class="anchor title-text" href="#chapter-2">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Sizing up C types and their limits, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/int" class="fancy-link">int</a></code> and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/char" class="fancy-link">char</a></code> arrays, and incrementing pointers</p>
+<h3 id="not-all-bytes-are-8-bits" class="title-text">Not all bytes are 8 bits?</h3>
+<ol>
+  <li>How many bits are there in a byte?</li>
+  <li>How many bytes are there in a <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/char" class="fancy-link">char</a></code>?</li>
+  <li>How many bytes the following are on your machine?
+    <ul>
+      <li>
+<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/int" class="fancy-link">int</a></code>, <code class="highlighter-rouge">double</code>, <code class="highlighter-rouge">float</code>, <code class="highlighter-rouge">long</code>, and <code class="highlighter-rouge">long long</code>
+        <h3 id="follow-the-int-pointer" class="title-text">Follow the int pointer</h3>
+      </li>
+    </ul>
+  </li>
+  <li>On a machine with 8 byte integers:
+    <pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+    <p>If the address of data is <code class="highlighter-rouge">0x7fbd9d40</code>, then what is the address of <code class="highlighter-rouge">data+2</code>?</p>
+  </li>
+  <li>What is <code class="highlighter-rouge">data[3]</code> equivalent to in C?
+    <ul>
+      <li>Hint: what does C convert <code class="highlighter-rouge">data[3]</code> to before dereferencing the address?</li>
+    </ul>
+  </li>
+</ol>
+<h3 id="sizeof-character-arrays-incrementing-pointers" class="title-text">
+<code class="highlighter-rouge">sizeof</code> character arrays, incrementing pointers</h3>
+<p>Remember, the type of a string constant <code class="highlighter-rouge">"abc"</code> is an array.</p>
+<ol>
+  <li>Why does this segfault?
+    <pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+  </li>
+  <li>What does <code class="highlighter-rouge">sizeof("Hello\0World")</code> return?</li>
+  <li>What does <code class="highlighter-rouge">strlen("Hello\0World")</code> return?</li>
+  <li>Give an example of X such that <code class="highlighter-rouge">sizeof(X)</code> is 3.</li>
+  <li>Give an example of Y such that <code class="highlighter-rouge">sizeof(Y)</code> might be 4 or 8 depending on the machine.</li>
+</ol>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="chapter-3" class="title-text">Chapter 3<a class="anchor title-text" href="#chapter-3">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Program arguments, environment variables, and working with character arrays (strings)</p>
+<h3 id="program-arguments-argc-argv" class="title-text">Program arguments, <code class="highlighter-rouge">argc</code>, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/argv" class="fancy-link">argv</a></code>
+</h3>
+<ol>
+  <li>What are two ways to find the length of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/argv" class="fancy-link">argv</a></code>?</li>
+  <li>What does <code class="highlighter-rouge">argv[0]</code> represent?
+    <h3 id="environment-variables" class="title-text">Environment Variables</h3>
+  </li>
+  <li>Where are the pointers to environment variables stored (on the stack, the heap, somewhere else)?
+    <h3 id="string-searching-strings-are-just-char-arrays" class="title-text">String searching (strings are just char arrays)</h3>
+  </li>
+  <li>On a machine where pointers are 8 bytes, and with the following code:
+    <pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+    <p>What are the values of <code class="highlighter-rouge">sizeof(ptr)</code> and <code class="highlighter-rouge">sizeof(array)</code>? Why?</p>
+  </li>
+</ol>
+<h3 id="lifetime-of-automatic-variables" class="title-text">Lifetime of automatic variables</h3>
+<ol>
+  <li>What data structure manages the lifetime of automatic variables?</li>
+</ol>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="chapter-4" class="title-text">Chapter 4<a class="anchor title-text" href="#chapter-4">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Heap and stack memory, and working with structs</p>
+<h3 id="memory-allocation-using-malloc-the-heap-and-time" class="title-text">Memory allocation using <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code>, the heap, and time</h3>
+<ol>
+  <li>If I want to use data after the lifetime of the function it was created in ends, where should I put it? How do I put it there?</li>
+  <li>What are the differences between heap and stack memory?</li>
+  <li>Are there other kinds of memory in a process?</li>
+  <li>Fill in the blank: “In a good C program, for every malloc, there is a ___”.
+    <h3 id="heap-allocation-gotchas" class="title-text">Heap allocation gotchas</h3>
+  </li>
+  <li>What is one reason <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code> can fail?</li>
+  <li>What are some differences between <code class="highlighter-rouge">time()</code> and <code class="highlighter-rouge">ctime()</code>?</li>
+  <li>What is wrong with this code snippet?
+    <pre><code class="language-C"><span class="n">free</span>
+</code></pre>
+  </li>
+  <li>What is wrong with this code snippet?
+    <pre><code class="language-C"><span class="n">free</span>
+</code></pre>
+  </li>
+  <li>How can one avoid the previous two mistakes?
+    <h3 id="struct-typedefs-and-a-linked-list" class="title-text">
+<code class="highlighter-rouge">struct</code>, <code class="highlighter-rouge">typedef</code>s, and a linked list</h3>
+  </li>
+  <li>Create a <code class="highlighter-rouge">struct</code> that represents a <code class="highlighter-rouge">Person</code>. Then make a <code class="highlighter-rouge">typedef</code>, so that <code class="highlighter-rouge">struct Person</code> can be replaced with a single word. A person should contain the following information: their name (a string), their age (an integer), and a list of their friends (stored as a pointer to an array of pointers to <code class="highlighter-rouge">Person</code>s).</li>
+  <li>Now, make two persons on the heap, “Agent Smith” and “Sonny Moore”, who are 128 and 256 years old respectively and are friends with each other.
+    <h3 id="duplicating-strings-memory-allocation-and-deallocation-of-structures" class="title-text">Duplicating strings, memory allocation and deallocation of structures</h3>
+    <p>Create functions to create and destroy a Person (Person’s and their names should live on the heap).</p>
+  </li>
+  <li>
+<code class="highlighter-rouge">create()</code> should take a name and age. The name should be copied onto the heap. Use malloc to reserve sufficient memory for everyone having up to ten friends. Be sure initialize all fields (why?).</li>
+  <li>
+<code class="highlighter-rouge">destroy()</code> should free up not only the memory of the person struct, but also free all of its attributes that are stored on the heap. Destroying one person should not destroy any others.</li>
+</ol>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="chapter-5" class="title-text">Chapter 5<a class="anchor title-text" href="#chapter-5">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Text input and output and parsing using <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/getchar" class="fancy-link">getchar</a></code>, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/gets" class="fancy-link">gets</a></code>, and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/getline" class="fancy-link">getline</a></code>.</p>
+<h3 id="reading-characters-trouble-with-gets" class="title-text">Reading characters, trouble with gets</h3>
+<ol>
+  <li>What functions can be used for getting characters from <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stdin" class="fancy-link">stdin</a></code> and writing them to <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stdout" class="fancy-link">stdout</a></code>?</li>
+  <li>Name one issue with <code class="highlighter-rouge">gets()</code>.
+    <h3 id="introducing-sscanf-and-friends" class="title-text">Introducing <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sscanf" class="fancy-link">sscanf</a></code> and friends</h3>
+  </li>
+  <li>Write code that parses the string “Hello 5 World” and initializes 3 variables to “Hello”, 5, and “World”.
+    <h3 id="getline-is-useful" class="title-text">
+<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/getline" class="fancy-link">getline</a></code> is useful</h3>
+  </li>
+  <li>What does one need to define before including <code class="highlighter-rouge">getline()</code>?</li>
+  <li>Write a C program to print out the content of a file line-by-line using <code class="highlighter-rouge">getline()</code>.</li>
+</ol>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="c-development" class="title-text">C Development<a class="anchor title-text" href="#c-development">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>These are general tips for compiling and developing using a compiler and git. Some web searches will be useful here</p>
+<ol>
+  <li>What compiler flag is used to generate a debug build?</li>
+  <li>You modify the Makefile to generate debug builds and type <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/make" class="fancy-link">make</a></code> again. Explain why this is insufficient to generate a new build.</li>
+  <li>Are tabs or spaces used to indent the commands after the rule in a Makefile?</li>
+  <li>What does <code class="highlighter-rouge">git commit</code> do? What’s a <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sha" class="fancy-link">sha</a></code> in the context of git?</li>
+  <li>What does <code class="highlighter-rouge">git log</code> show you?</li>
+  <li>What does <code class="highlighter-rouge">git status</code> tell you and how would the contents of <code class="highlighter-rouge">.gitignore</code> change its output?</li>
+  <li>What does <code class="highlighter-rouge">git push</code> do? Why is it not just sufficient to commit with <code class="highlighter-rouge">git commit -m 'fixed all bugs' </code>?</li>
+  <li>What does a non-fast-forward error <code class="highlighter-rouge">git push</code> reject mean? What is the most common way of dealing with this?</li>
+</ol>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="optional-just-for-fun" class="title-text">Optional (Just for fun)<a class="anchor title-text" href="#optional-just-for-fun">#</a>
+</h2></div>
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>Convert your a song lyrics into System Programming and C code covered in this wiki book and share on Piazza.</li>
+  <li>Find, in your opinion, the best and worst C code on the web and post the link to Piazza.</li>
+  <li>Write a short C program with a deliberate subtle C bug and post it on Piazza to see if others can spot your bug.</li>
+  <li>Do you have any cool/disastrous system programming bugs you’ve heard about? Feel free to share with your peers and the course staff on piazza.</li>
+</ul></div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/hw0.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

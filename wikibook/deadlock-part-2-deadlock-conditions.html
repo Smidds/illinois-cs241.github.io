@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Deadlock, Part 2: Deadlock Conditions</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Deadlock, Part 2: Deadlock Conditions
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/Deadlock,-Part-2:-Deadlock-Conditions">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_coffman-conditions" href="#coffman-conditions" class="fancy-link">Coffman conditions</a></li>
+<li><a id="toc_breaking-the-coffman-conditions" href="#breaking-the-coffman-conditions" class="fancy-link">Breaking the Coffman Conditions</a></li>
+<li><a id="toc_livelock" href="#livelock" class="fancy-link">Livelock</a></li>
+<li><a id="toc_deadlock-preventionavoidance-vs-deadlock-detection" href="#deadlock-preventionavoidance-vs-deadlock-detection" class="fancy-link">Deadlock Prevention/Avoidance vs Deadlock Detection</a></li>
+<li><a id="toc_dining-philosophers" href="#dining-philosophers" class="fancy-link">Dining Philosophers</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="coffman-conditions" class="title-text">Coffman conditions<a class="anchor title-text" href="#coffman-conditions">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>There are four <em>necessary</em> and <em>sufficient</em> conditions for deadlock. These are known as the Coffman conditions.</p>
+<ul>
+  <li>Mutual Exclusion</li>
+  <li>Circular Wait</li>
+  <li>Hold and Wait</li>
+  <li>No pre-emption</li>
+</ul>
+<p>If you break any of them, you cannot have deadlock!</p>
+<p>All of these conditions are required for deadlock, so let’s discuss each one in turn. First the easy ones-</p>
+<ul>
+  <li>Mutual Exclusion: The resource cannot be shared</li>
+  <li>Circular Wait: There exists a cycle in the Resource Allocation Graph. There exists a set of processes {P1,P2,…} such that P1 is waiting for resources held by P2, which is waiting for P3,…, which is waiting for P1.</li>
+  <li>Hold and Wait: A process acquires an incomplete set of resources and holds onto them while waiting for the other resources.</li>
+  <li>No pre-emption: Once a process has acquired a resource, the resource cannot be taken away from a process and the process will voluntarily give up a resource.</li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="breaking-the-coffman-conditions" class="title-text">Breaking the Coffman Conditions<a class="anchor title-text" href="#breaking-the-coffman-conditions">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Two students need a pen and paper:</p>
+<ul>
+  <li>The students share a pen and paper. Deadlock is avoided because Mutual Exclusion was not required.</li>
+  <li>The students both agree to grab the pen before grabbing the paper. Deadlock is avoided because there cannot be a circular wait.</li>
+  <li>The students grab both the pen and paper in one operation (“Get both or get none”). Deadlock is avoided because there is no <em>Hold and Wait</em>
+</li>
+  <li>The students are friends and will ask each other to give up a held resource. Deadlock is avoided because pre-emption is allowed.</li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="livelock" class="title-text">Livelock<a class="anchor title-text" href="#livelock">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Livelock is <em>not</em> deadlock-</p>
+<p>Consider the following ‘solution’</p>
+<ul>
+  <li>The students will put down one held resource if they are unable to pick up the other resource within 10 seconds. This solution avoids deadlock however it may suffer from livelock.</li>
+</ul>
+<p>Livelock occurs when a process continues to execute but is unable to make progress.
+In practice Livelock may occur because the programmer has taken steps to avoid deadlock. In the above example, in a busy system, the student will continually release the first resource because they are never able to obtain the second resource. The system is not deadlock (the student process is still executing) however it’s not making any progress either.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="deadlock-preventionavoidance-vs-deadlock-detection" class="title-text">Deadlock Prevention/Avoidance vs Deadlock Detection<a class="anchor title-text" href="#deadlock-preventionavoidance-vs-deadlock-detection">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Deadlock prevention is making sure that deadlock cannot happen, meaning that you break a coffman condition. This works the best inside a single program and the software engineer making the choice to break a certain coffman condition. Consider the <a href="https://en.wikipedia.org/wiki/Banker's_algorithm" class="fancy-link wiki-link">Banker’s Algorithm</a>. It is another algorithm for deadlock avoidance. The whole implementation is outside the scope of this class, just know that there are more generalized algorithms for operating systems.</p>
+<p>Deadlock detection on the other hand is allowing the system to enter a deadlocked state. After entering, the system uses the information that it has to break deadlock. As an example, consider multiple processes accessing files. The operating system is able to keep track of all of the files/resources through file descriptors at some level (either abstracted through an API or directly). If the operating system detects a directed cycle in the operating system file descriptor table it may break one process’ hold (through scheduling for example) and let the system proceed.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="dining-philosophers" class="title-text">Dining Philosophers<a class="anchor title-text" href="#dining-philosophers">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The Dining Philosophers problem is a classic synchronization problem. Imagine I invite N (let’s say 5) philosophers to a meal. We will sit them at a table with 5 chopsticks (one between each philosopher). A philosopher alternates between wanting to eat or think. To eat the philosopher must pick up the two chopsticks either side of their position (the original problem required each philosopher to have two forks). However these chopsticks are shared with his neighbor.</p>
+<p><img src="https://raw.githubusercontent.com/wiki/angrave/SystemProgramming/5DiningPhilosophers.png" alt="5DiningPhilosophers"></p>
+<p>Is it possible to design an efficient solution such that all philosophers get to eat? Or, will some philosophers starve, never obtaining a second chopstick? Or will all of them deadlock? For example, imagine each guest picks up the chopstick on their left and then waits for the chopstick on their right to be free. Oops - our philosophers have deadlocked!</p>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/deadlock-part-2-deadlock-conditions.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

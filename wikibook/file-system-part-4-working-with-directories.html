@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>File System, Part 4: Working with directories</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              File System, Part 4: Working with directories
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/File-System,-Part-4:-Working-with-directories">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_how-do-i-find-out-if-file-an-inode-is-a-regular-file-or-directory" href="#how-do-i-find-out-if-file-an-inode-is-a-regular-file-or-directory" class="fancy-link">How do I find out if file (an inode) is a regular file or directory?</a></li>
+<li><a id="toc_how-do-i-recurse-into-subdirectories" href="#how-do-i-recurse-into-subdirectories" class="fancy-link">How do I recurse into subdirectories?</a></li>
+<li><a id="toc_what-are-symbolic-links-how-do-they-work-how-do-i-make-one" href="#what-are-symbolic-links-how-do-they-work-how-do-i-make-one" class="fancy-link">What are symbolic links? How do they work? How do I make one?</a></li>
+<li><a id="toc_advantages-of-symbolic-links" href="#advantages-of-symbolic-links" class="fancy-link">Advantages of symbolic links</a></li>
+<li><a id="toc_what-is-devnull-and-when-is-it-used" href="#what-is-devnull-and-when-is-it-used" class="fancy-link">What is <code class="highlighter-rouge">/dev/null</code> and when is it used?</a></li>
+<li><a id="toc_why-would-i-want-to-set-a-directorys-sticky-bit" href="#why-would-i-want-to-set-a-directorys-sticky-bit" class="fancy-link">Why would I want to set a directory’s sticky bit?</a></li>
+<li><a id="toc_why-do-shell-and-script-programs-start-with-usrbinenv-python-" href="#why-do-shell-and-script-programs-start-with-usrbinenv-python-" class="fancy-link">Why do shell and script programs start with <code class="highlighter-rouge"><span class="c1">#!/usr/bin/env python</span></code> ?</a></li>
+<li><a id="toc_how-do-i-make-hidden-files-ie-not-listed-by-ls-how-do-i-list-them" href="#how-do-i-make-hidden-files-ie-not-listed-by-ls-how-do-i-list-them" class="fancy-link">How do I make ‘hidden’ files i.e. not listed by “ls”? How do I list them?</a></li>
+<li><a id="toc_what-happens-if-i-turn-off-the-execute-bit-on-directories" href="#what-happens-if-i-turn-off-the-execute-bit-on-directories" class="fancy-link">What happens if I turn off the execute bit on directories?</a></li>
+<li><a id="toc_what-is-file-globbing-and-who-does-it" href="#what-is-file-globbing-and-who-does-it" class="fancy-link">What is file globbing (and who does it)?</a></li>
+<li><a id="toc_creating-secure-directories" href="#creating-secure-directories" class="fancy-link">Creating secure directories</a></li>
+<li><a id="toc_how-do-i-automatically-create-parent-directories" href="#how-do-i-automatically-create-parent-directories" class="fancy-link">How do I automatically create parent directories?</a></li>
+<li><a id="toc_my-default-umask-022-what-does-this-mean" href="#my-default-umask-022-what-does-this-mean" class="fancy-link">My default umask 022; what does this mean?</a></li>
+<li><a id="toc_how-can-i-copy-bytes-from-one-file-to-another" href="#how-can-i-copy-bytes-from-one-file-to-another" class="fancy-link">How can I copy bytes from one file to another?</a></li>
+<li><a id="toc_what-happens-when-i-touch-a-file" href="#what-happens-when-i-touch-a-file" class="fancy-link">What happens when I touch a file?</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-find-out-if-file-an-inode-is-a-regular-file-or-directory" class="title-text">How do I find out if file (an inode) is a regular file or directory?<a class="anchor title-text" href="#how-do-i-find-out-if-file-an-inode-is-a-regular-file-or-directory">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Use the <code class="highlighter-rouge">S_ISDIR</code> macro to check the mode bits in the stat struct:</p>
+<pre><code class="language-C"><span class="k">struct</span>
+</code></pre>
+<p>Note, later we will write robust code to verify that the stat call succeeds (returns 0); if the <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stat" class="fancy-link">stat</a></code> call fails, we should assume the stat struct content is arbitrary.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-recurse-into-subdirectories" class="title-text">How do I recurse into subdirectories?<a class="anchor title-text" href="#how-do-i-recurse-into-subdirectories">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>First a puzzle - how many bugs can you find in the following code?</p>
+<pre><code class="language-C"><span class="kt">void</span>
+</code></pre>
+<p>Did you find all 5 bugs?</p>
+<pre><code class="language-C"><span class="c1">// Check opendir result (perhaps user gave us a path that can not be opened as a directory</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-are-symbolic-links-how-do-they-work-how-do-i-make-one" class="title-text">What are symbolic links? How do they work? How do I make one?<a class="anchor title-text" href="#what-are-symbolic-links-how-do-they-work-how-do-i-make-one">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<pre><code class="language-C"><span class="n">symlink</span>
+</code></pre>
+<p>To create a symbolic link in the shell use <code class="highlighter-rouge">ln -s</code></p>
+<p>To read the contents of the link as just a file use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/readlink" class="fancy-link">readlink</a></code></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ readlink myfile.txt
+../../dir1/notes.txt
+</code></pre></div></div>
+<p>To read the meta-(stat) information of a symbolic link use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/lstat" class="fancy-link">lstat</a></code> not <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stat" class="fancy-link">stat</a></code></p>
+<pre><code class="language-C"><span class="k">struct</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="advantages-of-symbolic-links" class="title-text">Advantages of symbolic links<a class="anchor title-text" href="#advantages-of-symbolic-links">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<ul>
+  <li>Can refer to files that don’t exist yet</li>
+  <li>Unlike hard links, can refer to directories as well as regular files</li>
+  <li>Can refer to files (and directories) that exist outside of the current file system</li>
+</ul>
+<p>Main disadvantage: Slower than regular files and directories. When the links contents are read, they must be interpreted as a new path to the target file.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-devnull-and-when-is-it-used" class="title-text">What is <code class="highlighter-rouge">/dev/null</code> and when is it used?<a class="anchor title-text" href="#what-is-devnull-and-when-is-it-used">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The file <code class="highlighter-rouge">/dev/null</code> is a great place to store bits that you never need to read!
+Bytes sent to <code class="highlighter-rouge">/dev/null/</code> are never stored - they are simply discarded. A common use of <code class="highlighter-rouge">/dev/null</code> is to discard standard output. For example,</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls . &gt;/dev/null
+</code></pre></div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="why-would-i-want-to-set-a-directorys-sticky-bit" class="title-text">Why would I want to set a directory’s sticky bit?<a class="anchor title-text" href="#why-would-i-want-to-set-a-directorys-sticky-bit">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>When a directory’s sticky bit is set only the file’s owner, the directory’s owner, and the root user can rename (or delete) the file. This is useful when multiple users have write access to a common directory.</p>
+<p>A common use of the sticky bit is for the shared and writable <code class="highlighter-rouge">/tmp</code> directory.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="why-do-shell-and-script-programs-start-with-usrbinenv-python-" class="title-text">Why do shell and script programs start with <code class="highlighter-rouge"><span class="c1">#!/usr/bin/env python</span></code> ?<a class="anchor title-text" href="#why-do-shell-and-script-programs-start-with-usrbinenv-python-">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Ans: For portability!
+While it is possible to write the fully qualified path to a python or perl interpreter, this approach is not portable because you may have installed python in a different directory.</p>
+<p>To overcome this use the <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/env" class="fancy-link">env</a></code> utility is used to find and execute the program on the user’s path.
+The env utility itself has historically been stored in <code class="highlighter-rouge">/usr/bin</code> - and it must be specified with an absolute path.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-make-hidden-files-ie-not-listed-by-ls-how-do-i-list-them" class="title-text">How do I make ‘hidden’ files i.e. not listed by “ls”? How do I list them?<a class="anchor title-text" href="#how-do-i-make-hidden-files-ie-not-listed-by-ls-how-do-i-list-them">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Easy! Create files (or directories) that start with a “.” - then (by default) they are not displayed by standard tools and utilities.</p>
+<p>This is often used to hide configuration files inside the user’s home directory.
+For example <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/ssh" class="fancy-link">ssh</a></code> stores its preferences inside a directory called <code class="highlighter-rouge">.sshd</code></p>
+<p>To list all files including the normally hidden entries use <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/ls" class="fancy-link">ls</a></code> with  <code class="highlighter-rouge">-a</code> option</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls -a
+.			a.c			myls
+..			a.out			other.txt
+.secret	
+</code></pre></div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-happens-if-i-turn-off-the-execute-bit-on-directories" class="title-text">What happens if I turn off the execute bit on directories?<a class="anchor title-text" href="#what-happens-if-i-turn-off-the-execute-bit-on-directories">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The execute bit for a directory is used to control whether the directory contents is listable.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ chmod ugo-x dir1
+$ ls -l
+drw-r--r--   3 angrave  staff   102 Nov 10 11:22 dir1
+</code></pre></div></div>
+<p>However when attempting to list the contents of the directory,</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls dir1
+ls: dir1: Permission denied
+</code></pre></div></div>
+<p>In other words, the directory itself is discoverable but its contents cannot be listed.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-file-globbing-and-who-does-it" class="title-text">What is file globbing (and who does it)?<a class="anchor title-text" href="#what-is-file-globbing-and-who-does-it">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Before executing the program the shell expands parameters into matching filenames. For example, if the current directory has three filenames that start with my ( my1.txt mytext.txt myomy), then</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ echo my*
+</code></pre></div></div>
+<p>Expands to</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ echo my1.txt mytext.txt myomy
+</code></pre></div></div>
+<p>This is known as file globbing and is processed before the command is executed.
+ie the command’s parameters are identical to manually typing every matching filename.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="creating-secure-directories" class="title-text">Creating secure directories<a class="anchor title-text" href="#creating-secure-directories">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Suppose you created your own directory in /tmp and then set the permissions so that only you can use the directory (see below). Is this secure?</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mkdir /tmp/mystuff
+$ chmod 700 /tmp/mystuff
+</code></pre></div></div>
+<p>There is a window of opportunity between when the directory is created and when it’s permissions are changed. This leads to several vulnerabilities that are based on a race condition (where an attacker modifies the directory in some way before the privileges are removed). Some examples include:</p>
+<p>Another user replaces <code class="highlighter-rouge">mystuff</code> with a hardlink to an existing file or directory owned by the second user, then they would be able to read and control the contents of the <code class="highlighter-rouge">mystuff</code> directory. Oh no - our secrets are no longer secret!</p>
+<p>However in this specific example the <code class="highlighter-rouge">/tmp</code> directory has the sticky bit set, so other users may not delete the <code class="highlighter-rouge">mystuff</code> directory, and the simple attack scenario described above is impossible. This does not mean that creating the directory and then later making the directory private is secure! A better version is to atomically create the directory with the correct permissions from its inception -</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mkdir -m 700 /tmp/mystuff
+</code></pre></div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-automatically-create-parent-directories" class="title-text">How do I automatically create parent directories?<a class="anchor title-text" href="#how-do-i-automatically-create-parent-directories">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mkdir -p d1/d2/d3
+</code></pre></div></div>
+<p>Will automatically create d1 and d2 if they don’t exist.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="my-default-umask-022-what-does-this-mean" class="title-text">My default umask 022; what does this mean?<a class="anchor title-text" href="#my-default-umask-022-what-does-this-mean">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The umask <em>subtracts</em> (reduces) permission bits from 777 and is used when new files and new directories are created by open,mkdir etc. Thus <code class="highlighter-rouge">022</code> (octal) means that group and other privileges will not include the writable bit . Each process (including the shell) has a current umask value. When forking, the child inherits the parent’s umask value.</p>
+<p>For example, by setting the umask to 077 in the shell, ensures that future file and directory creation will only be accessible to the current user,</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ umask 077
+$ mkdir secretdir
+</code></pre></div></div>
+<p>As a code example, suppose a new file is created with <code class="highlighter-rouge">open()</code> and mode bits <code class="highlighter-rouge">666</code> (write and read bits for user,group and other):</p>
+<pre><code class="language-C"><span class="n">open</span>
+</code></pre>
+<p>If umask is octal 022, then the permissions of the created file will be 0666 &amp; ~022
+ie.</p>
+<pre><code class="language-C"><span class="n">S_IRUSR</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-can-i-copy-bytes-from-one-file-to-another" class="title-text">How can I copy bytes from one file to another?<a class="anchor title-text" href="#how-can-i-copy-bytes-from-one-file-to-another">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Use  the versatile <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/dd" class="fancy-link">dd</a></code> command. For example, the following command copies 1 MB of data from the file <code class="highlighter-rouge">/dev/urandom</code> to the file <code class="highlighter-rouge">/dev/null</code>. The data is copied as 1024 blocks of blocksize 1024 bytes.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ dd if=/dev/urandom of=/dev/null bs=1k count=1024
+</code></pre></div></div>
+<p>Both the input and output files in the example above are virtual - they don’t exist on a disk. This means the speed of the transfer is unaffected by hardware power. Instead they are part of the <code class="highlighter-rouge">dev</code> filesystem, which is virtual filesystem provided by the kernel.
+The virtual file <code class="highlighter-rouge">/dev/urandom</code> provides an infinite stream of random bytes, while the virtal file <code class="highlighter-rouge">/dev/null</code> ignores all bytes written to it. A common use of <code class="highlighter-rouge">/dev/null</code> is to discard the output of a command,</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ myverboseexecutable &gt; /dev/null
+</code></pre></div></div>
+<p>Another commonly used /dev virtual file is <code class="highlighter-rouge">/dev/zero</code> which provides an infinite stream of zero bytes.
+For example, we can benchmark the operating system performance of reading stream zero bytes in the kernel into a process memory and writing the bytes back to the kernel without any disk I/O. Note the throughput (~20GB/s) is strongly dependent on blocksize. For small block sizes the overhead of additional <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/read" class="fancy-link">read</a></code> and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code> system calls will  dominate.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ dd if=/dev/zero of=/dev/null bs=1M count=1024
+1024+0 records in
+1024+0 records out
+1073741824 bytes (1.1 GB) copied, 0.0539153 s, 19.9 GB/s
+</code></pre></div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-happens-when-i-touch-a-file" class="title-text">What happens when I touch a file?<a class="anchor title-text" href="#what-happens-when-i-touch-a-file">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/touch" class="fancy-link">touch</a></code> executable creates file if it does not exist and also updates the file’s last modified time to be the current time. For example, we can make a new private file with the current time:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ umask 077       # all future new files will maskout all r,w,x bits for group and other access
+$ touch file123   # create a file if it does not exist, and update its modified time
+$ stat file123
+  File: `file123'
+  Size: 0         	Blocks: 0          IO Block: 65536  regular empty file
+Device: 21h/33d	Inode: 226148      Links: 1
+Access: (0600/-rw-------)  Uid: (395606/ angrave)   Gid: (61019/     ews)
+Access: 2014-11-12 13:42:06.000000000 -0600
+Modify: 2014-11-12 13:42:06.001787000 -0600
+Change: 2014-11-12 13:42:06.001787000 -0600
+</code></pre></div></div>
+<p>An example use of touch is to force make to recompile a file that is unchanged after modifying the compiler options inside the makefile. Remeber that make is ‘lazy’ - it will compare the modified time of the source file with the corresponding output file to see if the file needs to be recompiled</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ touch myprogram.c   # force my source file to be recompiled
+$ make
+</code></pre></div></div>
+<p><a href="/wikibook/file-system-part-5-virtual-file-systems.html#" class="fancy-link wiki-link">Go to File System: Part 5</a></p>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/file-system-part-4-working-with-directories.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

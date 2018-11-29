@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Synchronization, Part 8: Ring Buffer Example</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Synchronization, Part 8: Ring Buffer Example
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/Synchronization,-Part-8:-Ring-Buffer-Example">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_what-is-a-ring-buffer" href="#what-is-a-ring-buffer" class="fancy-link">What is a ring buffer?</a></li>
+<li><a id="toc_what-are-gotchas-of-implementing-a-ring-buffer" href="#what-are-gotchas-of-implementing-a-ring-buffer" class="fancy-link">What are gotchas of implementing a Ring Buffer?</a></li>
+<li><a id="toc_checking-a-multi-threaded-implementation-for-correctness-example-1" href="#checking-a-multi-threaded-implementation-for-correctness-example-1" class="fancy-link">Checking a multi-threaded implementation for correctness (Example 1)</a></li>
+<li><a id="toc_analysis" href="#analysis" class="fancy-link">Analysis</a></li>
+<li><a id="toc_checking-a-multi-threaded-implementation-for-correctness-example-1-1" href="#checking-a-multi-threaded-implementation-for-correctness-example-1-1" class="fancy-link">Checking a multi-threaded implementation for correctness (Example 1)</a></li>
+<li><a id="toc_correct-implementation-of-a-ring-buffer" href="#correct-implementation-of-a-ring-buffer" class="fancy-link">Correct implementation of a ring buffer</a></li>
+<li><a id="toc_food-for-thought" href="#food-for-thought" class="fancy-link">Food for thought</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-a-ring-buffer" class="title-text">What is a ring buffer?<a class="anchor title-text" href="#what-is-a-ring-buffer">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>A ring buffer is a simple, usually fixed-sized, storage mechanism where contiguous memory is treated as if it is circular, and two index counters keep track of the current beginning and end of the queue. As  array indexing is not circular, the index counters must wrap around to zero when moved past the end of the array.
+As data is added (enqueued) to the front of the queue or removed (dequeued) from tail of the queue, the current items in the buffer form a train that appears to circle the track
+<img src="https://raw.githubusercontent.com/wiki/angrave/SystemProgramming/RingBuffer-Angrave2014-1024x768.png" alt="RingBuffer">
+A simple (single-threaded) implementation is shown below. Note enqueue and dequeue do not guard against underflow or overflow - it’s possible to add an item when when the queue is full and possible to remove an item when the queue is empty. For example if we added 20 integers (1,2,3…) to the queue and did not dequeue any items then values <code class="highlighter-rouge">17,18,19,20</code> would overwrite the <code class="highlighter-rouge">1,2,3,4</code>. We won’t fix this problem right now, instead when we create the multi-threaded version we will ensure enqueue-ing and dequeue-ing threads are blocked while the ring buffer is full or empty respectively.</p>
+<pre><code class="language-C"><span class="kt">void</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-are-gotchas-of-implementing-a-ring-buffer" class="title-text">What are gotchas of implementing a Ring Buffer?<a class="anchor title-text" href="#what-are-gotchas-of-implementing-a-ring-buffer">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>It’s very tempting to write the enqueue or dequeue method in the following compact form (N is the capacity of the buffer e.g. 16):</p>
+<pre><code class="language-C"><span class="kt">void</span>
+</code></pre>
+<p>This method would appear to work (pass simple tests etc) but contains a subtle bug. With enough enqueue operations (a bit more than two billion) the int value of <code class="highlighter-rouge">in</code> will overflow and become negative! The modulo (or ‘remainder’) operator <code class="highlighter-rouge">%</code> preserves the sign. Thus you might end up writing into <code class="highlighter-rouge">b[-14]</code>  for example!</p>
+<p>A compact form is correct uses bit masking provided N is 2^x (16,32,64,…)</p>
+<pre><code class="language-C"><span class="n">b</span>
+</code></pre>
+<p>This buffer does not yet prevent buffer underflow or overflow. For that, we’ll turn to our multi-threaded attempt that will block a thread until there is space or there is at least one item to remove.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="checking-a-multi-threaded-implementation-for-correctness-example-1" class="title-text">Checking a multi-threaded implementation for correctness (Example 1)<a class="anchor title-text" href="#checking-a-multi-threaded-implementation-for-correctness-example-1">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The following code is an incorrect implementation. What will happen? Will <code class="highlighter-rouge">enqueue</code> and/or <code class="highlighter-rouge">dequeue</code> block? Is mutual exclusion satisfied? Can the buffer underflow? Can the buffer overflow?
+For clarity <code class="highlighter-rouge">pthread_mutex</code> is shortened to <code class="highlighter-rouge">p_m</code> and we assume sem_wait cannot be interrupted.</p>
+<pre><code class="language-C"><span class="cp">#define N 16
+</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="analysis" class="title-text">Analysis<a class="anchor title-text" href="#analysis">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Before reading on, see how many mistakes you can find. Then determine what would happen if threads called the enqueue and dequeue methods.</p>
+<ul>
+  <li>The enqueue method waits and posts on the same semaphore (s1) and similarly with equeue and (s2) i.e. we decrement the value and then immediately increment the value, so by the end of the function the semaphore value is unchanged!</li>
+  <li>The initial value of s1 is 16, so the semaphore will never be reduced to zero - enqueue will not block if the ring buffer is full - so overflow is possible.</li>
+  <li>The initial value of s2 is zero, so calls to dequeue will always block and never return!</li>
+  <li>The order of mutex lock and sem_wait will need to be swapped (however this example is so broken that this bug has no effect!)
+    <div class="title"><h2 id="checking-a-multi-threaded-implementation-for-correctness-example-1-1" class="title-text">Checking a multi-threaded implementation for correctness (Example 1)<a class="anchor title-text" href="#checking-a-multi-threaded-implementation-for-correctness-example-1-1">#</a>
+</h2></div>
+  </li>
+</ul>
+<p>The following code is an incorrect implementation. What will happen? Will <code class="highlighter-rouge">enqueue</code> and/or <code class="highlighter-rouge">dequeue</code> block? Is mutual exclusion satisfied? Can the buffer underflow? Can the buffer overflow?
+For clarity <code class="highlighter-rouge">pthread_mutex</code> is shortened to <code class="highlighter-rouge">p_m</code> and we assume sem_wait cannot be interrupted.</p>
+<pre><code class="language-C"><span class="kt">void</span>
+</code></pre>
+<h3 id="analysis-1" class="title-text">Analysis</h3>
+<ul>
+  <li>The initial value of s2 is 0. Thus enqueue will block on the first call to sem_wait even though the buffer is empty!</li>
+  <li>The initial value of s1 is 16. Thus dequeue will not block on the first call to sem_wait even though the buffer is empty - oops Underflow! The dequeue method will return invalid data.</li>
+  <li>The code does not satisfy Mutual Exclusion; two threads can modify <code class="highlighter-rouge">in</code> or <code class="highlighter-rouge">out</code> at the same time! The code appears to use  mutex lock. Unfortunately the lock was never initialized with <code class="highlighter-rouge">pthread_mutex_init()</code> or <code class="highlighter-rouge">PTHREAD_MUTEX_INITIALIZER</code> - so the lock may not work (<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_mutex_lock" class="fancy-link">pthread_mutex_lock</a></code> may simply do nothing)</li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="correct-implementation-of-a-ring-buffer" class="title-text">Correct implementation of a ring buffer<a class="anchor title-text" href="#correct-implementation-of-a-ring-buffer">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The pseudo-code (<code class="highlighter-rouge">pthread_mutex</code> shortened to <code class="highlighter-rouge">p_m</code> etc) is shown below.</p>
+<p>As the mutex lock is stored in global (static) memory it can be initialized with  <code class="highlighter-rouge">PTHREAD_MUTEX_INITIALIZER</code>.If we had allocated space for the mutex on the heap, then we would have used <code class="highlighter-rouge">pthread_mutex_init(ptr, NULL)</code></p>
+<pre><code class="language-C"><span class="cp">#include &lt;pthread.h&gt;
+#include &lt;semaphore.h&gt;
+</span>
+</code></pre>
+<p>The enqueue method is shown below. Notice:</p>
+<ul>
+  <li>The lock is only held during the critical section (access to the data structure).</li>
+  <li>A complete implementation would need to guard against early returns from <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_wait" class="fancy-link">sem_wait</a></code> due to POSIX signals.</li>
+</ul>
+<pre><code class="language-C"><span class="n">enqueue</span>
+</code></pre>
+<p>The <code class="highlighter-rouge">dequeue</code> implementation is shown below. Notice the symmetry of the synchronization calls to <code class="highlighter-rouge">enqueue</code>. In both cases the functions first wait if the count of spaces or count of items is zero.</p>
+<pre><code class="language-C"><span class="kt">void</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="food-for-thought" class="title-text">Food for thought<a class="anchor title-text" href="#food-for-thought">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>What would happen if  the order of  <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_mutex_unlock" class="fancy-link">pthread_mutex_unlock</a></code> and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_post" class="fancy-link">sem_post</a></code> calls were swapped?</li>
+  <li>What would happen if the order of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_wait" class="fancy-link">sem_wait</a></code> and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_mutex_lock" class="fancy-link">pthread_mutex_lock</a></code> calls were swapped?</li>
+</ul></div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/synchronization-part-8-ring-buffer-example.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

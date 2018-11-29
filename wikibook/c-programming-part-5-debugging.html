@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>C Programming, Part 5: Debugging</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              C Programming, Part 5: Debugging
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/C-Programming,-Part-5:-Debugging">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_clean-code" href="#clean-code" class="fancy-link">Clean code</a></li>
+<li><a id="toc_asserts" href="#asserts" class="fancy-link">Asserts!</a></li>
+<li><a id="toc_printfs" href="#printfs" class="fancy-link">printfs</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+
+<p>This is going to be a massive guide to helping you debug your C programs. There are different levels that you can check errors and we will be going through most of them. Feel free to add anything that you found helpful in debugging C programs including but not limited to, debugger usage, recognizing common error types, gotchas, and effective googling tips.</p>
+
+
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="clean-code" class="title-text">Clean code<a class="anchor title-text" href="#clean-code">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Make your code modular using helper functions. If there is a repeated task (getting the pointers to contiguous blocks in the malloc MP, for example), make them helper functions. And make sure each function does one thing very well, so that you don’t have to debug twice.</p>
+<p>Let’s say that we are doing selection sort by finding the minimum element each iteration like so,</p>
+<pre><code class="language-C"><span class="kt">void</span>
+</code></pre>
+<p>Many can see the bug in the code, but it can help to refactor the above method into</p>
+<pre><code class="language-C"><span class="kt">long</span>
+</code></pre>
+<p>And the error is specifically in one function.</p>
+<p>In the end, we are not a class about refactoring/debugging your code. In fact, most systems code is so atrocious that you don’t want to read it. But for the sake of debugging, it may benefit you in the long run to adopt some practices.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="asserts" class="title-text">Asserts!<a class="anchor title-text" href="#asserts">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Use assertions to make sure your code works up to a certain point – and importantly, to make sure you don’t break it later. For example, if your data structure is a doubly linked list, you can do something like <code class="highlighter-rouge">assert(node-&gt;size == node-&gt;next-&gt;prev-&gt;size)</code> to assert that the next node has a pointer to the current node. You can also check the pointer is pointing to an expected range of memory address, not null, -&gt;size is reasonable etc.
+The <code class="highlighter-rouge">NDEBUG</code> macro will disable all assertions, so don’t forget to set that once you finish debugging. http://www.cplusplus.com/reference/cassert/assert/</p>
+<p>Here’s a quick example with assert. Let’s say that I’m writing code using memcpy</p>
+<pre><code class="language-C"><span class="n">assert</span>
+</code></pre>
+<p>This check can be turned off at compile time, but will save you <strong>tons</strong> of trouble debugging!</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="printfs" class="title-text">printfs<a class="anchor title-text" href="#printfs">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>When all else fails, print like crazy! Each of your functions should have an idea of what it is going to do (ie find_min better find the minimum element). You want to test that each of your functions is doing what it set out to do and see exactly where your code breaks. In the case with race conditions, tsan may be able to help, but having each thread print out data at certain times could help you identify the race condition.</p>
+<p>Valgrind is a suite of tools designed to provide debugging and profiling tools to make your programs more correct and detect some runtime issues. The most used of these tools is Memcheck, which can detect many memory-related errors that are common in C and C++ programs and that can lead to crashes and unpredictable behaviour (for example, unfreed memory buffers).</p>
+<p>To run Valgrind on your program:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>valgrind --leak-check=yes myprogram arg1 arg2
+</code></pre></div></div>
+<p>or</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>valgrind ./myprogram
+</code></pre></div></div>
+<p>Arguments are optional and the default tool that will run is Memcheck. The output will be presented in form of 
+number of allocations, number of freed allocations, and the number of errors.</p>
+<p><strong>Example</strong></p>
+<p><img src="https://i.imgur.com/ZdBWDvh.png" alt="Valgrind Example"></p>
+<p>Here’s an example to help you interpret the above results. Suppose we have a simple program like this:</p>
+<pre><code class="language-C"><span class="cp">#include &lt;stdlib.h&gt;
+</span>
+</code></pre>
+<p>Let’s see what Valgrind will output (this program compiles and run with no errors).</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>==29515== Memcheck, a memory error detector
+==29515== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
+==29515== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
+==29515== Command: ./a
+==29515== 
+==29515== Invalid write of size 4
+==29515==    at 0x400544: dummy_function (in /home/rafi/projects/exocpp/a)
+==29515==    by 0x40055A: main (in /home/rafi/projects/exocpp/a)
+==29515==  Address 0x5203068 is 0 bytes after a block of size 40 alloc'd
+==29515==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==29515==    by 0x400537: dummy_function (in /home/rafi/projects/exocpp/a)
+==29515==    by 0x40055A: main (in /home/rafi/projects/exocpp/a)
+==29515== 
+==29515== 
+==29515== HEAP SUMMARY:
+==29515==     in use at exit: 40 bytes in 1 blocks
+==29515==   total heap usage: 1 allocs, 0 frees, 40 bytes allocated
+==29515== 
+==29515== LEAK SUMMARY:
+==29515==    definitely lost: 40 bytes in 1 blocks
+==29515==    indirectly lost: 0 bytes in 0 blocks
+==29515==      possibly lost: 0 bytes in 0 blocks
+==29515==    still reachable: 0 bytes in 0 blocks
+==29515==         suppressed: 0 bytes in 0 blocks
+==29515== Rerun with --leak-check=full to see details of leaked memory
+==29515== 
+==29515== For counts of detected and suppressed errors, rerun with: -v
+==29515== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
+</code></pre></div></div>
+<p><strong>Invalid write</strong>: It detected our heap block overrun (writing outside of allocated block)</p>
+<p><strong>Definitely lost</strong>: Memory leak—you probably forgot to free a memory block</p>
+<p>Valgrind is a very effective tool to check for errors at runtime. C is very special when it comes to such behavior, so after compiling your program you can use Valgrind to fix errors that your compiler may not catch and that usually happen when your program is running.</p>
+<p>For more information, you can refer to the <a href="http://valgrind.org/docs/manual/quick-start.html" class="fancy-link wiki-link">official website</a>.</p>
+<p>ThreadSanitizer is a tool from Google, built into clang (and gcc), to help you detect race conditions in your code. For more information about the tool, see the Github wiki.</p>
+<p>Note that running with tsan will slow your code down a bit.</p>
+<pre><code class="language-C"><span class="cp">#include &lt;pthread.h&gt;
+#include &lt;stdio.h&gt;
+</span>
+</code></pre>
+<p>We can see that there is a race condition on the variable <code class="highlighter-rouge">Global</code>. Both the main thread and the thread created with pthread_create will try to change the value at the same time. But, does ThreadSantizer catch it?</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./a.out
+==================
+WARNING: ThreadSanitizer: data race (pid=28888)
+  Read of size 4 at 0x7f73ed91c078 by thread T1:
+    #0 Thread1 /home/zmick2/simple_race.c:7 (exe+0x000000000a50)
+    #1  :0 (libtsan.so.0+0x00000001b459)
+
+  Previous write of size 4 at 0x7f73ed91c078 by main thread:
+    #0 main /home/zmick2/simple_race.c:14 (exe+0x000000000ac8)
+
+  Thread T1 (tid=28889, running) created by main thread at:
+    #0  :0 (libtsan.so.0+0x00000001f6ab)
+    #1 main /home/zmick2/simple_race.c:13 (exe+0x000000000ab8)
+
+SUMMARY: ThreadSanitizer: data race /home/zmick2/simple_race.c:7 Thread1
+==================
+ThreadSanitizer: reported 1 warnings
+</code></pre></div></div>
+<p>If we compiled with the debug flag, then it would give us the variable name as well.</p>
+<p>Introduction: http://www.cs.cmu.edu/~gilpin/tutorial/</p>
+<div class="pad"><div class="card">
+<h4 id="setting-breakpoints-programmatically">Setting breakpoints programmatically</h4>
+
+<p>A very useful trick when debugging complex C programs with GDB is setting breakpoints in the source code.</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>gcc main.c <span class="nt">-g</span> <span class="nt">-o</span> main <span class="o">&amp;&amp;</span> ./main
+<span class="o">(</span>gdb<span class="o">)</span> r
+<span class="o">[</span>...]
+Program received signal SIGTRAP, Trace/breakpoint trap.
+main <span class="o">()</span> at main.c:6
+6	    val <span class="o">=</span> 7<span class="p">;</span>
+<span class="o">(</span>gdb<span class="o">)</span> p val
+<span class="nv">$1</span> <span class="o">=</span> 42
+</code></pre></div></div>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="checking-memory-content">Checking memory content</h4>
+
+<p>http://www.delorie.com/gnu/docs/gdb/gdb_56.html</p>
+
+<p>For example,</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>gcc main.c <span class="nt">-g</span> <span class="nt">-o</span> main <span class="o">&amp;&amp;</span> ./main
+<span class="nv">$ </span>Cat ZVQ� <span class="err">$</span>
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">(</span>gdb<span class="o">)</span> l
+1	<span class="c">#include &lt;stdio.h&gt;</span>
+2	int main<span class="o">()</span> <span class="o">{</span>
+3	    char bad_string[3] <span class="o">=</span> <span class="o">{</span><span class="s1">'C'</span>, <span class="s1">'a'</span>, <span class="s1">'t'</span><span class="o">}</span><span class="p">;</span>
+4	    <span class="nb">printf</span><span class="o">(</span><span class="s2">"%s"</span>, bad_string<span class="o">)</span><span class="p">;</span>
+5	<span class="o">}</span>
+<span class="o">(</span>gdb<span class="o">)</span> b 4
+Breakpoint 1 at 0x100000f57: file main.c, line 4.
+<span class="o">(</span>gdb<span class="o">)</span> r
+<span class="o">[</span>...]
+Breakpoint 1, main <span class="o">()</span> at main.c:4
+4	    <span class="nb">printf</span><span class="o">(</span><span class="s2">"%s"</span>, bad_string<span class="o">)</span><span class="p">;</span>
+<span class="o">(</span>gdb<span class="o">)</span> x/16xb bad_string
+0x7fff5fbff9cd:	0x63	0x61	0x74	0xe0	0xf9	0xbf	0x5f	0xff
+0x7fff5fbff9d5:	0x7f	0x00	0x00	0xfd	0xb5	0x23	0x89	0xff
+
+<span class="o">(</span>gdb<span class="o">)</span>
+</code></pre></div></div>
+
+<p>Here, by using the <code class="highlighter-rouge">x</code> command with parameters <code class="highlighter-rouge">16xb</code>, we can see that starting at memory address <code class="highlighter-rouge">0x7fff5fbff9c</code> (value of <code class="highlighter-rouge">bad_string</code>), printf would actually see the following sequence of bytes as a string because we provided a malformed string without a null terminator.</p>
+
+<p><code class="highlighter-rouge">0x63 0x61 0x74 0xe0 0xf9 0xbf 0x5f 0xff 0x7f 0x00</code></p>
+
+<div align="center">
+<a href="/wikibook/c-programming-part-4-strings-and-structs.html#" class="fancy-link wiki-link">
+Back: C Programming, Part 4: Strings and Structs
+</a>
+| <a href="/wikibook/c-programming-review-questions.html#" class="fancy-link wiki-link">
+Back: C Programming, Review Questions
+</a>
+</div>
+</div></div>
+</div></div></div>
+</div></div>
+
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/c-programming-part-5-debugging.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

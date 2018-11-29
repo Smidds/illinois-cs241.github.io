@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Pthreads, Part 2: Usage in Practice</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Pthreads, Part 2: Usage in Practice
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/Pthreads,-Part-2:-Usage-in-Practice">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_how-do-i-create-a-pthread" href="#how-do-i-create-a-pthread" class="fancy-link">How do I create a pthread?</a></li>
+<li><a id="toc_if-i-call-pthread_create-twice-how-many-stacks-does-my-process-have" href="#if-i-call-pthread_create-twice-how-many-stacks-does-my-process-have" class="fancy-link">If I call <code class="highlighter-rouge">pthread_create</code> twice, how many stacks does my process have?</a></li>
+<li><a id="toc_what-is-the-difference-between-a-full-process-and-a-thread" href="#what-is-the-difference-between-a-full-process-and-a-thread" class="fancy-link">What is the difference between a full process and a thread?</a></li>
+<li><a id="toc_what-does-pthread_cancel-do" href="#what-does-pthread_cancel-do" class="fancy-link">What does <code class="highlighter-rouge">pthread_cancel</code> do?</a></li>
+<li><a id="toc_what-is-the-difference-between-exit-and-pthread_exit" href="#what-is-the-difference-between-exit-and-pthread_exit" class="fancy-link">What is the difference between <code class="highlighter-rouge">exit</code> and <code class="highlighter-rouge">pthread_exit</code>?</a></li>
+<li><a id="toc_how-can-a-thread-be-terminated" href="#how-can-a-thread-be-terminated" class="fancy-link">How can a thread be terminated?</a></li>
+<li><a id="toc_what-is-the-purpose-of-pthread_join" href="#what-is-the-purpose-of-pthread_join" class="fancy-link">What is the purpose of pthread_join?</a></li>
+<li><a id="toc_what-happens-if-you-dont-call-pthread_join" href="#what-happens-if-you-dont-call-pthread_join" class="fancy-link">What happens if you don’t call <code class="highlighter-rouge">pthread_join</code>?</a></li>
+<li><a id="toc_should-i-use-pthread_exit-or-pthread_join" href="#should-i-use-pthread_exit-or-pthread_join" class="fancy-link">Should I use <code class="highlighter-rouge">pthread_exit</code> or <code class="highlighter-rouge">pthread_join</code>?</a></li>
+<li><a id="toc_can-you-pass-pointers-to-stack-variables-from-one-thread-to-another" href="#can-you-pass-pointers-to-stack-variables-from-one-thread-to-another" class="fancy-link">Can you pass pointers to stack variables from one thread to another?</a></li>
+<li><a id="toc_how-can-i-create-ten-threads-with-different-starting-values" href="#how-can-i-create-ten-threads-with-different-starting-values" class="fancy-link">How can I create ten threads with different starting values.</a></li>
+<li><a id="toc_why-are-some-functions-eg--asctimegetenv-strtok-strerror--not-thread-safe" href="#why-are-some-functions-eg--asctimegetenv-strtok-strerror--not-thread-safe" class="fancy-link">Why are some functions e.g.  asctime,getenv, strtok, strerror  not thread-safe?</a></li>
+<li><a id="toc_what-are-condition-variables-semaphores-mutexes" href="#what-are-condition-variables-semaphores-mutexes" class="fancy-link">What are condition variables, semaphores, mutexes?</a></li>
+<li><a id="toc_are-there-any-advantages-of-using-threads-over-forking-processes" href="#are-there-any-advantages-of-using-threads-over-forking-processes" class="fancy-link">Are there any advantages of using threads over forking processes?</a></li>
+<li><a id="toc_are-there-any-dis-advantages-of-using-threads-over-forking-processes" href="#are-there-any-dis-advantages-of-using-threads-over-forking-processes" class="fancy-link">Are there any dis-advantages of using threads over forking processes?</a></li>
+<li><a id="toc_can-you-fork-a-process-with-multiple-threads" href="#can-you-fork-a-process-with-multiple-threads" class="fancy-link">Can you fork a process with multiple threads?</a></li>
+<li><a id="toc_are-there-other-reasons-where-fork-might-be-preferable-to-creating-a-thread" href="#are-there-other-reasons-where-fork-might-be-preferable-to-creating-a-thread" class="fancy-link">Are there other reasons where <code class="highlighter-rouge">fork</code> might be preferable to creating a thread.</a></li>
+<li><a id="toc_how-can-i-find-out-more" href="#how-can-i-find-out-more" class="fancy-link">How can I find out more?</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-create-a-pthread" class="title-text">How do I create a pthread?<a class="anchor title-text" href="#how-do-i-create-a-pthread">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>See <a href="/wikibook/pthreads-part-1-introduction.html#" class="fancy-link wiki-link">Pthreads Part 1</a> which introduces <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_create" class="fancy-link">pthread_create</a></code> and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_join" class="fancy-link">pthread_join</a></code></p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="if-i-call-pthread_create-twice-how-many-stacks-does-my-process-have" class="title-text">If I call <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_create" class="fancy-link">pthread_create</a></code> twice, how many stacks does my process have?<a class="anchor title-text" href="#if-i-call-pthread_create-twice-how-many-stacks-does-my-process-have">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Your process will contain three stacks - one for each thread. The first thread is created when the process starts, and you created two more. Actually there can be more stacks than this, but let’s ignore that complication for now. The important idea is that each thread requires a stack because the stack contains automatic variables and the old CPU PC register, so that it can back to executing the calling function after the function is finished.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-the-difference-between-a-full-process-and-a-thread" class="title-text">What is the difference between a full process and a thread?<a class="anchor title-text" href="#what-is-the-difference-between-a-full-process-and-a-thread">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>In addition, unlike processes, threads within the same process can share the same global memory (data and heap segments).</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-does-pthread_cancel-do" class="title-text">What does <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cancel" class="fancy-link">pthread_cancel</a></code> do?<a class="anchor title-text" href="#what-does-pthread_cancel-do">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Stops a thread. Note the thread may not actually be stopped immediately. For example it can be terminated when the thread makes an operating system call (e.g. <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code>).</p>
+<p>In practice, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cancel" class="fancy-link">pthread_cancel</a></code> is rarely used because it does not give a thread an opportunity to clean up after itself (for example, it may have opened some files).
+An alternative implementation is to use a boolean (int) variable whose value is used to inform other threads that they should finish and clean up.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-the-difference-between-exit-and-pthread_exit" class="title-text">What is the difference between <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/exit" class="fancy-link">exit</a></code> and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_exit" class="fancy-link">pthread_exit</a></code>?<a class="anchor title-text" href="#what-is-the-difference-between-exit-and-pthread_exit">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p><code class="highlighter-rouge">exit(42)</code> exits the entire process and sets the processes exit value.  This is equivalent to <code class="highlighter-rouge">return 42</code> in the main method. All threads inside the process are stopped.</p>
+<p><code class="highlighter-rouge">pthread_exit(void *)</code> only stops the calling thread i.e. the thread never returns after calling <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_exit" class="fancy-link">pthread_exit</a></code>. The pthread library will automatically finish the process if there are no other threads running. <code class="highlighter-rouge">pthread_exit(...)</code> is equivalent to returning from the thread’s function; both finish the thread and also set the return value (void *pointer) for the thread.</p>
+<p>Calling <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_exit" class="fancy-link">pthread_exit</a></code> in the the <code class="highlighter-rouge">main</code> thread is a common way for simple programs to ensure that all threads finish. For example, in the following program, the  <code class="highlighter-rouge">myfunc</code> threads will probably not have time to get started.</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>The next two programs will wait for the new threads to finish-</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>Alternatively, we join on each thread (i.e. wait for it to finish) before we return from main (or call exit).</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>Note the pthread_exit version creates thread zombies, however this is not a long-running processes, so we don’t care.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-can-a-thread-be-terminated" class="title-text">How can a thread be terminated?<a class="anchor title-text" href="#how-can-a-thread-be-terminated">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>Returning from the thread function</li>
+  <li>Calling <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_exit" class="fancy-link">pthread_exit</a></code>
+</li>
+  <li>Cancelling the thread with <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cancel" class="fancy-link">pthread_cancel</a></code>
+</li>
+  <li>Terminating the process (e.g. SIGTERM); exit(); returning from <code class="highlighter-rouge">main</code>
+</li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-the-purpose-of-pthread_join" class="title-text">What is the purpose of pthread_join?<a class="anchor title-text" href="#what-is-the-purpose-of-pthread_join">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>Wait for a thread to finish</li>
+  <li>Clean up thread resources</li>
+  <li>Grabs the return value of the thread</li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-happens-if-you-dont-call-pthread_join" class="title-text">What happens if you don’t call <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_join" class="fancy-link">pthread_join</a></code>?<a class="anchor title-text" href="#what-happens-if-you-dont-call-pthread_join">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Finished threads will continue to consume resources. Eventually, if enough threads are created, <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_create" class="fancy-link">pthread_create</a></code> will fail.
+In practice, this is only an issue for long-running processes but is not an issue for simple, short-lived processes as all thread resources are automatically freed when the process exits.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="should-i-use-pthread_exit-or-pthread_join" class="title-text">Should I use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_exit" class="fancy-link">pthread_exit</a></code> or <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_join" class="fancy-link">pthread_join</a></code>?<a class="anchor title-text" href="#should-i-use-pthread_exit-or-pthread_join">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Both <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_exit" class="fancy-link">pthread_exit</a></code> and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_join" class="fancy-link">pthread_join</a></code> will let the other threads finish on their own (even if called in the main thread). However, only <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_join" class="fancy-link">pthread_join</a></code> will return to you when the specified thread finishes. <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_exit" class="fancy-link">pthread_exit</a></code> does not wait and will immediately end your thread and give you no chance to continue executing.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="can-you-pass-pointers-to-stack-variables-from-one-thread-to-another" class="title-text">Can you pass pointers to stack variables from one thread to another?<a class="anchor title-text" href="#can-you-pass-pointers-to-stack-variables-from-one-thread-to-another">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Yes. However you need to be very careful about the lifetime of stack variables.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pthread_t start_threads() {
+  int start = 42;
+  pthread_t tid;
+  pthread_create(&amp;tid, 0, myfunc, &amp;start); // ERROR!
+  return tid;
+}
+</code></pre></div></div>
+<p>The above code is invalid because the function <code class="highlighter-rouge">start_threads</code> will likely return before <code class="highlighter-rouge">myfunc</code> even starts. The function passes the address-of <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/start" class="fancy-link">start</a></code>, however by the time <code class="highlighter-rouge">myfunc</code> is executes, <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/start" class="fancy-link">start</a></code> is no longer in scope and its address will re-used for another variable.</p>
+<p>The following code is valid because the lifetime of the stack variable is longer than the background thread.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>void start_threads() {
+  int start = 42;
+  void *result;
+  pthread_t tid;
+  pthread_create(&amp;tid, 0, myfunc, &amp;start); // OK - start will be valid!
+  pthread_join(tid, &amp;result);
+}
+</code></pre></div></div>
+</div></div></div>
+</div></div>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-can-i-create-ten-threads-with-different-starting-values" class="title-text">How can I create ten threads with different starting values.<a class="anchor title-text" href="#how-can-i-create-ten-threads-with-different-starting-values">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The following code is supposed to start ten threads with values 0,1,2,3,…9
+However, when run prints out <code class="highlighter-rouge">1 7 8 8 8 8 8 8 8 10</code>! Can you see why?</p>
+<pre><code class="language-C"><span class="cp">#include &lt;pthread.h&gt;
+</span>
+</code></pre>
+<p>The above code suffers from a <code class="highlighter-rouge">race condition</code> - the value of i is changing. The new threads start later (in the example output the last thread starts after the loop has finished).</p>
+<p>To overcome this race-condition, we will give each thread a pointer to it’s own data area. For example, for each thread we may want to store the id, a starting value and an output value:</p>
+<pre><code class="language-C"><span class="k">struct</span>
+</code></pre>
+<p>These can be stored in an array -</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>struct T *info = calloc(10 , sizeof(struct T)); // reserve enough bytes for ten T structures
+</code></pre></div></div>
+<p>And each array element passed to each thread -</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pthread_create(&amp;info[i].id, NULL, func, &amp;info[i]);
+</code></pre></div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="why-are-some-functions-eg--asctimegetenv-strtok-strerror--not-thread-safe" class="title-text">Why are some functions e.g.  asctime,getenv, strtok, strerror  not thread-safe?<a class="anchor title-text" href="#why-are-some-functions-eg--asctimegetenv-strtok-strerror--not-thread-safe">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>To answer this, let’s look at a simple function that is also not ‘thread-safe’</p>
+<pre><code class="language-C"><span class="kt">char</span>
+</code></pre>
+<p>In the above code the result buffer is stored in global memory. This is good - we wouldn’t want to return a pointer to an invalid address on the stack, but there’s only one result buffer in the entire memory. If two threads were to use it at the same time then one would corrupt the other:</p>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Time</th>
+      <th>Thread 1</th>
+      <th>Thread 2</th>
+      <th>Comments</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>to_m(5 )</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td> </td>
+      <td>to_m(99)</td>
+      <td>Now both threads will see “Unknown” stored in the result buffer</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-are-condition-variables-semaphores-mutexes" class="title-text">What are condition variables, semaphores, mutexes?<a class="anchor title-text" href="#what-are-condition-variables-semaphores-mutexes">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>These are synchronization locks that are used to prevent race conditions and ensure proper synchronization between threads running in the same program. In addition, these locks are conceptually identical to the primitives used inside the kernel.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="are-there-any-advantages-of-using-threads-over-forking-processes" class="title-text">Are there any advantages of using threads over forking processes?<a class="anchor title-text" href="#are-there-any-advantages-of-using-threads-over-forking-processes">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Yes! Sharing information between threads is easy because threads (of the same process) live inside the same virtual memory space.
+Also, creating a thread is significantly faster than creating(forking) a process.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="are-there-any-dis-advantages-of-using-threads-over-forking-processes" class="title-text">Are there any dis-advantages of using threads over forking processes?<a class="anchor title-text" href="#are-there-any-dis-advantages-of-using-threads-over-forking-processes">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Yes! No- isolation! As threads live inside the same process, one thread has access to the same virtual memory as the other threads. A single thread can terminate the entire process (e.g. by trying to read address zero).</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="can-you-fork-a-process-with-multiple-threads" class="title-text">Can you fork a process with multiple threads?<a class="anchor title-text" href="#can-you-fork-a-process-with-multiple-threads">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Yes! However the child process only has a single thread (which is a clone of the thread that called <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code>. We can see this as a simple example, where the background threads never print out a second message in the child process.</p>
+<pre><code class="language-C"><span class="cp">#include &lt;pthread.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+</span>
+</code></pre>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>8970:New Thread One starting up...
+8970:fork()ing complete
+8973:fork()ing complete
+8970:New Thread Two starting up...
+8970:New Thread Two finishing...
+8970:New Thread One finishing...
+8970:Main thread finished
+8973:Main thread finished
+</code></pre></div></div>
+<p>In practice, creating threads before forking can lead to unexpected errors because (as demonstrated above) the other threads are immediately terminated when forking. Another thread might have just lock a mutex (e.g. by calling malloc) and never unlock it again. Advanced users may find <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_atfork" class="fancy-link">pthread_atfork</a></code> useful however we suggest you usually try to avoid creating threads before forking unless you fully understand the limitations and difficulties of this approach.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="are-there-other-reasons-where-fork-might-be-preferable-to-creating-a-thread" class="title-text">Are there other reasons where <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code> might be preferable to creating a thread.<a class="anchor title-text" href="#are-there-other-reasons-where-fork-might-be-preferable-to-creating-a-thread">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Creating separate processes is useful</p>
+<ul>
+  <li>When more security is desired (for example, Chrome browser uses different processes for different tabs)</li>
+  <li>When running an existing and complete program then a new process is required (e.g. starting ‘gcc’)</li>
+  <li>When you are running into synchronization primitives and each process is operating on something in the system</li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-can-i-find-out-more" class="title-text">How can I find out more?<a class="anchor title-text" href="#how-can-i-find-out-more">#</a>
+</h2></div>
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>See the complete example in the <a href="http://man7.org/linux/man-pages/man3/pthread_create.3.html" class="fancy-link wiki-link">man page</a>
+And the <a href="http://man7.org/linux/man-pages/man7/pthreads.7.html" class="fancy-link wiki-link">pthread reference guide</a>
+ALSO: <a href="http://www.thegeekstuff.com/2012/04/terminate-c-thread/" class="fancy-link wiki-link">Concise third party sample code explaining create, join and exit</a></p></div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/pthreads-part-2-usage-in-practice.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>File System, Part 2: Files are inodes</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              File System, Part 2: Files are inodes
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/File-System,-Part-2:-Files-are-inodes">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_so-how-do-we-implement-a-directory" href="#so-how-do-we-implement-a-directory" class="fancy-link">So… How do we implement a directory?</a></li>
+<li><a id="toc_how-can-i-find-the-inode-number-of-a-file" href="#how-can-i-find-the-inode-number-of-a-file" class="fancy-link">How can I find the inode number of a file?</a></li>
+<li><a id="toc_how-do-i-find-out-meta-information-about-a-file-or-directory" href="#how-do-i-find-out-meta-information-about-a-file-or-directory" class="fancy-link">How do I find out meta-information about a file (or directory)?</a></li>
+<li><a id="toc_how-do-i-list-the-contents-of-a-directory-" href="#how-do-i-list-the-contents-of-a-directory-" class="fancy-link">How do I list the contents of a directory ?</a></li>
+<li><a id="toc_how-do-i-read-the-contents-of-a-directory" href="#how-do-i-read-the-contents-of-a-directory" class="fancy-link">How do I read the contents of a directory?</a></li>
+<li><a id="toc_how-do-i-check-to-see-if-a-file-is-in-the-current-directory" href="#how-do-i-check-to-see-if-a-file-is-in-the-current-directory" class="fancy-link">How do I check to see if a file is in the current directory?</a></li>
+<li><a id="toc_what-are-the-gotchas-of-using-readdir-for-example-to-recursively-search-directories" href="#what-are-the-gotchas-of-using-readdir-for-example-to-recursively-search-directories" class="fancy-link">What are the gotcha’s of using readdir? For example to recursively search directories?</a></li>
+<li><a id="toc_how-do-i-determine-if-a-directory-entry-is-a-directory" href="#how-do-i-determine-if-a-directory-entry-is-a-directory" class="fancy-link">How do I determine if a directory entry is a directory?</a></li>
+<li><a id="toc_does-a-directory-have-an-inode-too" href="#does-a-directory-have-an-inode-too" class="fancy-link">Does a directory have an inode too?</a></li>
+<li><a id="toc_how-can-i-have-the-same-file-appear-in-two-different-places-in-my-file-system" href="#how-can-i-have-the-same-file-appear-in-two-different-places-in-my-file-system" class="fancy-link">How can I have the same file appear in two different places in my file system?</a></li>
+<li><a id="toc_what-happens-when-i-rm-remove-a-file" href="#what-happens-when-i-rm-remove-a-file" class="fancy-link">What happens when I <code class="highlighter-rouge">rm</code> (remove) a file?</a></li>
+<li><a id="toc_case-study-back-up-software-that-minimizes-file-duplication" href="#case-study-back-up-software-that-minimizes-file-duplication" class="fancy-link">Case study: Back up software that minimizes file duplication</a></li>
+<li><a id="toc_can-i-create-hard-links-to-directories-as-well-as-regular-files" href="#can-i-create-hard-links-to-directories-as-well-as-regular-files" class="fancy-link">Can I create hard links to directories as well as regular files?</a></li>
+<li><a id="toc_why-does-posix-prevent-hard-links-to-directories" href="#why-does-posix-prevent-hard-links-to-directories" class="fancy-link">Why does POSIX prevent hard links to directories?</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<p>Big idea: Forget names of files: The ‘inode’ is the file.</p>
+
+<p>It is common to think of the file name as the ‘actual’ file. It’s not! Instead consider the inode as the file. The inode holds the meta-information (last accessed, ownership, size) and points to the disk blocks used to hold the file contents.</p>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="so-how-do-we-implement-a-directory" class="title-text">So… How do we implement a directory?<a class="anchor title-text" href="#so-how-do-we-implement-a-directory">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>A directory is just a mapping of names to inode numbers.
+POSIX provides a small set of functions to read the filename and inode number for each entry (see below)</p>
+<p>Let’s think about what it looks like in the actual file system. Theoretically, directories are just like actual files. The disk blocks will contain <em>directory entries</em> or <em>dirents</em>. What that means is that our disk block can look like this</p>
+<p>| inode_num | name |
+|———–|——|
+| 2043567   | hi.txt |
+…</p>
+<p>Each directory entry could either be a fixed size, or a variable c-string. It depends on how the particular filesystem implements it at the lower level.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-can-i-find-the-inode-number-of-a-file" class="title-text">How can I find the inode number of a file?<a class="anchor title-text" href="#how-can-i-find-the-inode-number-of-a-file">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>From a shell, use <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/ls" class="fancy-link">ls</a></code> with the <code class="highlighter-rouge">-i</code> option</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls -i
+12983989 dirlist.c		12984068 sandwich.c
+</code></pre></div></div>
+<p>From C, call one of the stat functions (introduced below).</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-find-out-meta-information-about-a-file-or-directory" class="title-text">How do I find out meta-information about a file (or directory)?<a class="anchor title-text" href="#how-do-i-find-out-meta-information-about-a-file-or-directory">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Use the stat calls. For example, to find out when my ‘notes.txt’ file was last accessed -</p>
+<pre><code class="language-C"><span class="k">struct</span>
+</code></pre>
+<p>There are actually three versions of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stat" class="fancy-link">stat</a></code>;</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>For example you can use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fstat" class="fancy-link">fstat</a></code> to find out the meta-information about a file if you already have an file descriptor associated with that file</p>
+<pre><code class="language-C"><span class="kt">FILE</span>
+</code></pre>
+<p>The third call ‘lstat’ we will discuss when we introduce symbolic links.</p>
+<p>In addition to access,creation, and modified times, the stat structure includes the inode number, length of the file and owner information.</p>
+<pre><code class="language-C"><span class="k">struct</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-list-the-contents-of-a-directory-" class="title-text">How do I list the contents of a directory ?<a class="anchor title-text" href="#how-do-i-list-the-contents-of-a-directory-">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Let’s write our own version of ‘ls’ to list the contents of a directory.</p>
+<pre><code class="language-C"><span class="cp">#include &lt;stdio.h&gt;
+#include &lt;dirent.h&gt;
+#include &lt;stdlib.h&gt;
+</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-read-the-contents-of-a-directory" class="title-text">How do I read the contents of a directory?<a class="anchor title-text" href="#how-do-i-read-the-contents-of-a-directory">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Ans: Use opendir readdir closedir
+For example, here’s a very simple implementation of ‘ls’ to list the contents of a directory.</p>
+<pre><code class="language-C"><span class="cp">#include &lt;stdio.h&gt;
+#include &lt;dirent.h&gt;
+#include &lt;stdlib.h&gt;
+</span>
+</code></pre>
+<p>Note: after a call to fork(), either (XOR) the parent or the child can use readdir(), rewinddir() or seekdir(). If both the parent and the child use the above, behavior is undefined.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-check-to-see-if-a-file-is-in-the-current-directory" class="title-text">How do I check to see if a file is in the current directory?<a class="anchor title-text" href="#how-do-i-check-to-see-if-a-file-is-in-the-current-directory">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>For example, to see if a particular directory includes a file (or filename) ‘name’, we might write the following code. (Hint: Can you spot the bug?)</p>
+<pre><code class="language-C"><span class="kt">int</span>
+</code></pre>
+<p>The above code has a subtle bug: It leaks resources! If a matching filename is found then ‘closedir’ is never called as part of the early return. Any file descriptors opened, and any memory allocated, by opendir are never released. This means eventually the process will run out of resources and an <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/open" class="fancy-link">open</a></code> or <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/opendir" class="fancy-link">opendir</a></code> call will fail.</p>
+<p>The fix is to ensure we free up resources in every possible code-path. In the above code this means calling <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/closedir" class="fancy-link">closedir</a></code> before <code class="highlighter-rouge">return 1</code>. Forgetting to release resources is a common C programming bug because there is no support in the C lanaguage to ensure resources are always released with all codepaths.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-are-the-gotchas-of-using-readdir-for-example-to-recursively-search-directories" class="title-text">What are the gotcha’s of using readdir? For example to recursively search directories?<a class="anchor title-text" href="#what-are-the-gotchas-of-using-readdir-for-example-to-recursively-search-directories">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>There are two main gotchas and one consideration:
+The <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/readdir" class="fancy-link">readdir</a></code> function returns “.” (current directory) and “..” (parent directory). If you are looking for sub-directories, you need to explicitly exclude these directories.</p>
+<p>For many applications it’s reasonable to check the current directory first before recursively searching sub-directories. This can be achieved by storing the results in a linked list, or resetting the directory struct to restart from the beginning.</p>
+<p>One final note of caution: <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/readdir" class="fancy-link">readdir</a></code> is not thread-safe! For multi-threaded searches use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/readdir_r" class="fancy-link">readdir_r</a></code> which requires the caller to pass in the address of an existing dirent struct.</p>
+<p>See the man page of readdir for more details.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-determine-if-a-directory-entry-is-a-directory" class="title-text">How do I determine if a directory entry is a directory?<a class="anchor title-text" href="#how-do-i-determine-if-a-directory-entry-is-a-directory">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Ans: Use <code class="highlighter-rouge">S_ISDIR</code> to check the mode bits stored in the stat structure</p>
+<p>And to check if a file is regular file use <code class="highlighter-rouge">S_ISREG</code>,</p>
+<pre><code class="language-C"><span class="k">struct</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="does-a-directory-have-an-inode-too" class="title-text">Does a directory have an inode too?<a class="anchor title-text" href="#does-a-directory-have-an-inode-too">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Yes! Though a better way to think about this, is that a directory (like a file) <em>is</em> an inode (with some data - the directory name and inode contents). It just happens to be a special kind of inode.</p>
+<p>From <a href="http://en.wikipedia.org/wiki/Inode" class="fancy-link wiki-link">Wikipedia</a>:</p>
+<blockquote>
+  <p>Unix directories are lists of association structures, each of which contains one filename and one inode number.</p>
+</blockquote>
+<p>Remember, inodes don’t contain filenames–only other file metadata.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-can-i-have-the-same-file-appear-in-two-different-places-in-my-file-system" class="title-text">How can I have the same file appear in two different places in my file system?<a class="anchor title-text" href="#how-can-i-have-the-same-file-appear-in-two-different-places-in-my-file-system">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>First remember that a file name != the file. Think of the inode as ‘the file’ and a directory as just a list of names with each name mapped to an inode number. Some of those inodes may be regular file inodes, others may be directory inodes.</p>
+<p>If we already have a file on a file system we can create another link to the same inode using the ‘ln’ command</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ln file1.txt blip.txt
+</code></pre></div></div>
+<p>However blip.txt <em>is</em> the same file; if I edit blip I’m editing the same file as ‘file1.txt!’
+We can prove this by showing that both file names refer to the same inode:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls -i file1.txt blip.txt
+134235 file1.txt
+134235 blip.txt
+</code></pre></div></div>
+<p>These kinds of links (aka directory entries) are called ‘hard links’</p>
+<p>The equivalent C call is <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/link" class="fancy-link">link</a></code></p>
+<pre><code class="language-C"><span class="n">link</span>
+</code></pre>
+<p>For simplicity the above examples made hard links inside the same directory however hard links can be created anywhere inside the same filesystem.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-happens-when-i-rm-remove-a-file" class="title-text">What happens when I <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/rm" class="fancy-link">rm</a></code> (remove) a file?<a class="anchor title-text" href="#what-happens-when-i-rm-remove-a-file">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>When you remove a file (using <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/rm" class="fancy-link">rm</a></code> or <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/unlink" class="fancy-link">unlink</a></code>) you are removing an inode reference from a directory.
+However the inode may still be referenced from other directories. In order to determine if the contents of the file are still required, each inode keeps a reference count that is updated whenever a new link is created or destroyed.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="case-study-back-up-software-that-minimizes-file-duplication" class="title-text">Case study: Back up software that minimizes file duplication<a class="anchor title-text" href="#case-study-back-up-software-that-minimizes-file-duplication">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>An example use of hard-links is to efficiently create multiple archives of a file system at different points in time. Once the archive area has a copy of a particular file, then future archives can re-use these archive files rather than creating a duplicate file. Apple’s “Time Machine” software does this.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="can-i-create-hard-links-to-directories-as-well-as-regular-files" class="title-text">Can I create hard links to directories as well as regular files?<a class="anchor title-text" href="#can-i-create-hard-links-to-directories-as-well-as-regular-files">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>No. Well yes. Not really… Actually you didn’t really want to do this, did you?
+The POSIX standard says no you may not! The <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/ln" class="fancy-link">ln</a></code> command will only allow root to do this and only if you provide the <code class="highlighter-rouge">-d</code> option. However even root may not be able to perform this because most filesystems prevent it!</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="why-does-posix-prevent-hard-links-to-directories" class="title-text">Why does POSIX prevent hard links to directories?<a class="anchor title-text" href="#why-does-posix-prevent-hard-links-to-directories">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>The integrity of the file system assumes the directory structure (excluding softlinks which we will talk about later) is a non-cyclic tree that is reachable from the root directory. It becomes expensive to enforce or verify this constraint if directory linking is allowed. Breaking these assumptions can cause file integrity tools to not be able to repair the file system. Recursive searches potentially never terminate and directories can have more than one parent but “..” can only refer to a single parent. All in all, a bad idea.</p></div></div></div>
+</div></div>
+<hr>
+<div align="center">
+<a href="/wikibook/file-system-part-1-introduction.html#" class="fancy-link wiki-link">
+Back: File System, Part 1
+</a> |
+<a href="/wikibook/file-system-part-3-permissions.html#" class="fancy-link wiki-link">
+Next: File System, Part 3
+</a>
+</div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/file-system-part-2-files-are-inodes.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

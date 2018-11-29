@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Synchronization</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Synchronization
+
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<ul>
+  <li>
+<a href="#synchronization" class="fancy-link wiki-link">Synchronization</a>
+    <ul>
+      <li>
+<a href="#mutex" class="fancy-link wiki-link">Mutex</a>
+        <ul>
+          <li><a href="#lifetime" class="fancy-link wiki-link">Lifetime</a></li>
+          <li><a href="#mutex-gotchas" class="fancy-link wiki-link">Mutex Gotchas</a></li>
+          <li><a href="#simplest-complete-example" class="fancy-link wiki-link">Simplest complete example</a></li>
+          <li><a href="#mutex-implementation" class="fancy-link wiki-link">Mutex Implementation</a></li>
+          <li><a href="#implementing-a-mutex-with-hardware" class="fancy-link wiki-link">Implementing a Mutex with hardware</a></li>
+        </ul>
+      </li>
+      <li><a href="#semaphores" class="fancy-link wiki-link">Semaphores</a></li>
+      <li>
+<a href="#condition-variables" class="fancy-link wiki-link">Condition Variables</a>
+        <ul>
+          <li><a href="#example" class="fancy-link wiki-link">Example</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="#thread-safe-data-structures" class="fancy-link wiki-link">Thread Safe Data Structures</a>
+        <ul>
+          <li><a href="#stack-semaphores" class="fancy-link wiki-link">Using semaphores</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="#candidate-solutions" class="fancy-link wiki-link">Candidate Solutions</a>
+        <ul>
+          <li><a href="#turn-based-solutions" class="fancy-link wiki-link">Turn-based solutions</a></li>
+          <li><a href="#desired-properties-for-solutions-to-the-critical-section-problem" class="fancy-link wiki-link">Desired properties for solutions to the Critical Section Problem?</a></li>
+          <li><a href="#turn-and-flag-solutions" class="fancy-link wiki-link">Turn and Flag solutions</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="#working-solutions" class="fancy-link wiki-link">Working Solutions</a>
+        <ul>
+          <li><a href="#what-is-petersons-solution" class="fancy-link wiki-link">What is Peterson’s solution?</a></li>
+          <li><a href="#was-petersons-solution-the-first-solution" class="fancy-link wiki-link">Was Peterson’s solution the first solution?</a></li>
+          <li><a href="#can-i-just-implement-petersons-or-dekkers-algorithm-in-c-or-assembler" class="fancy-link wiki-link">Can I just implement Peterson’s (or Dekkers) algorithm in C or assembler?</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="#implementing-counting-semaphore" class="fancy-link wiki-link">Implementing Counting Semaphore</a>
+        <ul>
+          <li><a href="#other-semaphore-considerations" class="fancy-link wiki-link">Other semaphore considerations</a></li>
+          <li><a href="#how-do-i-wait-for-n-threads-to-reach-a-certain-point-before-continuing-onto-the-next-step" class="fancy-link wiki-link">How do I wait for N threads to reach a certain point before continuing onto the next step?</a></li>
+          <li><a href="#what-is-the-reader-writer-problem" class="fancy-link wiki-link">What is the Reader Writer Problem?</a></li>
+          <li><a href="#attempt-1" class="fancy-link wiki-link">Attempt #1</a></li>
+          <li><a href="#attempt-2" class="fancy-link wiki-link">Attempt #2:</a></li>
+          <li><a href="#attempt-3" class="fancy-link wiki-link">Attempt #3</a></li>
+          <li><a href="#starving-writers" class="fancy-link wiki-link">Starving writers</a></li>
+          <li><a href="#attempt-4" class="fancy-link wiki-link">Attempt #4</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="#Ring%20Buffer" class="fancy-link wiki-link">Ring Buffer</a>
+        <ul>
+          <li><a href="#what-are-gotchas-of-implementing-a-ring-buffer" class="fancy-link wiki-link">What are gotchas of implementing a Ring Buffer?</a></li>
+          <li><a href="#checking-a-multi-threaded-implementation-for-correctness-example-1" class="fancy-link wiki-link">Multithreaded Correctness</a></li>
+          <li><a href="#analysis" class="fancy-link wiki-link">Analysis</a></li>
+          <li><a href="#correct-implementation-of-a-ring-buffer" class="fancy-link wiki-link">Correct implementation of a ring buffer</a></li>
+          <li><a href="#food-for-thought" class="fancy-link wiki-link">Food for thought</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="#process-synchronization" class="fancy-link wiki-link">Process Synchronization</a>
+        <ul>
+          <li><a href="#interruption" class="fancy-link wiki-link">Interruption</a></li>
+          <li><a href="#solution" class="fancy-link wiki-link">Solution</a></li>
+        </ul>
+      </li>
+      <li><a href="#external-resources" class="fancy-link wiki-link">External Resources</a></li>
+      <li><a href="#topics" class="fancy-link wiki-link">Topics</a></li>
+      <li><a href="#questions" class="fancy-link wiki-link">Questions</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p>[1][] <span> </span></p>
+
+
+
+<p>Synchronization are a series of mechanisms to control what threads are allowed to perform what operation at a time. Most of the time, the threads can progress without having to communicate, but every so often two or more threads may want to access a critical section. A critical section is a section of code that can only be executed by one thread at a time, if the program is to function correctly. If two threads (or processes) were to execute code inside the critical section at the same time, it is possible that program may no longer have correct behavior.</p>
+
+<p>Something as simple as incrementing a variable could be a critical section. Incrementing a variable (<span><code class="highlighter-rouge">i++</code></span>) is performed in three individual steps: Copy the memory contents to the CPU register. Increment the value in the CPU. Store the new value in memory. If the memory location is only accessible by one thread (e.g. automatic variable <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/i" class="fancy-link">i</a></code></span> below) then there is no possibility of a race condition and no Critical Section associated with <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/i" class="fancy-link">i</a></code></span>. However the <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/sum" class="fancy-link">sum</a></code></span> variable is a global variable and accessed by two threads. It is possible that two threads may attempt to increment the variable at the same time.</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>Typical output of the above code is <span><code class="highlighter-rouge">ARGGGH sum is &lt;some number less than expected&gt;</code></span> because there is a race condition. The code does not stop two threads from reading-writing <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/sum" class="fancy-link">sum</a></code></span> at the same time. For example, both threads copy the current value of sum into CPU that runs each thread (let’s pick 123). Both threads increment one to their own copy. Both threads write back the value (124). If the threads had accessed the sum at different times then the count would have been 125. A few of the possible different orderings are below.</p>
+
+<p><span> l | r </span>
+Thread 1 &amp; Thread 2
+Load Addr, Add 1 (i=1 locally) &amp; …
+Store (i=1 globally) &amp; …
+… &amp; Load Addr, Add 1 (i=2 locally)
+… &amp; Store (i=2 globally)</p>
+
+<p><span> l | r </span>
+Thread 1 &amp; Thread 2
+Load Addr, Add 1 (i=1 locally) &amp; …
+Store (i=1 globally) &amp; Load Addr, Add 1 (i=1 locally)
+… &amp; Store (i=1 globally)</p>
+
+<p><span> l | r </span>
+Thread 1 &amp; Thread 2
+Load Addr, Add 1 (i=1 locally) &amp; Load Addr, Add 1 (i=1 locally)
+Store (i=1 globally) &amp; Store (i=1 globally)</p>
+
+<p>We would like the first pattern of the code being mutually exclusive. Which leads us to our first synchronization primitive, a Mutex.</p>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="mutex" class="title-text">Mutex<a class="anchor title-text" href="#mutex">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>To ensure only one thread at a time can access a global variable, use a mutex (short for Mutual Exclusion). If one thread is currently inside a critical section we would like another thread to wait until the first thread is complete.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="lifetime" class="title-text">Lifetime</h3>
+<p>There are a few ways of initializing a mutex. You can use the macro <span><code class="highlighter-rouge">PTHREAD_MUTEX_INITIALIZER</code></span> only for global (‘static’) variables. <span><code class="highlighter-rouge">m = PTHREAD_MUTEX_INITIALIZER</code></span> is equivalent to the more general purpose <span><code class="highlighter-rouge">pthread_mutex_init(&amp;m,NULL)</code></span>. The init version includes options to trade performance for additional error-checking and advanced sharing options. You can also call the init function inside of a program for a mutex located on the heap.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Once we are finished with the mutex we should also call <span><code class="highlighter-rouge">pthread_mutex_destroy(&amp;m)</code></span> too. Note, you can only destroy an unlocked mutex. Calling destroy on a destroyed lock, initializing an initialized lock, locking an already locked lock, unlocking an unlocked lock etc are undefined behavior.</p>
+<p>Things to keep in mind about <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/init" class="fancy-link">init</a></code></span> and <span><code class="highlighter-rouge">destroy</code></span></p>
+<ol>
+  <li>
+    <p>Multiple threads init/destroy has undefined behavior</p>
+  </li>
+  <li>
+    <p>Destroying a locked mutex has undefined behavior</p>
+  </li>
+  <li>
+    <p>Basically try to keep to the pattern of one thread initializing a mutex and one and only one thread initializing a mutex.</p>
+  </li>
+  <li>
+    <p>Copying the bytes of the mutex to a new memory location and then using the copy is <em>not</em> supported. To reference a mutex, you have to have a pointer to that memory address.</p>
+  </li>
+</ol>
+<h3 id="mutex-gotchas" class="title-text">Mutex Gotchas</h3>
+<p>Mutexes do not lock variables. A mutex is not that smart - it works with code, not data. If I lock a mutex, the other threads will continue. It’s only when a thread attempts to lock a mutex that is already locked, will the thread have to wait. As soon as the original thread unlocks the mutex, the second (waiting) thread will acquire the lock and be able to continue. The following code creates a mutex that does effectively nothing.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>You can create mutex before fork-ing - however the child and parent process will not share virtual memory and each one will have a mutex independent of the other. Advanced note: There are advanced options using shared memory that allow a child and parent to share a mutex if it’s created with the correct options and uses a shared memory segment. See <a href="http://stackoverflow.com/questions/19172541/procs-fork-and-mutexes" class="fancy-link wiki-link">stackoverflow example</a></p>
+<p>As some other notes, the thread that locks a mutex is the only thread that can unlock it. Each program can have multiple mutex locks, usually one lock per data structure. If you only have one lock, then they may be significant contention for the lock between two threads that was unnecessary. For example if two threads were updating two different counters, it might not be necessary to use the same lock. However, simply creating many locks is insufficient: It’s important to be able to reason about critical sections e.g. it’s important that one thread can’t read two data structures while they are being updated and temporarily in an inconsistent state. There is a small amount of overhead of calling <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_mutex_lock" class="fancy-link">pthread_mutex_lock</a></code></span> and <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_mutex_unlock" class="fancy-link">pthread_mutex_unlock</a></code></span>; however, this is the price you pay for correctly functioning programs!</p>
+<h3 id="simplest-complete-example" class="title-text">Simplest complete example</h3>
+<p>Here is a complete example</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>In the code above, the thread gets the lock to the counting house before entering. The critical section is only the <span><code class="highlighter-rouge">sum+=1</code></span> so the following version is also correct.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>This process runs slower because we lock and unlock the mutex a million times, which is expensive - at least compared with incrementing a variable. In this simple example, we didn’t really need threads - we could have added up twice! A faster multi-thread example would be to add one million using an automatic(local) variable and only then adding it to a shared total after the calculation loop has finished:</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>If I forget to unlock, you get deadlock! We will talk about deadlock a little bit later but what is the problem with this loop if called by multiple threads.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Other possible problems with synchronization.</p>
+<ul>
+  <li>
+    <p>Not unlocking a mutex due to an early return during an error condition</p>
+  </li>
+  <li>
+    <p>Resource leak (not calling <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_mutex_destroy" class="fancy-link">pthread_mutex_destroy</a></code></span>)</p>
+  </li>
+  <li>
+    <p>Using an unitialized mutex or using a mutex that has already been destroyed</p>
+  </li>
+  <li>
+    <p>Locking a mutex twice on a thread without unlocking first</p>
+  </li>
+  <li>
+    <p>Deadlock</p>
+  </li>
+</ul>
+<h3 id="mutex-implementation" class="title-text">Mutex Implementation</h3>
+<p>An incorrect implementation is shown below. The <span><code class="highlighter-rouge">unlock</code></span> function simply unlocks the mutex and returns. The lock function first checks to see if the lock is already locked. If it is currently locked, it will keep checking again until another thread has unlocked the mutex.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Version 1 uses ‘busy-waiting’ (unnecessarily wasting CPU resources) however there is a more serious problem: We have a race-condition! If two threads both called <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/2/lock" class="fancy-link">lock</a></code></span> concurrently it is possible that both threads would read <span><code class="highlighter-rouge">m_locked</code></span> as zero. Thus both threads would believe they have exclusive access to the lock and both threads will continue. Ooops!</p>
+<p>We might attempt to reduce the CPU overhead a little by calling <span><code class="highlighter-rouge">pthread_yield()</code></span> inside the loop - pthread_yield suggests to the operating system that the thread does not use the CPU for a short while, so the CPU may be assigned to threads that are waiting to run. But does not fix the race-condition. We need a better implementation - can you work how to prevent the race-condition?</p>
+<h3 id="implementing-a-mutex-with-hardware" class="title-text">Implementing a Mutex with hardware</h3>
+<p>We can use C11 Atomics to do that perfectly! A complete solution is detailed here. This is a spinlock mutex, <a href="https://locklessinc.com/articles/mutex_cv_futex/" class="fancy-link wiki-link">futex</a> implementations can be found online.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>This is the initialization code, nothing fancy here. We set the state of the mutex to unlocked and set the owner to locked.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Yikes! What does this code do? Well to start it it initializes a variable that we will keep as the unlocked state. <a href="https://en.wikipedia.org/wiki/Compare-and-swap" class="fancy-link wiki-link">Atomic Compare and Exchange</a> is an instruction supported by most modern architectures (on x86 it’s <span><code class="highlighter-rouge">lock cmpxchg</code></span>). The pseudocode for this operation looks like this</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Except it is all done <em>atomically</em> meaning in one uninterruptible operation. What does the <em>weak</em> part mean? Well atomic instructions are prone to <strong>spurious failures</strong> meaning that there are two versions to these atomic functions a <em>strong</em> and a <em>weak</em> part, strong guarantees the success or failure while weak may fail. We are using weak because weak is faster, and we are in a loop! That means we are okay if it fails a little bit more often because we will just keep spinning around anyway.</p>
+<p>Inside the while loop, we have failed to grab the lock! We reset zero to unlocked and sleep for a little while. When we wake up we try to grab the lock again. Once we successfully swap, we are in the critical section! We set the mutex’s owner to the current thread for the unlock method and return successful.</p>
+<p>How does this guarantee mutual exclusion, when working with atomics we are not entirely sure! But in this simple example we can because the thread that is able to successfully expect the lock to be UNLOCKED (0) and swap it to a LOCKED (1) state is considered the winner. How do we implement unlock?</p>
+<p>What is this memory order business? We were talking about memory fences earlier, here it is! We won’t go into detail because it is outside the scope of this course but not the scope of <a href="https://gcc.gnu.org/wiki/Atomic/GCCMM/AtomicSync" class="fancy-link wiki-link">this article</a>.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>To satisfy the api, you can’t unlock the mutex unless you are the one who owns it. Then we unassign the mutex owner, because critical section is over after the atomic. We want a strong exchange because we don’t want to block (pthread_mutex_unlock doesn’t block). We expect the mutex to be locked, and we swap it to unlock. If the swap was successful, we unlocked the mutex. If the swap wasn’t, that means that the mutex was UNLOCKED and we tried to switch it from UNLOCKED to UNLOCKED, preserving the non blocking of unlock.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="semaphores" class="title-text">Semaphores<a class="anchor title-text" href="#semaphores">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>A counting semaphore is another type of synchronization primitive. It contains a value and supports two operations “wait” and “post”. Post increments the semaphore and immediately returns. “wait” will wait if the count is zero. If the count is non-zero, the semaphore decrements the count and immediately returns. An analogy is a count of the cookies in a cookie jar. Before taking a cookie, call ‘wait’. If there are no cookies left then <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/wait" class="fancy-link">wait</a></code></span> will not return: It will <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/wait" class="fancy-link">wait</a></code></span> until another thread increments the semaphore by calling post. In short, <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/post" class="fancy-link">post</a></code></span> increments and immediately returns whereas <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/wait" class="fancy-link">wait</a></code></span> will wait if the count is zero. Before returning, it will decrement count.</p>
+<p>Using a semaphore is as easy as creating a mutex. First decide if the initial value should be zero or some other value (e.g. the number of remaining spaces in an array). Unlike pthread mutex there are not shortcuts to creating a semaphore - use <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_init" class="fancy-link">sem_init</a></code></span></p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>When using a semaphore, wait and post can be called from different threads! Unlike a mutex, the increment and decrement can be from different threads. This becomes especially useful if you want to use a semaphore to implement a mutex. A mutex is a semaphore that always <span><code class="highlighter-rouge">waits</code></span> before it <span><code class="highlighter-rouge">posts</code></span>. Some textbooks will refer to a mutex as a binary semaphore. You do have to be careful to never add more than one to a semaphore or otherwise your mutex abstraction breaks. That is usually why a mutex is used to implement a semaphore and vice versa.</p>
+<ul>
+  <li>
+    <p>Initialize the semaphore with a count of one.</p>
+  </li>
+  <li>
+    <p>Replace <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_mutex_lock" class="fancy-link">pthread_mutex_lock</a></code></span> with <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_wait" class="fancy-link">sem_wait</a></code></span></p>
+  </li>
+  <li>
+    <p>Replace <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_mutex_unlock" class="fancy-link">pthread_mutex_unlock</a></code></span> with <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_post" class="fancy-link">sem_post</a></code></span></p>
+  </li>
+</ul>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Also, keyword<span>sem_post</span> is one of a handful of functions that can be correctly used inside a signal handler (<span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_mutex_unlock" class="fancy-link">pthread_mutex_unlock</a></code></span> is not). This means we can release a waiting thread which can now make all of the calls that we were not allowed to call inside the signal handler itself e.g. <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code></span>.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="condition-variables" class="title-text">Condition Variables<a class="anchor title-text" href="#condition-variables">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Condition variables allow a set of threads to sleep until woken up! You can wake up one thread or all threads that are sleeping. If you only wake one thread then the operating system will decide which thread to wake up. You don’t wake threads directly instead you ‘signal’ the condition variable, which then will wake up one (or all) threads that are sleeping inside the condition variable.</p>
+<p>Condition variables are also generally used with a mutex and with a loop, so when woken up they have to check a condition in a critical section. If you just need to be woken up not in a critical section, there are other ways to do this in POSIX. Threads sleeping inside a condition variable are woken up by calling <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_broadcast" class="fancy-link">pthread_cond_broadcast</a></code></span> (wake up all) or <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_signal" class="fancy-link">pthread_cond_signal</a></code></span> (wake up one). Note despite the function name, this has nothing to do with POSIX <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/signal" class="fancy-link">signal</a></code></span>s!</p>
+<p>Occasionally a waiting thread may appear to wake up for no reason (this is called a <em>spurious wake</em>)! This is not an issue because you always use <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/wait" class="fancy-link">wait</a></code></span> inside a loop that tests a condition that must be true to continue.</p>
+<p>Why do spurious wakeups happen? For performance. On multi-CPU systems it is possible that a race-condition could cause a wake-up (signal) request to be unnoticed. The kernel may not detect this lost wake-up call but can detect when it might occur. To avoid the potential lost signal the thread is woken up so that the program code can test the condition again.</p>
+<h3 id="example" class="title-text">Example</h3>
+<p>The call <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_wait" class="fancy-link">pthread_cond_wait</a></code></span> performs three actions:</p>
+<ol>
+  <li>
+    <p>Unlock the mutex</p>
+  </li>
+  <li>
+    <p>Sleeps until <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_signal" class="fancy-link">pthread_cond_signal</a></code></span> is called on the same condition variable)</p>
+  </li>
+  <li>
+    <p>Before returning, locks the mutex</p>
+  </li>
+</ol>
+<p>Condition variables are <em>always</em> used with a mutex lock. Before calling <em>wait</em>, the mutex lock must be locked and <em>wait</em> must be wrapped with a loop.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="thread-safe-data-structures" class="title-text">Thread Safe Data Structures<a class="anchor title-text" href="#thread-safe-data-structures">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>To paraphrase Wikipedia,</p>
+<p>An operation (or set of operations) is atomic or uninterruptible if it appears to the rest of the system to occur instantaneously. Without locks, only simple CPU instructions (“read this byte from memory”) are atomic (indivisible). On a single CPU system or inside kernels, one could temporarily disable interrupts (so a sequence of operations cannot be interrupted) but in practice atomicity is achieved by using synchronization primitives, typically a mutex lock.</p>
+<p>Incrementing a variable (<span><code class="highlighter-rouge">i++</code></span>) is <em>not</em> atomic because it requires three distinct steps: Copying the bit pattern from memory into the CPU; performing a calculation using the CPU’s registers; copying the bit pattern back to memory. During this increment sequence, another thread or process can still read the old value and other writes to the same memory would also be over-written when the increment sequence completes.</p>
+<p>As such, we can use the tools in the previous section in order to make our data structures thread safe. For the most part, we will be using mutexes because they carry more semantic meaning than a binary semaphore. Note, this is just an introduction - writing high-performance thread-safe data structures requires its own book!</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Version 1 of the stack is not thread-safe because if two threads call push or pop at the same time then the results or the stack can be inconsistent. For example, imagine if two threads call pop at the same time then both threads may read the same value, both may read the original count value.</p>
+<p>To turn this into a thread-safe data structure we need to identify the <em>critical sections</em> of our code i.e. which section(s) of the code must only have one thread at a time. In the above example the <span><code class="highlighter-rouge">push</code></span>,<span><code class="highlighter-rouge">pop</code></span> and <span><code class="highlighter-rouge">is_empty</code></span> functions access the same variables (i.e. memory) and all critical sections for the stack. While <span><code class="highlighter-rouge">push</code></span> (and <span><code class="highlighter-rouge">pop</code></span>) is executing, the datastructure is an inconsistent state (for example the count may not have been written to, so may still contain the original value). By wrapping these methods with a mutex we can ensure that only one thread at a time can update (or read) the stack. A candidate ‘solution’ is shown below. Is it correct? If not, how will it fail?</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Version 2 contains at least one error. Take a moment to see if you can the error(s) and work out the consequence(s).</p>
+<p>If three threads called <span><code class="highlighter-rouge">push()</code></span> at the same time the lock <span><code class="highlighter-rouge">m1</code></span> ensures that only one thread at time manipulates the stack (two threads will need to wait until the first thread completes (calls unlock), then a second thread will be allowed to continue into the critical section and finally the third thread will be allowed to continue once the second thread has finished).</p>
+<p>A similar argument applies to concurrent calls (calls at the same time) to <span><code class="highlighter-rouge">pop</code></span>. However version 2 does not prevent push and pop from running at the same time because <span><code class="highlighter-rouge">push</code></span> and <span><code class="highlighter-rouge">pop</code></span> use two different mutex locks. The fix is simple in this case - use the same mutex lock for both the push and pop functions.</p>
+<p>The code has a second error; <span><code class="highlighter-rouge">is_empty</code></span> returns after the comparison and will not unlock the mutex. However the error would not be spotted immediately. For example, suppose one thread calls <span><code class="highlighter-rouge">is_empty</code></span> and a second thread later calls <span><code class="highlighter-rouge">push</code></span>. This thread would mysteriously stop. Using debugger you can discover that the thread is stuck at the lock() method inside the <span><code class="highlighter-rouge">push</code></span> method because the lock was never unlocked by the earlier <span><code class="highlighter-rouge">is_empty</code></span> call. Thus an oversight in one thread led to problems much later in time in an arbitrary other thread.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Version 3 is thread-safe. We have ensured mutual exclusion for all of the critical sections.</p>
+<ul>
+  <li>
+    <p><span><code class="highlighter-rouge">is_empty</code></span> is thread-safe but its result may already be out-of date i.e. the stack may no longer be empty by the time the thread gets the result!</p>
+  </li>
+  <li>
+    <p>There is no protection against underflow (popping on an empty stack) or overflow (pushing onto an already-full stack)</p>
+  </li>
+</ul>
+<p>The latter point can be fixed using counting semaphores. The implementation assumes a single stack. A more general purpose version might include the mutex as part of the memory struct and use pthread_mutex_init to initialize the mutex. For example,</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="using-semaphores" class="title-text">Using semaphores</h3>
+<p>We can also use a counting semaphore to keep track of how many spaces remain and another semaphore to keep to track the number of items in the stack. We will call these two semaphores ‘sremain’ and ‘sitems’. Remember <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_wait" class="fancy-link">sem_wait</a></code></span> will wait if the semaphore’s count has been decremented to zero (by another thread calling sem_post).</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Sketch #2 has implemented the <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/post" class="fancy-link">post</a></code></span> too early. Another thread waiting in push can erroneously attempt to write into a full stack (and similarly a thread waiting in the pop() is allowed to continue too early).</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Sketch 3 implements the correct semaphore logic but can you spot the error?</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Sketch 3 correctly enforces buffer full and buffer empty conditions using semaphores. However there is no <em>mutual exclusion</em>: Two threads can be in the <em>critical section</em> at the same time, which would corrupt the data structure (or least lead to data loss). The fix is to wrap a mutex around the critical section:</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="candidate-solutions" class="title-text">Candidate Solutions<a class="anchor title-text" href="#candidate-solutions">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>As already discussed, there are critical parts of our code that can only be executed by one thread at a time. We describe this requirement as ‘mutual exclusion’; only one thread (or process) may have access to the shared resource. In multi-threaded programs, we can wrap a critical section with mutex lock and unlock calls:</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>How would we implement these lock and unlock calls? Can we create an algorithm that assures mutual exclusion?</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>At first glance, the code appears to work; if one thread attempts to locks the mutex, a later thread must wait until the lock is cleared. However this implementation <em>does not satisfy Mutual Exclusion</em>. Let’s take a close look at this ‘implementation’ from the point of view of two threads running around the same time.</p>
+<p><span><strong>Thread ascii art or x86</strong></span></p>
+<p>To simplify the discussion we consider only two threads. Note, these arguments work for threads and processes and the classic CS literature discusses these problem in terms of two processes that need exclusive access (i.e. mutual exclusion) to a critical section or shared resource. Raising a flag represents a thread/process’s intention to enter the critical section.</p>
+<p>Remember that the psuedo-code outlined below is part of a larger program; the thread or process will typically need to enter the critical section many times during the lifetime of the process. So imagine each example as wrapped inside a loop where for a random amount of time the thread or process is working on something else.</p>
+<p>Is there anything wrong with candidate solution described below?</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// Candidate #1
+wait until your flag is lowered
+raise my flag
+// Do Critical Section stuff
+lower my flag 
+</code></pre></div></div>
+<p>Answer: Candidate solution #1 also suffers a race condition i.e. it does not satisfy Mutual Exclusion because both threads/processes could read each other’s flag value (=lowered) and continue.</p>
+<p>This suggests we should raise the flag <em>before</em> checking the other thread’s flag - which is candidate solution #2 below.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// Candidate #2
+raise my flag
+wait until your flag is lowered
+// Do Critical Section stuff
+lower my flag 
+</code></pre></div></div>
+<p>Candidate #2 satisfies mutual exclusion - it is impossible for two threads to be inside the critical section at the same time. However this code suffers from deadlock! Suppose two threads wish to enter the critical section at the same time:</p>
+<p>Time Thread 1 Thread 2 —–———-——— 1 raise flag 2 raise flag 3 wait … wait … Ooops both threads / processes are now waiting for the other one to lower their flags. Neither one will enter the critical section as both are now stuck forever!</p>
+<p>This suggests we should use a turn-based variable to try to resolve who should proceed.</p>
+<h3 id="turn-based-solutions" class="title-text">Turn-based solutions</h3>
+<p>The following candidate solution #3 uses a turn-based variable to politely allow one thread and then the other to continue</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// Candidate #3
+wait until my turn is myid
+// Do Critical Section stuff
+turn = yourid
+</code></pre></div></div>
+<p>Candidate #3 satisfies mutual exclusion (each thread or process gets exclusive access to the Critical Section), however both threads/processes must take a strict turn-based approach to using the critical section; i.e. they are forced into an alternating critical section access pattern. For example, if thread 1 wishes to read a hashtable every millisecond but another thread writes to a hashtable every second, then the reading thread would have to wait another 999ms before being able to read from the hashtable again. This ‘solution’ is not effective, because our threads should be able to make progress and enter the critical section if no other thread is currently in the critical section.</p>
+<h3 id="desired-properties-for-solutions-to-the-critical-section-problem" class="title-text">Desired properties for solutions to the Critical Section Problem?</h3>
+<p>There are three main desirable properties that we desire in a solution the critical section problem * Mutual Exclusion - the thread/process gets exclusive access; others must wait until it exits the critical section. * Bounded Wait - if the thread/process has to wait, then it should only have to wait for a finite, amount of time (infinite waiting times are not allowed!). The exact definition of bounded wait is that there is an upper (non-infinite) bound on the number of times any other process can enter its critical section before the given process enters. * Progress - if no thread/process is inside the critical section, then the thread/process should be able to proceed (make progress) without having to wait.</p>
+<p>With these ideas in mind let’s examine another candidate solution that uses a turn-based flag only if two threads both required access at the same time.</p>
+<h3 id="turn-and-flag-solutions" class="title-text">Turn and Flag solutions</h3>
+<p>Is the following a correct solution to CSP?</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>\\ Candidate #4
+raise my flag
+if your flag is raised, wait until my turn
+// Do Critical Section stuff
+turn = yourid
+lower my flag
+</code></pre></div></div>
+<p>One instructor and another CS faculty member initially thought so! However, analyzing these solutions is tricky. Even peer-reviewed papers on this specific subject contain incorrect solutions! At first glance it appears to satisfy Mutual Exclusion, Bounded Wait and Progress: The turn-based flag is only used in the event of a tie (so Progress and Bounded Wait is allowed) and mutual exclusion appears to be satisfied. However…. Perhaps you can find a counter-example?</p>
+<p>Candidate #4 fails because a thread does not wait until the other thread lowers their flag. After some thought (or inspiration) the following scenario can be created to demonstrate how Mutual Exclusion is not satisfied.</p>
+<p>Imagine the first thread runs this code twice (so the the turn flag now points to the second thread). While the first thread is still inside the Critical Section, the second thread arrives. The second thread can immediately continue into the Critical Section!</p>
+<p><span>@|l|l|l|l|@</span></p>
+<p>[b]<span>0.07</span>Time</p>
+<p>&amp;</p>
+<p>[b]<span>0.09</span>Turn</p>
+<p>&amp;</p>
+<p>[b]<span>0.15</span>Thread #1</p>
+<p>&amp;</p>
+<p>[b]<span>0.14</span>Thread #2</p>
+<p>[t]<span>0.07</span>1</p>
+<p>&amp;</p>
+<p>[t]<span>0.09</span>2</p>
+<p>&amp;</p>
+<p>[t]<span>0.15</span>raise my flag</p>
+<p>[t]<span>0.07</span>2</p>
+<p>&amp;</p>
+<p>[t]<span>0.09</span>2</p>
+<p>&amp;</p>
+<p>[t]<span>0.15</span>if your flag is raised, wait until my turn</p>
+<p>&amp;</p>
+<p>[t]<span>0.14</span>raise my flag</p>
+<p>[t]<span>0.07</span>3</p>
+<p>&amp;</p>
+<p>[t]<span>0.09</span>2</p>
+<p>&amp;</p>
+<p>[t]<span>0.15</span>// Do Critical Section stuff</p>
+<p>&amp;</p>
+<p>[t]<span>0.14</span>if your flag is raised, wait until my turn(TRUE!)</p>
+<p>[t]<span>0.07</span>4</p>
+<p>&amp;</p>
+<p>[t]<span>0.09</span>2</p>
+<p>&amp;</p>
+<p>[t]<span>0.15</span>// Do Critical Section stuff</p>
+<p>&amp;</p>
+<p>[t]<span>0.14</span>// Do Critical Section stuff - OOPS</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="working-solutions" class="title-text">Working Solutions<a class="anchor title-text" href="#working-solutions">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<h3 id="what-is-petersons-solution" class="title-text">What is Peterson’s solution?</h3>
+<p>Peterson published his novel and surprisingly simple solution in a 2 page paper in 1981. A version of his algorithm is shown below that uses a shared variable <span><code class="highlighter-rouge">turn</code></span>:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>\\ Candidate #5
+raise my flag
+turn = your_id
+wait until your flag is lowered and turn is yourid
+// Do Critical Section stuff
+lower my flag
+</code></pre></div></div>
+<p>This solution satisfies Mutual Exclusion, Bounded Wait and Progress. If thread #2 has set turn to 2 and is currently inside the critical section. Thread #1 arrives, <em>sets the turn back to 1</em> and now waits until thread 2 lowers the flag.</p>
+<p>Link to Peterson’s original article pdf: <a href="http://dl.acm.org/citation.cfm?id=945527" class="fancy-link wiki-link">G. L. Peterson: “Myths About the Mutual Exclusion Problem”, Information Processing Letters 12(3) 1981, 115–116</a></p>
+<h3 id="was-petersons-solution-the-first-solution" class="title-text">Was Peterson’s solution the first solution?</h3>
+<p>No, Dekkers Algorithm (1962) was the first provably correct solution. A version of the algorithm is below.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>raise my flag
+while-loop(your flag is raised) :
+   if it's your turn to win :
+     lower my flag
+     wait while your turn
+     raise my flag
+// Do Critical Section stuff
+set your turn to win
+lower my flag
+</code></pre></div></div>
+<p>Notice how the process’s flag is always raised during the critical section no matter if the loop is iterated zero, once or more times. Further the flag can be interpreted as an immediate intent to enter the critical section. Only if the other process has also raised the flag will one process defer, lower their intent flag and wait.</p>
+<h3 id="can-i-just-implement-petersons-or-dekkers-algorithm-in-c-or-assembler" class="title-text">Can I just implement Peterson’s (or Dekkers) algorithm in C or assembler?</h3>
+<p>Yes - and with a bit searching it is possible even today to find it in production for specific simple mobile processors: Peterson’s algorithm is used to implement low-level Linux Kernel locks for the Tegra mobile processor (a system-on-chip ARM process and GPU core by Nvidia) <a href="Link%20to%20Lock%20Source" class="fancy-link wiki-link">https://android.googlesource.com/kernel/tegra.git/+/android-tegra-3.10/arch/arm/mach-tegra/sleep.S#58</a></p>
+<p>However in general, CPUs and C compilers can re-order CPU instructions or use CPU-core-specific local cache values that are stale if another core updates the shared variables. Thus a simple pseudo-code to C implementation is too naive for most platforms. You can stop reading now.</p>
+<p>Oh… you decided to keep reading. Well, here be dragons! Don’t say we didn’t warn you. Consider this advanced and gnarly topic but (spoiler alert) a happy ending.</p>
+<p>Consider the following code,</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>An efficient compiler would infer that <span><code class="highlighter-rouge">flag2</code></span> variable is never changed inside the loop, so that test can be optimized to <span><code class="highlighter-rouge">while(true)</code></span> Using <span><code class="highlighter-rouge">volatile</code></span> goes someway to prevent compiler optimizations of this kind.</p>
+<p>Independent instructions can be re-ordered by an optimizing compiler or at runtime by an out-of-order execution optimization by the CPU. These sophisticated optimizations if the code requires variables to be modified and checked and a precise order.</p>
+<p>A related challenge is that CPU cores include a data cache to store recently read or modified main memory values. Modified values may not be written back to main memory or re-read from memory immediately. Thus data changes, such as the state of a flag and turn variable in the above examples, may not be shared between two CPU codes.</p>
+<p>But there is happy ending. Fortunately, modern hardware addresses these issues using ‘memory fences’ (also known as memory barrier) CPU instructions to ensure that main memory and the CPUs’ cache is in a reasonable and coherent state. Higher level synchronization primitives, such as <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_mutex_lock" class="fancy-link">pthread_mutex_lock</a></code></span> are will call these CPU instructions as part of their implementation. Thus, in practice, surrounding critical section with a mutex lock and unlock calls is sufficient to ignore these lower-level problems.</p>
+<p>Further reading: we suggest the following web post that discusses implementing Peterson’s algorithm on an x86 process and the linux documentation on memory barriers.</p>
+<ol>
+  <li>
+    <p><a href="Memory%20Fences" class="fancy-link wiki-link">http://bartoszmilewski.com/2008/11/05/who-ordered-memory-fences-on-an-x86/</a></p>
+  </li>
+  <li>
+    <p><a href="Memory%20Barriers" class="fancy-link wiki-link">http://lxr.free-electrons.com/source/Documentation/memory-barriers.txt</a></p>
+  </li>
+</ol>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="implementing-counting-semaphore" class="title-text">Implementing Counting Semaphore<a class="anchor title-text" href="#implementing-counting-semaphore">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<ul>
+  <li>
+    <p>We can implement a counting semaphore using condition variables.</p>
+  </li>
+  <li>
+    <p>Each semaphore needs a count, a condition variable and a mutex</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+</ul>
+<p>Implement <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_init" class="fancy-link">sem_init</a></code></span> to initialize the mutex and condition variable</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Our implementation of <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_post" class="fancy-link">sem_post</a></code></span> needs to increment the count. We will also wake up any threads sleeping inside the condition variable. Notice we lock and unlock the mutex so only one thread can be inside the critical section at a time.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Our implementation of <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_wait" class="fancy-link">sem_wait</a></code></span> may need to sleep if the semaphore’s count is zero. Just like <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_post" class="fancy-link">sem_post</a></code></span> we wrap the critical section using the lock (so only one thread can be executing our code at a time). Notice if the thread does need to wait then the mutex will be unlocked, allowing another thread to enter <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_post" class="fancy-link">sem_post</a></code></span> and waken us from our sleep!</p>
+<p>Notice that even if a thread is woken up, before it returns from <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_wait" class="fancy-link">pthread_cond_wait</a></code></span> it must re-acquire the lock, so it will have to wait a little bit more (e.g. until sem_post finishes).</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p><strong>Wait <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_post" class="fancy-link">sem_post</a></code></span> keeps calling <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_signal" class="fancy-link">pthread_cond_signal</a></code></span> won’t that break sem_wait?</strong> Answer: No! We can’t get past the loop until the count is non-zero. In practice this means <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_post" class="fancy-link">sem_post</a></code></span> would unnecessary call <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_signal" class="fancy-link">pthread_cond_signal</a></code></span> even if there are no waiting threads. A more efficient implementation would only call <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_signal" class="fancy-link">pthread_cond_signal</a></code></span> when necessary i.e.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="other-semaphore-considerations" class="title-text">Other semaphore considerations</h3>
+<ul>
+  <li>
+    <p>Real semaphores implementation include a queue and scheduling concerns to ensure fairness and priority e.g. wake up the highest-priority longest sleeping thread.</p>
+  </li>
+  <li>
+    <p>Also, an advanced use of <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_init" class="fancy-link">sem_init</a></code></span> allows semaphores to be shared across processes. Our implementation only works for threads inside the same process.</p>
+  </li>
+</ul>
+<h3 id="how-do-i-wait-for-n-threads-to-reach-a-certain-point-before-continuing-onto-the-next-step" class="title-text">How do I wait for N threads to reach a certain point before continuing onto the next step?</h3>
+<p>Suppose we wanted to perform a multi-threaded calculation that has two stages, but we don’t want to advance to the second stage until the first stage is completed.</p>
+<p>We could use a synchronization method called a <strong>barrier</strong>. When a thread reaches a barrier, it will wait at the barrier until all the threads reach the barrier, and then they’ll all proceed together.</p>
+<p>Think of it like being out for a hike with some friends. You agree to wait for each other at the top of each hill (and you make a mental note how many are in your group). Say you’re the first one to reach the top of the first hill. You’ll wait there at the top for your friends. One by one, they’ll arrive at the top, but nobody will continue until the last person in your group arrives. Once they do, you’ll all proceed.</p>
+<p>Pthreads has a function <span><code class="highlighter-rouge">pthread_barrier_wait()</code></span> that implements this. You’ll need to declare a <span><code class="highlighter-rouge">pthread_barrier_t</code></span> variable and initialize it with <span><code class="highlighter-rouge">pthread_barrier_init()</code></span>. <span><code class="highlighter-rouge">pthread_barrier_init()</code></span> takes the number of threads that will be participating in the barrier as an argument. <a href="/wikibook/sample-program-using-pthread-barriers.html#" class="fancy-link wiki-link">Here’s an example.</a></p>
+<p>Now let’s implement our own barrier and use it to keep all the threads in sync in a large calculation.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>The thread function has four main parts-</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Our main thread will create the 16 threads and we will divide each calculation into 16 separate pieces. Each thread will be given a unique value (0,1,2,..15), so it can work on its own block. Since a (void*) type can hold small integers, we will pass the value of <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/i" class="fancy-link">i</a></code></span> by casting it to a void pointer.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Note, we will never dereference this pointer value as an actual memory location - we will just cast it straight back to an integer:</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>After calculation 1 completes, we need to wait for the slower threads (unless we are the last thread!). So, keep track of the number of threads that have arrived at our barrier aka ‘checkpoint’:</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>However the above code has a race condition (two threads might try to decrement <span><code class="highlighter-rouge">remain</code></span>) and the loop is a busy loop. We can do better! Let’s use a condition variable and then we will use a broadcast/signal functions to wake up the sleeping threads.</p>
+<p>A reminder, that a condition variable is similar to a house! Threads go there to sleep (<span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_wait" class="fancy-link">pthread_cond_wait</a></code></span>). You can choose to wake up one thread (<span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_signal" class="fancy-link">pthread_cond_signal</a></code></span>) or all of them (<span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_broadcast" class="fancy-link">pthread_cond_broadcast</a></code></span>). If there are no threads currently waiting then these two calls have no effect.</p>
+<p>A condition variable version is usually very similar to a busy loop incorrect solution - as we will show next. First, let’s add a mutex and condition global variables and don’t forget to initialize them in <span><code class="highlighter-rouge">main</code></span> …</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>We will use the mutex to ensure that only one thread modifies <span><code class="highlighter-rouge">remain</code></span> at a time. The last arriving thread needs to wake up <em>all</em> sleeping threads - so we will use <span><code class="highlighter-rouge">pthread_cond_broadcast(&amp;cv)</code></span> not <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_signal" class="fancy-link">pthread_cond_signal</a></code></span></p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>When a thread enters <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_wait" class="fancy-link">pthread_cond_wait</a></code></span>, it releases the mutex and sleeps. At some point in the future, it will be awoken. Once we bring a thread back from its sleep, before returning it must wait until it can lock the mutex. Notice that even if a sleeping thread wakes up early, it will check the while loop condition and re-enter wait if necessary.</p>
+<p><strong>The above barrier is not reusable</strong> Meaning that if we stick it into any old calculation loop there is a good chance that the code will encounter a condition where the barrier either deadlocks or a thread races ahead one iteration faster. Think about how you can make the above barrier reusable, meaning that if mutliple threads call <span><code class="highlighter-rouge">barrier_wait</code></span> in a loop then one can guarantee that they are on the same iteration.</p>
+<h3 id="what-is-the-reader-writer-problem" class="title-text">What is the Reader Writer Problem?</h3>
+<p>Imagine you had a key-value map data structure which is used by many threads. Multiple threads should be able to look up (read) values at the same time provided the data structure is not being written to. The writers are not so gregarious - to avoid data corruption, only one thread at a time may modify (<span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code></span>) the data structure (and no readers may be reading at that time).</p>
+<p>This is an example of the <em>Reader Writer Problem</em>. Namely how can we efficiently synchronize multiple readers and writers such that multiple readers can read together but a writer gets exclusive access?</p>
+<p>An incorrect attempt is shown below (“lock” is a shorthand for <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_mutex_lock" class="fancy-link">pthread_mutex_lock</a></code></span>):</p>
+<h3 id="attempt-1" class="title-text">Attempt #1</h3>
+<p>At least our first attempt does not suffer from data corruption (readers must wait while a writer is writing and vice versa)! However readers must also wait for other readers. So let’s try another implementation..</p>
+<h3 id="attempt-2" class="title-text">Attempt #2:</h3>
+<p>Our second attempt suffers from a race condition - imagine if two threads both called <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/read" class="fancy-link">read</a></code></span> and <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code></span> (or both called write) at the same time. Both threads would be able to proceed! Secondly, we can have multiple readers and multiple writers, so lets keep track of the total number of readers or writers. Which brings us to attempt #3,</p>
+<h3 id="attempt-3" class="title-text">Attempt #3</h3>
+<p>Remember that <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_wait" class="fancy-link">pthread_cond_wait</a></code></span> performs <em>Three</em> actions. Firstly it atomically unlocks the mutex and then sleeps (until it is woken by <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_signal" class="fancy-link">pthread_cond_signal</a></code></span> or <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_broadcast" class="fancy-link">pthread_cond_broadcast</a></code></span>). Thirdly the awoken thread must re-acquire the mutex lock before returning. Thus only one thread can actually be running inside the critical section defined by the lock and unlock() methods.</p>
+<p>Implementation #3 below ensures that a reader will enter the cond_wait if there are any writers writing.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>However only one reader a time can read because candidate #3 did not unlock the mutex. A better version unlocks before reading :</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Does this mean that a writer and read could read and write at the same time? No! First of all, remember cond_wait requires the thread re-acquire the mutex lock before returning. Thus only one thread can be executing code inside the critical section (marked with **) at a time!</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Writers must wait for everyone. Mutual exclusion is assured by the lock.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Candidate #3 above also uses <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_cond_signal" class="fancy-link">pthread_cond_signal</a></code></span> ; this will only wake up one thread. For example, if many readers are waiting for the writer to complete then only one sleeping reader will be awoken from their slumber. The reader and writer should use <span><code class="highlighter-rouge">cond_broadcast</code></span> so that all threads should wake up and check their while-loop condition.</p>
+<h3 id="starving-writers" class="title-text">Starving writers</h3>
+<p>Candidate #3 above suffers from starvation. If readers are constantly arriving then a writer will never be able to proceed (the ‘reading’ count never reduces to zero). This is known as <em>starvation</em> and would be discovered under heavy loads. Our fix is to implement a bounded-wait for the writer. If a writer arrives they will still need to wait for existing readers however future readers must be placed in a “holding pen” and wait for the writer to finish. The “holding pen” can be implemented using a variable and a condition variable (so that we can wake up the threads once the writer has finished).</p>
+<p>Our plan is that when a writer arrives, and before waiting for current readers to finish, register our intent to write (by incrementing a counter ‘writer’). Sketched below -</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>And incoming readers will not be allowed to continue while writer is nonzero. Notice ‘writer’ indicates a writer has arrived, while ‘reading’ and ‘writing’ counters indicate there is an <em>active</em> reader or writer.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="attempt-4" class="title-text">Attempt #4</h3>
+<p>Below is our first working solution to the Reader-Writer problem. Note if you continue to read about the “Reader Writer problem” then you will discover that we solved the “Second Reader Writer problem” by giving writers preferential access to the lock. This solution is not optimal. However it satisfies our original problem (N active readers, single active writer, avoids starvation of the writer if there is a constant stream of readers).</p>
+<p>Can you identify any improvements? For example, how would you improve the code so that we only woke up readers or one writer?</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="ring-buffer" class="title-text">Ring Buffer<a class="anchor title-text" href="#ring-buffer">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>A ring buffer is a simple, usually fixed-sized, storage mechanism where contiguous memory is treated as if it is circular, and two index counters keep track of the current beginning and end of the queue. As array indexing is not circular, the index counters must wrap around to zero when moved past the end of the array. As data is added (enqueued) to the front of the queue or removed (dequeued) from tail of the queue, the current items in the buffer form a train that appears to circle the track</p>
+<p><img src="https://raw.githubusercontent.com/illinois-cs241/wikibook-project/master/synchronization/images/ring_buffer.png" alt="image"></p>
+<p>A simple (single-threaded) implementation is shown below. Note enqueue and dequeue do not guard against underflow or overflow - it’s possible to add an item when when the queue is full and possible to remove an item when the queue is empty. For example if we added 20 integers (1,2,3…) to the queue and did not dequeue any items then values <span><code class="highlighter-rouge">17,18,19,20</code></span> would overwrite the <span><code class="highlighter-rouge">1,2,3,4</code></span>. We won’t fix this problem right now, instead when we create the multi-threaded version we will ensure enqueue-ing and dequeue-ing threads are blocked while the ring buffer is full or empty respectively.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="what-are-gotchas-of-implementing-a-ring-buffer" class="title-text">What are gotchas of implementing a Ring Buffer?</h3>
+<p>It’s very tempting to write the enqueue or dequeue method in the following compact form (N is the capacity of the buffer e.g. 16):</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>This method would appear to work (pass simple tests etc) but contains a subtle bug. With enough enqueue operations (a bit more than two billion) the int value of <span><code class="highlighter-rouge">in</code></span> will overflow and become negative! The modulo (or ‘remainder’) operator <span>``%</span> preserves the sign. Thus you might end up writing into <span><code class="highlighter-rouge">b[-14]</code></span> for example!</p>
+<p>A compact form is correct uses bit masking provided N is 2^x (16,32,64,…)</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>This buffer does not yet prevent buffer underflow or overflow. For that, we’ll turn to our multi-threaded attempt that will block a thread until there is space or there is at least one item to remove.</p>
+<h3 id="multithreaded-correctness" class="title-text">Multithreaded Correctness</h3>
+<p>The following code is an incorrect implementation. What will happen? Will <span><code class="highlighter-rouge">enqueue</code></span> and/or <span><code class="highlighter-rouge">dequeue</code></span> block? Is mutual exclusion satisfied? Can the buffer underflow? Can the buffer overflow? For clarity <span><code class="highlighter-rouge">pthread_mutex</code></span> is shortened to <span><code class="highlighter-rouge">p_m</code></span> and we assume sem_wait cannot be interrupted.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="analysis" class="title-text">Analysis</h3>
+<p>Before reading on, see how many mistakes you can find. Then determine what would happen if threads called the enqueue and dequeue methods.</p>
+<ul>
+  <li>
+    <p>The enqueue method waits and posts on the same semaphore (s1) and similarly with equeue and (s2) i.e. we decrement the value and then immediately increment the value, so by the end of the function the semaphore value is unchanged!</p>
+  </li>
+  <li>
+    <p>The initial value of s1 is 16, so the semaphore will never be reduced to zero - enqueue will not block if the ring buffer is full - so overflow is possible.</p>
+  </li>
+  <li>
+    <p>The initial value of s2 is zero, so calls to dequeue will always block and never return!</p>
+  </li>
+  <li>
+    <p>The order of mutex lock and sem_wait will need to be swapped (however this example is so broken that this bug has no effect!) ## Checking a multi-threaded implementation for correctness (Example 1)</p>
+  </li>
+</ul>
+<p>The following code is an incorrect implementation. What will happen? Will <span><code class="highlighter-rouge">enqueue</code></span> and/or <span><code class="highlighter-rouge">dequeue</code></span> block? Is mutual exclusion satisfied? Can the buffer underflow? Can the buffer overflow? For clarity <span><code class="highlighter-rouge">pthread_mutex</code></span> is shortened to <span><code class="highlighter-rouge">p_m</code></span> and we assume sem_wait cannot be interrupted.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<div class="pad"><div class="card">
+<h4 id="analysis-1">Analysis</h4>
+
+<ul>
+  <li>
+    <p>The initial value of s2 is 0. Thus enqueue will block on the first call to sem_wait even though the buffer is empty!</p>
+  </li>
+  <li>
+    <p>The initial value of s1 is 16. Thus dequeue will not block on the first call to sem_wait even though the buffer is empty - oops Underflow! The dequeue method will return invalid data.</p>
+  </li>
+  <li>
+    <p>The code does not satisfy Mutual Exclusion; two threads can modify <span><code class="highlighter-rouge">in</code></span> or <span><code class="highlighter-rouge">out</code></span> at the same time! The code appears to use mutex lock. Unfortunately the lock was never initialized with <span><code class="highlighter-rouge">pthread_mutex_init()</code></span> or <span><code class="highlighter-rouge">PTHREAD_MUTEX_INITIALIZER</code></span> - so the lock may not work (<span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_mutex_lock" class="fancy-link">pthread_mutex_lock</a></code></span> may simply do nothing)</p>
+  </li>
+</ul>
+
+<h3 id="correct-implementation-of-a-ring-buffer" class="title-text">Correct implementation of a ring buffer</h3>
+
+<p>The pseudo-code (<span><code class="highlighter-rouge">pthread_mutex</code></span> shortened to <span><code class="highlighter-rouge">p_m</code></span> etc) is shown below.</p>
+
+<p>As the mutex lock is stored in global (static) memory it can be initialized with <span><code class="highlighter-rouge">PTHREAD_MUTEX_INITIALIZER</code></span>.If we had allocated space for the mutex on the heap, then we would have used <span><code class="highlighter-rouge">pthread_mutex_init(ptr, NULL)</code></span></p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>The enqueue method is shown below. Notice: * The lock is only held during the critical section (access to the data structure). * A complete implementation would need to guard against early returns from <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_wait" class="fancy-link">sem_wait</a></code></span> due to POSIX signals.</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>The <span><code class="highlighter-rouge">dequeue</code></span> implementation is shown below. Notice the symmetry of the synchronization calls to <span><code class="highlighter-rouge">enqueue</code></span>. In both cases the functions first wait if the count of spaces or count of items is zero.</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<h3 id="food-for-thought" class="title-text">Food for thought</h3>
+
+<ul>
+  <li>
+    <p>What would happen if the order of <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_mutex_unlock" class="fancy-link">pthread_mutex_unlock</a></code></span> and <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_post" class="fancy-link">sem_post</a></code></span> calls were swapped?</p>
+  </li>
+  <li>
+    <p>What would happen if the order of <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sem_wait" class="fancy-link">sem_wait</a></code></span> and <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/pthread_mutex_lock" class="fancy-link">pthread_mutex_lock</a></code></span> calls were swapped?</p>
+  </li>
+</ul>
+
+</div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="process-synchronization" class="title-text">Process Synchronization<a class="anchor title-text" href="#process-synchronization">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>You thought that you were using different processes, so you don’t have to synchronize? Think again! You may not have race conditions within a process but what if your process needs to interact with the system around it? Let’s consider a motivating example</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>If none of the system calls fail then we should get something that looks like this (given the file was empty to begin with).</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>key1: value1
+key2: value2
+</code></pre></div></div>
+<p>or</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>key2: value2
+key1: value1
+</code></pre></div></div>
+<h3 id="interruption" class="title-text">Interruption</h3>
+<p>But, there is a hidden nuance. Most system calls can be <span><code class="highlighter-rouge">interrupted</code></span> meaning that the operating system can stop an ongoing system call because it needs to stop the process. So barring <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fork" class="fancy-link">fork</a></code></span> <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/wait" class="fancy-link">wait</a></code></span> <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/open" class="fancy-link">open</a></code></span> and <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/close" class="fancy-link">close</a></code></span> from failing – they typically go to completion – what happens if <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code></span> fails? If write fails and no bytes are written, we can get something like <span><code class="highlighter-rouge">key1: value1</code></span> or <span><code class="highlighter-rouge">key2: value2</code></span>. This is data loss which is incorrect but won’t corrupt the file. What happens if write gets interrupted after a partial write? We get all sorts of madness. For example,</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>key2: key1: value1
+</code></pre></div></div>
+<h3 id="solution" class="title-text">Solution</h3>
+<p>So what should we do? We should use a shared mutex! Consider the following code.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>What the code does in main is initialize a process shared mutex using a piece of <span><code class="highlighter-rouge">shared</code></span> memory. You will find out what this call to <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/mmap" class="fancy-link">mmap</a></code></span> does later – just assume for the time being that it create memory that is shared between processes. We can initialize a <span><code class="highlighter-rouge">pthread_mutex_t</code></span> in that special piece of memory and use it as normal. To counter <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code></span> failing, we have put the <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code></span> call inside a while loop that keeps writing so long as there are bytes left to write. Now if all the other system calls function, there should be more more race conditions.</p>
+<p>Most programs try to avoid this problem entirely by writing to separate files, but it is good to know that there are mutexes across processes, and they are useful. You can use all of the primitives that you were taught previously! Barriers, semaphores, and condition variables can all be initialized on a shared piece of memory and used in similar ways to their multithreading counterparts. You don’t need to know the implementation, just need to know that mutexes and other synchronization primitives can be shared across processes and some of the benefits.</p>
+<ul>
+  <li>
+    <p>You don’t have to worry about arbitrary memory addresses becoming race condition candidates. This means that only areas that you specifically <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/mmap" class="fancy-link">mmap</a></code></span> or outside system resources like files are ever in danger.</p>
+  </li>
+  <li>
+    <p>You get the nice isolation of a processes so if one process fails the system can maintain intact</p>
+  </li>
+  <li>
+    <p>When you have a lot of threads, creating a process might ease the system load</p>
+  </li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="external-resources" class="title-text">External Resources<a class="anchor title-text" href="#external-resources">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>
+    <p><a href="http://linux.die.net/man/3/pthread_mutex_lock" class="fancy-link wiki-link">pthread_mutex_lock man page</a></p>
+  </li>
+  <li>
+    <p><a href="http://linux.die.net/man/3/pthread_mutex_unlock" class="fancy-link wiki-link">pthread_mutex_unlock man page</a></p>
+  </li>
+  <li>
+    <p><a href="http://linux.die.net/man/3/pthread_mutex_init" class="fancy-link wiki-link">pthread_mutex_init man page</a></p>
+  </li>
+  <li>
+    <p><a href="http://linux.die.net/man/3/pthread_mutex_destroy" class="fancy-link wiki-link">pthread_mutex_destroy man page</a></p>
+  </li>
+  <li>
+    <p><a href="http://man7.org/linux/man-pages/man3/sem_init.3.html" class="fancy-link wiki-link">sem_init</a></p>
+  </li>
+  <li>
+    <p><a href="http://man7.org/linux/man-pages/man3/sem_wait.3.html" class="fancy-link wiki-link">sem_wait</a></p>
+  </li>
+  <li>
+    <p><a href="http://man7.org/linux/man-pages/man3/sem_post.3.html" class="fancy-link wiki-link">sem_post</a></p>
+  </li>
+  <li>
+    <p><a href="http://man7.org/linux/man-pages/man3/sem_destroy.3.html" class="fancy-link wiki-link">sem_destroy</a></p>
+  </li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="topics" class="title-text">Topics<a class="anchor title-text" href="#topics">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>
+    <p>Atomic operations</p>
+  </li>
+  <li>
+    <p>Critical Section</p>
+  </li>
+  <li>
+    <p>Producer Consumer Problem</p>
+  </li>
+  <li>
+    <p>Using Condition Variables</p>
+  </li>
+  <li>
+    <p>Using Counting Semaphore</p>
+  </li>
+  <li>
+    <p>Implementing a barrier</p>
+  </li>
+  <li>
+    <p>Implementing a ring buffer</p>
+  </li>
+  <li>
+    <p>Using pthread_mutex</p>
+  </li>
+  <li>
+    <p>Implementing producer consumer</p>
+  </li>
+  <li>
+    <p>Analyzing multi-threaded coded</p>
+  </li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="questions" class="title-text">Questions<a class="anchor title-text" href="#questions">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>
+    <p>What is atomic operation?</p>
+  </li>
+  <li>
+    <p>Why will the following not work in parallel code</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+    <p>And this will?</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p>What are some downsides to atomic operations? What would be faster: keeping a local variable or many atomic operations?</p>
+  </li>
+  <li>
+    <p>What is the critical section?</p>
+  </li>
+  <li>
+    <p>Once you have identified a critical section, what is one way of assuring that only one thread will be in the section at a time?</p>
+  </li>
+  <li>
+    <p>Identify the critical section here</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p>How tight can you make the critical section?</p>
+  </li>
+  <li>
+    <p>What is a producer consumer problem? How might the above be a producer consumer problem be used in the above section? How is a producer consumer problem related to a reader writer problem?</p>
+  </li>
+  <li>
+    <p>What is a condition variable? Why is there an advantage to using one over a <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/while" class="fancy-link">while</a></code></span> loop?</p>
+  </li>
+  <li>
+    <p>Why is this code dangerous?</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p>What is a counting semaphore? Give me an analogy to a cookie jar/pizza box/limited food item.</p>
+  </li>
+  <li>
+    <p>What is a thread barrier?</p>
+  </li>
+  <li>
+    <p>Use a counting semaphore to implement a barrier.</p>
+  </li>
+  <li>
+    <p>Write up a Producer/Consumer queue, How about a producer consumer stack?</p>
+  </li>
+  <li>
+    <p>Give me an implementation of a reader-writer lock with condition variables, make a struct with whatever you need, it just needs to be able to support the following functions</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+    <p>The only specification is that in between <span><code class="highlighter-rouge">reader_lock</code></span> and <span><code class="highlighter-rouge">reader_unlock</code></span>, no writers can write. In between the writer locks, only one writer may be writing at a time.</p>
+  </li>
+  <li>
+    <p>Write code to implement a producer consumer using ONLY three counting semaphores. Assume there can be more than one thread calling enqueue and dequeue. Determine the initial value of each semaphore.</p>
+  </li>
+  <li>
+    <p>Write code to implement a producer consumer using condition variables and a mutex. Assume there can be more than one thread calling enqueue and dequeue.</p>
+  </li>
+  <li>
+    <p>Use CVs to implement add(unsigned int) and subtract(unsigned int) blocking functions that never allow the global value to be greater than 100.</p>
+  </li>
+  <li>
+    <p>Use CVs to implement a barrier for 15 threads.</p>
+  </li>
+  <li>
+    <p>How many of the following statements are true?</p>
+  </li>
+  <li>
+    <p>There can be multiple active readers</p>
+  </li>
+  <li>
+    <p>There can be multiple active writers</p>
+  </li>
+  <li>
+    <p>When there is an active writer the number of active readers must be zero</p>
+  </li>
+  <li>
+    <p>If there is an active reader the number of active writers must be zero</p>
+  </li>
+  <li>
+    <p>A writer must wait until the current active readers have finished</p>
+  </li>
+  <li>
+    <p>Todo: Analyzing mulithreaded code snippets</p>
+  </li>
+</ul></div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook_project/Synchronization.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

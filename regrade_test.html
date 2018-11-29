@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Regrade Test</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Regrade Test
+
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_creating-the-grading-folder" href="#creating-the-grading-folder" class="fancy-link">Creating the Grading Folder</a></li>
+<li><a id="toc_creating-the-grading-test" href="#creating-the-grading-test" class="fancy-link">Creating the Grading Test</a></li>
+<li><a id="toc_test-grading-criteria" href="#test-grading-criteria" class="fancy-link">Test Grading Criteria</a></li>
+<li><a id="toc_manual-testing" href="#manual-testing" class="fancy-link">Manual Testing</a></li>
+<li><a id="toc_submission" href="#submission" class="fancy-link">Submission</a></li>
+<li><a id="toc_example-code-test-readme" href="#example-code-test-readme" class="fancy-link">Example Code Test README</a></li>
+<li><a id="toc_example-manual-test-readme" href="#example-manual-test-readme" class="fancy-link">Example Manual Test README</a></li>
+<li><a id="toc_questions" href="#questions" class="fancy-link">Questions?</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<p>Regrades this semester are getting an extra twist. In addition to the two regrades offered, you can choose to do this optional piece for another (1) week of regrades. In order to do this, you’ll need to think like a 241 CA. You’ll need to create a test case for an assignment!</p>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="creating-the-grading-folder" class="title-text">Creating the Grading Folder<a class="anchor title-text" href="#creating-the-grading-folder">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>First you will have to choose an assignment to autograde. You can choose any assignment, just keep in mind that some assignments are easier to set up code test cases than other assignments. These are the steps to create the folder from scratch</p>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span> <span class="nb">cd </span>c241_folder/
+<span class="gp">$</span> <span class="nb">cp</span> <span class="nt">-R</span> <span class="nv">$ASSIGNMENT</span> regrade_test/
+<span class="gp">$</span> <span class="nb">cd </span>regrade_test/
+<span class="gp">$</span> <span class="nb">chmod</span> +wr Makefile
+<span class="gp">$</span> <span class="nb">touch </span>README.md
+<span class="gp">$</span> <span class="nb">touch </span>regrade_test.c
+<span class="gp">$</span> make clean <span class="c"># Don't commit object files</span>
+<span class="gp">$</span> git add <span class="nt">-A</span>
+<span class="gp">$</span> git commit <span class="nt">-m</span> <span class="s2">"Committing initial regrade_test"</span>
+<span class="gp">$</span> git push origin master
+</code></pre></div></div>
+<p>If you ever want to change the assignment that you are doing the regrade execute the following commands and set up the assignment as before.</p>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span> git <span class="nb">rm</span> <span class="nt">-rf</span> regrade_test
+<span class="gp">$</span> git add <span class="nt">-A</span>
+<span class="gp">$</span> git commit <span class="nt">-m</span> <span class="s2">"Deleting regrade tests"</span>
+<span class="gp">$</span> git push origin master
+</code></pre></div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="creating-the-grading-test" class="title-text">Creating the Grading Test<a class="anchor title-text" href="#creating-the-grading-test">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The test should be entirely defined in a file called <code class="highlighter-rouge">regrade_test.c</code>. You should be able to call <code class="highlighter-rouge">make regrade_test</code> and be able to compile the executable <code class="highlighter-rouge">regrade_test</code>. The modifications to the makefile should just be as below</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(...)
+
+regrade_test: $(EXE_OBJS) $(OBJS_DIR)/regrade_test-release.o # May be $(EXE1_OBJS)
+	$(LD) $^ $(LDFLAGS) -o $@
+
+(...)
+
+</code></pre></div></div>
+<p>If you are creating a test for assignments like <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code> where you have to run another executable using our hooks, it is sufficient to create another makefile entry that compiles that specific test.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="test-grading-criteria" class="title-text">Test Grading Criteria<a class="anchor title-text" href="#test-grading-criteria">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The test should</p>
+<ul>
+  <li>Return 0 on success and return anything else on failure. Any extra files/utilities to run should be inside the directory as well.</li>
+  <li>The test should also be deterministic. For example, testing a threading library’s efficiency should ensure that the results match after a series of runs.</li>
+  <li>The test should also have no memory leaks or tsan errors.</li>
+  <li>It should test any functions/executables that <em>you were required to implement</em>. Testing TA code will not count.</li>
+  <li>You should strive to test at the highest level possible. In the event that your test is entirely external functions (like testing an external makefile for parmake), you will need to give a lot of information in the <code class="highlighter-rouge">README.md</code> in addition to an output file with which we can diff to find out solution. Just know that we prefer if the test is automated because it saves time running through everyone’s solution (try to see if you can formulate your code in terms of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/system" class="fancy-link">system</a></code> and pipes).</li>
+  <li>Be a good test, meaning that testing a simple aspect of the assignment is not acceptable. For example, in malloc, whether or not <code class="highlighter-rouge">free(malloc(1))</code> doesn’t segfault successfully terminates doesn’t count as a good test. It should test an edge or corner case of an assignment, for example.
+    <ul>
+      <li>A test case for malloc when the heap is fragmented to 2.5 GB and a series of allocations cause any malloc that does not split or coalesce to fail.</li>
+      <li>What happens when you give parmake a bunch of parallel dependencies, a bottleneck dependency, and more parallel dependencies? Does it execute in the expected number of times?</li>
+      <li>What happens when you try to append to a line that doesn’t exist? What should the output be?</li>
+      <li>It can be an existing edge case, but you’ll have to put a twist on it (try to combine multiple edge cases).</li>
+    </ul>
+  </li>
+  <li>Wondering how we decide what is a good test? That is where <code class="highlighter-rouge">README.md</code> comes into play.
+    <ul>
+      <li>Include how to run your code in your <code class="highlighter-rouge">README.md</code>
+</li>
+      <li>You have to justify why your test is good (by referencing the docs or a systems programming concept). You’ll have to write about ~1-2 paragraphs (see below) about why you think your test is good. There is no hard word count or limit, just be sure to provide a thorough justification.</li>
+      <li>Please err on the side of being verbose. We like to read :D.</li>
+    </ul>
+  </li>
+  <li>If you try to “cheat” the system by taking one of our test cases and modifying it slightly or sharing test cases you’ll lose this week and the other two possible weeks of autograding. If you give an honest attempt, you don’t need to worry about it.</li>
+</ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="manual-testing" class="title-text">Manual Testing<a class="anchor title-text" href="#manual-testing">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>In the event that our code becomes hard/impossible to test externally, we allow the option to do a manual test. Meaning that you have to provide a sequence of testing steps in your <code class="highlighter-rouge">README.md</code> and any expected output files committed to your github. Please try to refrain from doing this because this increases the tournaround time for getting your test approved. In addition, you’ll have to write ~3-4 paragraphs (see below) justifying the test.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="submission" class="title-text">Submission<a class="anchor title-text" href="#submission">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>As soon as you are finished, <a href="https://docs.google.com/forms/d/e/1FAIpQLSedW7LgFMQ2uVgFtyDNuidSHultKVaC9gwsKs3rIwXEyPCFIQ/viewform?usp=sf_link" class="fancy-link wiki-link">please submit the form</a> and we will try to grade your test ASAP. If we think your test is good, you can go ahead and select a third week for regrades. We will commit a file called <code class="highlighter-rouge">results.txt</code> to your directory with your status. If not you can edit and resubmit – avoid spam because we are all humans. Excessive submissions will just be dropped like networking packets. In any event, we hope to have the results up by 1 week before classes officially end. The deadline for this is 04/25 at midnight.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="example-code-test-readme" class="title-text">Example Code Test README<a class="anchor title-text" href="#example-code-test-readme">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Here is a “proposal” for tester 12 in malloc:</p>
+<p><em>Tester 12 makes sure that you are splitting and coalescing your blocks. The first allocation allocates a large amount of memory. We first verify that the block of memory is a valid block of memory by verifying zeros, writing and verifying the write. After freeing the first allocation, we allocate half and a quarter of the space. If splitting is implemented correctly, then we should be able to read and write from the memory location and have it be separate from the memory location that the quarter allocation takes up. We verify all the memory is zeroed out because that is calloc behavior. These memory regions should not overlap, so we check for that as well. We repeat this many times to make sure no new blocks are being created. We allow for wiggle room of the sizeof metadata struct which is why the blocks are not two allocations of SIZE/2.</em></p>
+<p><em>Using a worst-fit allocation scheme, this would test for if you have both splitting and coalescing because if you have splitting without coalescing you would reach the memory limit. Coalescing without splitting would also have the same effect. Under a best-fit, the tests pass if splitting and coalescing are both implemented or both not implemented but fail if either one is and the other isn’t. Using first fit, the tests pass if splitting and coalescing are both implemented or both not, but again fail if one is and the other is not.</em></p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="example-manual-test-readme" class="title-text">Example Manual Test README<a class="anchor title-text" href="#example-manual-test-readme">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Here is a “proposal” for testfile10 in parmake</p>
+<p><em>In order to test this manually, make sure that you have the testfile10 in your folder. Then run the following command <code class="highlighter-rouge">./parmake -f testfile10 -j 4 &gt; output.txt</code>. The test should output the stages in correct order as shown in <code class="highlighter-rouge">test.txt</code> meaning that <code class="highlighter-rouge">diff output.txt test.txt</code> should show no differences. The executable should also run in about 2.666 seconds. A failed implementation of parmake would have differences between the output and the test file or the test would take longer than 2.666 (by a much greater factor) to execute. The test should at maximum take 3 seconds to execute (or else it will be killed).</em></p>
+<p><em>The purpose is to test for parallelism. We segment the makefile into a number of stages. Rule d prints first because it has no other dependencies. Then there is a cascading effect that rule a1 is run then a2-4 are run (in any particular order). Then, the execution returns and finishes the A stage. B does a similar process of events. If the implementation does not check dependencies in the right way, then the stages output will be completely messed up. If the implementation does not parallelize correctly, the sleeps will be run sequentially meaning that the code should take much longer to execute than finishing sequentially.</em></p>
+<p><em>The test then does a static diff against a makefile. If diff outputs anything, that means the dependencies were satisfied in the wrong order – meaning we should give a message about rule dependencies not being satisfied. If the test runs too long, that means the dependencies are not handled correctly, or it is not parallelized – meaning that we should give the appropriate message. There are also edge cases where rules are outputted twice or not at all – that should be handled by diff as well.</em></p>
+<p><em>Other interesting additions could be to make sure the program doesn’t segfault and make sure that there is no race conditions or any other adverse output. If we check that the CPU time was much greater than the actual runtime, that means the solution was busywaiting and should penalize from that (although the purpose of the test is to test against parallelism, we could use it for busy waiting). Other notes like cycle error should also trigger a failure.</em></p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="questions" class="title-text">Questions?<a class="anchor title-text" href="#questions">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>If you have any questions about the setting up the test, or the assignment, or what counts as an applicable test, make a piazza post! We are happy to help out.</p></div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_pages/regrade_test.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

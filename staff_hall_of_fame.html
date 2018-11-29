@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Staff_hall_of_fame</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid" id="page">
+  <div class="row">
+  <div class="col-md-1 col-xs-1"></div>
+  <div class="col-md-10 col-xs-10">
+    <h1>Staff Hall of Fame</h1>
+    <p>These are all graduated TAs and CAs that have been on staff for multiple semesters and contributed greatly to the course.</p>
+
+    <p><i>If I have seen farther than others, it is by standing on the shoulders of giants</i> -- Isaac Newton</p>
+  <!-- A bit janky: assumes zero or one instructors. Why can't Jekyll have stable sort??? :( -->
+  
+  
+  <div class="container">
+  
+    
+    
+    <div class="row row-eq-height staff-row">
+    
+    
+  <div class="col-md-3 col-sm-12 col-xs-12 staff-div"
+      id="abhatti2"
+      data-toggle="tooltip"
+      data-placement="bottom"
+      title="Assignment Development  interested in Nonstop Networking, Parmake, Text Editor and has been on staff for Fall 2016 and Spring 2017"
+      style="background-image: url(/images/staffPhotos/retired/abhatti2.jpg);">
+      <div class="container">
+      <div class="row">
+        <div class="staff-name col-md-12 col-xs-12">Aadil Bhatti</div>
+      </div>
+      </div>
+  </div>
+    <div class="col-md-1 col-sm-0 col-xs-0"></div>
+    
+  
+    
+    
+    
+  <div class="col-md-3 col-sm-12 col-xs-12 staff-div"
+      id="bezault2"
+      data-toggle="tooltip"
+      data-placement="bottom"
+      title="Broken Barriers - The Gradient Edition  interested in High Performance Computing/Massively Parallel Computing and has been on staff for Fall 2015, Spring 2016, Fall 2016, and Spring 2017"
+      style="background-image: url(/images/staffPhotos/retired/bezault2.jpg);">
+      <div class="container">
+      <div class="row">
+        <div class="staff-name col-md-12 col-xs-12">Curtis Bezault</div>
+      </div>
+      </div>
+  </div>
+    <div class="col-md-1 col-sm-0 col-xs-0"></div>
+    
+  
+    
+    
+    
+  <div class="col-md-3 col-sm-12 col-xs-12 staff-div"
+      id="bkurek2"
+      data-toggle="tooltip"
+      data-placement="bottom"
+      title="Lab/Office Hours Assistant  interested in web development and has been on staff for Spring 2017, Fall 2017, and Spring 2018"
+      style="background-image: url(/images/staffPhotos/retired/bkurek2.jpg);">
+      <div class="container">
+      <div class="row">
+        <div class="staff-name col-md-12 col-xs-12">Brian Kurek</div>
+      </div>
+      </div>
+  </div>
+    <div class="col-md-1 col-sm-0 col-xs-0"></div>
+    
+      </div>
+    
+  
+    
+    
+    <div class="row row-eq-height staff-row">
+    
+    
+  <div class="col-md-3 col-sm-12 col-xs-12 staff-div"
+      id="bschong2"
+      data-toggle="tooltip"
+      data-placement="bottom"
+      title="Former Historian  interested in CS Education and has been on staff for Spring 2015, Fall 2015, Spring 2016, Fall 2016, and Spring 2017"
+      style="background-image: url(/images/staffPhotos/retired/bschong2.jpg);">
+      <div class="container">
+      <div class="row">
+        <div class="staff-name col-md-12 col-xs-12">Brandon Chong</div>
+      </div>
+      </div>
+  </div>
+    <div class="col-md-1 col-sm-0 col-xs-0"></div>
+    
+  
+    
+    
+    
+  <div class="col-md-3 col-sm-12 col-xs-12 staff-div"
+      id="btruong2"
+      data-toggle="tooltip"
+      data-placement="bottom"
+      title="Former Infrastructure Lead  interested in Software engineering, systems programming, OS, programming languages and has been on staff for Spring 2015, Fall 2015, Spring 2016, Fall 2016, and Spring 2017"
+      style="background-image: url(/images/staffPhotos/retired/btruong2.jpg);">
+      <div class="container">
+      <div class="row">
+        <div class="staff-name col-md-12 col-xs-12">Brian Truong</div>
+      </div>
+      </div>
+  </div>
+    <div class="col-md-1 col-sm-0 col-xs-0"></div>
+    
+  
+    
+    
+    
+  <div class="col-md-3 col-sm-12 col-xs-12 staff-div"
+      id="emsauer2"
+      data-toggle="tooltip"
+      data-placement="bottom"
+      title="Assignment Development  interested in Game Engines and has been on staff for Fall 2015, Spring 2016, and Fall 2016"
+      style="background-image: url(/images/staffPhotos/retired/emsauer2.jpg);">
+      <div class="container">
+      <div class="row">
+        <div class="staff-name col-md-12 col-xs-12">Eric Sauer</div>
+      </div>
+      </div>
+  </div>
+    <div class="col-md-1 col-sm-0 col-xs-0"></div>
+    
+      </div>
+    
+  
+    
+    
+    <div class="row row-eq-height staff-row">
+    
+    
+  <div class="col-md-3 col-sm-12 col-xs-12 staff-div"
+      id="jayndrn2"
+      data-toggle="tooltip"
+      data-placement="bottom"
+      title="Assignment Developer  and has been on staff for Spring 2017, Fall 2017, and Spring 2018"
+      style="background-image: url(/images/staffPhotos/retired/jayndrn2.jpg);">
+      <div class="container">
+      <div class="row">
+        <div class="staff-name col-md-12 col-xs-12">Navneeth Jayendran</div>
+      </div>
+      </div>
+  </div>
+    <div class="col-md-1 col-sm-0 col-xs-0"></div>
+    
+  
+    
+    
+    
+  <div class="col-md-3 col-sm-12 col-xs-12 staff-div"
+      id="jianliu4"
+      data-toggle="tooltip"
+      data-placement="bottom"
+      title="Infrastructure Developer  interested in Linux and has been on staff for Fall 2015, Spring 2016, Fall 2016, and Spring 2017"
+      style="background-image: url(/images/staffPhotos/retired/jianliu4.jpg);">
+      <div class="container">
+      <div class="row">
+        <div class="staff-name col-md-12 col-xs-12">Luke Liu</div>
+      </div>
+      </div>
+  </div>
+    <div class="col-md-1 col-sm-0 col-xs-0"></div>
+    
+  
+    
+    
+    
+  <div class="col-md-3 col-sm-12 col-xs-12 staff-div"
+      id="jwexler2"
+      data-toggle="tooltip"
+      data-placement="bottom"
+      title="Lab/Office Hours Assistant and Honors Lead  interested in procrastination and has been on staff for Spring 2017, Fall 2017, and Spring 2018"
+      style="background-image: url(/images/staffPhotos/retired/jwexler2.jpg);">
+      <div class="container">
+      <div class="row">
+        <div class="staff-name col-md-12 col-xs-12">Jonathan Wexler</div>
+      </div>
+      </div>
+  </div>
+    <div class="col-md-1 col-sm-0 col-xs-0"></div>
+    
+      </div>
+    
+  
+    
+    
+    <div class="row row-eq-height staff-row">
+    
+    
+  <div class="col-md-3 col-sm-12 col-xs-12 staff-div"
+      id="khong18"
+      data-toggle="tooltip"
+      data-placement="bottom"
+      title="Lab/Office Hours Assistant and Honors Mentor  interested in statistics and machine learning and has been on staff for Spring 2017, Fall 2017, and Spring 2018"
+      style="background-image: url(/images/staffPhotos/retired/khong18.jpg);">
+      <div class="container">
+      <div class="row">
+        <div class="staff-name col-md-12 col-xs-12">Kevin Hong</div>
+      </div>
+      </div>
+  </div>
+    <div class="col-md-1 col-sm-0 col-xs-0"></div>
+    
+  
+    
+    
+    
+  <div class="col-md-3 col-sm-12 col-xs-12 staff-div"
+      id="kocheva2"
+      data-toggle="tooltip"
+      data-placement="bottom"
+      title="Former Assignment Development and Lab Lead  interested in Puzzles - Nonstop Networking and has been on staff for Fall 2015, Spring 2016, Fall 2016, and Spring 2017"
+      style="background-image: url(/images/staffPhotos/retired/kocheva2.jpg);">
+      <div class="container">
+      <div class="row">
+        <div class="staff-name col-md-12 col-xs-12">Alec Kochevar-Cureton</div>
+      </div>
+      </div>
+  </div>
+    <div class="col-md-1 col-sm-0 col-xs-0"></div>
+    
+  
+    
+    
+    
+  <div class="col-md-3 col-sm-12 col-xs-12 staff-div"
+      id="kurtovc2"
+      data-toggle="tooltip"
+      data-placement="bottom"
+      title="Former Historian, Honors Mentor  interested in operating systems, networking, security and has been on staff for Spring 2016, Fall 2016, Spring 2017, and Fall 2017"
+      style="background-image: url(/images/staffPhotos/retired/kurtovc2.jpg);">
+      <div class="container">
+      <div class="row">
+        <div class="staff-name col-md-12 col-xs-12">Ben Kurtovic</div>
+      </div>
+      </div>
+  </div>
+    <div class="col-md-1 col-sm-0 col-xs-0"></div>
+    
+      </div>
+    
+  
+    
+    
+    <div class="row row-eq-height staff-row">
+    
+    
+  <div class="col-md-3 col-sm-12 col-xs-12 staff-div"
+      id="mayankb2"
+      data-toggle="tooltip"
+      data-placement="bottom"
+      title="Teaching Assistant  interested in Networking and has been on staff for Fall 2016, Spring 2017, Spring 2018"
+      style="background-image: url(/images/staffPhotos/retired/mayankb2.jpg);">
+      <div class="container">
+      <div class="row">
+        <div class="staff-name col-md-12 col-xs-12">Bhatt Mayank</div>
+      </div>
+      </div>
+  </div>
+    <div class="col-md-1 col-sm-0 col-xs-0"></div>
+    
+  
+    
+    
+    
+  <div class="col-md-3 col-sm-12 col-xs-12 staff-div"
+      id="mlin35"
+      data-toggle="tooltip"
+      data-placement="bottom"
+      title="Lab, Office Hour, Mini Valgrind  interested in Software Engineering and has been on staff for Fall 2015, Spring 2016, and Fall 2016"
+      style="background-image: url(/images/staffPhotos/retired/mlin35.jpg);">
+      <div class="container">
+      <div class="row">
+        <div class="staff-name col-md-12 col-xs-12">Maddie Lin</div>
+      </div>
+      </div>
+  </div>
+    <div class="col-md-1 col-sm-0 col-xs-0"></div>
+    
+  
+    
+    
+    
+  <div class="col-md-3 col-sm-12 col-xs-12 staff-div"
+      id="mmousch2"
+      data-toggle="tooltip"
+      data-placement="bottom"
+      title="Office Hours, Piazza, Lab  interested in VR, Systems, Databases and has been on staff for Spring 2016, Fall 2016, and Spring 2017"
+      style="background-image: url(/images/staffPhotos/retired/mmousch2.jpg);">
+      <div class="container">
+      <div class="row">
+        <div class="staff-name col-md-12 col-xs-12">Margarita Mouschovias</div>
+      </div>
+      </div>
+  </div>
+    <div class="col-md-1 col-sm-0 col-xs-0"></div>
+    
+      </div>
+    
+  
+    
+    
+    <div class="row row-eq-height staff-row">
+    
+    
+  <div class="col-md-3 col-sm-12 col-xs-12 staff-div"
+      id="nfortma2"
+      data-toggle="tooltip"
+      data-placement="bottom"
+      title="Office Hours and Lab Team  interested in Computational Musical Analysis and has been on staff for Fall 2015, Spring 2016, and Fall 2016"
+      style="background-image: url(/images/staffPhotos/retired/nfortma2.jpg);">
+      <div class="container">
+      <div class="row">
+        <div class="staff-name col-md-12 col-xs-12">Noel Fortman</div>
+      </div>
+      </div>
+  </div>
+    <div class="col-md-1 col-sm-0 col-xs-0"></div>
+    
+  
+    
+    
+    
+  <div class="col-md-3 col-sm-12 col-xs-12 staff-div"
+      id="nlee16"
+      data-toggle="tooltip"
+      data-placement="bottom"
+      title="Assignment Development Lead  and has been on staff for Fall 2016 and Spring 2017"
+      style="background-image: url(/images/staffPhotos/retired/nlee16.jpg);">
+      <div class="container">
+      <div class="row">
+        <div class="staff-name col-md-12 col-xs-12">Erica Lee</div>
+      </div>
+      </div>
+  </div>
+    <div class="col-md-1 col-sm-0 col-xs-0"></div>
+    
+  
+    
+    
+    
+  <div class="col-md-3 col-sm-12 col-xs-12 staff-div"
+      id="nphadke2"
+      data-toggle="tooltip"
+      data-placement="bottom"
+      title="Office Hours and Lab  interested in Sucks at Tennis, Scheduler and has been on staff for Fall 2015, Spring 2016, Fall 2016, and Spring 2017"
+      style="background-image: url(/images/staffPhotos/retired/nphadke2.jpg);">
+      <div class="container">
+      <div class="row">
+        <div class="staff-name col-md-12 col-xs-12">Nishad Phadke</div>
+      </div>
+      </div>
+  </div>
+    <div class="col-md-1 col-sm-0 col-xs-0"></div>
+    
+      </div>
+    
+  
+    
+    
+    <div class="row row-eq-height staff-row">
+    
+    
+  <div class="col-md-3 col-sm-12 col-xs-12 staff-div"
+      id="peng24"
+      data-toggle="tooltip"
+      data-placement="bottom"
+      title="Teaching Assistant  interested in most reliable person on staff and has been on staff for Fall 2016, Spring 2017, Fall 2017, and Spring 2018"
+      style="background-image: url(/images/staffPhotos/retired/peng24.jpg);">
+      <div class="container">
+      <div class="row">
+        <div class="staff-name col-md-12 col-xs-12">Peng Li</div>
+      </div>
+      </div>
+  </div>
+    <div class="col-md-1 col-sm-0 col-xs-0"></div>
+    
+  
+    
+    
+    
+  <div class="col-md-3 col-sm-12 col-xs-12 staff-div"
+      id="pmsmith2"
+      data-toggle="tooltip"
+      data-placement="bottom"
+      title="Office Hours Team Lead, Malloc, Pied Piper  interested in System Programming and Embedded Programming and has been on staff for Spring 2015, Fall 2015, Spring 2016, and Fall 2016"
+      style="background-image: url(/images/staffPhotos/retired/pmsmith2.jpg);">
+      <div class="container">
+      <div class="row">
+        <div class="staff-name col-md-12 col-xs-12">Porter Smith</div>
+      </div>
+      </div>
+  </div>
+    <div class="col-md-1 col-sm-0 col-xs-0"></div>
+    
+  
+    
+    
+    
+  <div class="col-md-3 col-sm-12 col-xs-12 staff-div"
+      id="rgandre2"
+      data-toggle="tooltip"
+      data-placement="bottom"
+      title="Former Honors Section Team Leader  interested in Master of CS Theory and has been on staff for Fall 2015, Spring 2016, Fall 2016, and Spring 2017"
+      style="background-image: url(/images/staffPhotos/retired/rgandre2.jpg);">
+      <div class="container">
+      <div class="row">
+        <div class="staff-name col-md-12 col-xs-12">Robert Andrews</div>
+      </div>
+      </div>
+  </div>
+    <div class="col-md-1 col-sm-0 col-xs-0"></div>
+    
+      </div>
+    
+  
+    
+    
+    <div class="row row-eq-height staff-row">
+    
+    
+  <div class="col-md-3 col-sm-12 col-xs-12 staff-div"
+      id="scsteph2"
+      data-toggle="tooltip"
+      data-placement="bottom"
+      title="Lab Assistant  interested in Algorithms/Verification and has been on staff for Spring 2016, Fall 2016, and Spring 2017"
+      style="background-image: url(/images/staffPhotos/retired/scsteph2.jpg);">
+      <div class="container">
+      <div class="row">
+        <div class="staff-name col-md-12 col-xs-12">Sam Stephens</div>
+      </div>
+      </div>
+  </div>
+    <div class="col-md-1 col-sm-0 col-xs-0"></div>
+    
+  
+    
+    
+    
+  <div class="col-md-3 col-sm-12 col-xs-12 staff-div"
+      id="thangav2"
+      data-toggle="tooltip"
+      data-placement="bottom"
+      title="Lab and Officer Hours Assistant  interested in Big Data and has been on staff for Fall 2015, Spring 2016, and Fall 2016"
+      style="background-image: url(/images/staffPhotos/retired/thangav2.jpg);">
+      <div class="container">
+      <div class="row">
+        <div class="staff-name col-md-12 col-xs-12">Varun Thangavelu</div>
+      </div>
+      </div>
+  </div>
+    <div class="col-md-1 col-sm-0 col-xs-0"></div>
+    
+  
+    
+    
+    
+  <div class="col-md-3 col-sm-12 col-xs-12 staff-div"
+      id="wlee114"
+      data-toggle="tooltip"
+      data-placement="bottom"
+      title="Teaching Assistant  interested in Algorithmic Game Theory and Social Network and has been on staff for Fall 2015, Spring 2016, Fall 2016, and Spring 2017"
+      style="background-image: url(/images/staffPhotos/retired/wlee114.jpg);">
+      <div class="container">
+      <div class="row">
+        <div class="staff-name col-md-12 col-xs-12">WeiChun Lee</div>
+      </div>
+      </div>
+  </div>
+    <div class="col-md-1 col-sm-0 col-xs-0"></div>
+    
+      </div>
+    
+  
+    
+    
+    <div class="row row-eq-height staff-row">
+    
+    
+  <div class="col-md-3 col-sm-12 col-xs-12 staff-div"
+      id="ylin91"
+      data-toggle="tooltip"
+      data-placement="bottom"
+      title="Lab and Officer Hours Assistant  interested in CS and Stat and has been on staff for Fall 2015, Spring 2016, and Fall 2016"
+      style="background-image: url(/images/staffPhotos/retired/ylin91.jpg);">
+      <div class="container">
+      <div class="row">
+        <div class="staff-name col-md-12 col-xs-12">Yushuo Lin</div>
+      </div>
+      </div>
+  </div>
+    <div class="col-md-1 col-sm-0 col-xs-0"></div>
+    
+      </div>
+    
+  
+  </div>
+  </div>
+  </div>
+  </div>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

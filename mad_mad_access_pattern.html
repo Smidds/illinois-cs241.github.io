@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Mad Mad Access Pattern</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Mad Mad Access Pattern
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/illinois-cs241/assignment-docs/blob/master//mad_mad_access_pattern.md">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+              <div class="submission-wrapper">
+                
+                  <b>Entire Assignment</b> due <b>11/14 11:59pm</b><br/>
+                  
+                    <b>Graded files:</b>
+                    <ul>
+                      
+                        <li>lookup1.c</li>
+                      
+                        <li>lookup2.c</li>
+                      
+                    </ul>
+                  
+                
+              </div>
+            
+            
+              <div class="schedule-wrapper">
+                
+                  <b>AG Schedule</b>
+                  <br/>
+                  <b>Pre-deadline Runs</b>
+                    <ul>
+                      
+                        <li>11/11 10:00 PM</li>
+                      
+                        <li>11/12 10:00 PM</li>
+                      
+                        <li>11/13 10:00 PM</li>
+                      
+                        <li>11/14 12:00 PM</li>
+                      
+                    </ul>
+                
+              </div>
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_mapping-inventory" href="#mapping-inventory" class="fancy-link">Mapping Inventory</a></li>
+<li><a id="toc_data-file-structure" href="#data-file-structure" class="fancy-link">Data File Structure</a></li>
+<li><a id="toc_files" href="#files" class="fancy-link">Files</a></li>
+<li><a id="toc_version-1-fseek--fread" href="#version-1-fseek--fread" class="fancy-link">Version 1: fseek / fread</a></li>
+<li><a id="toc_version-2-mmap" href="#version-2-mmap" class="fancy-link">Version 2: mmap</a></li>
+<li><a id="toc_sample-usage" href="#sample-usage" class="fancy-link">Sample usage</a></li>
+<li><a id="toc_testing-notes" href="#testing-notes" class="fancy-link">Testing notes</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+  <div class="pad"><div class="card">
+<div class="title"><h2 id="learning-objectives" class="title-text">Learning Objectives<a class="anchor title-text" href="#learning-objectives">#</a>
+</h2></div>
+  
+  
+
+
+  <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>
+    The learning objectives for Mad Mad Access Pattern are: <br>
+    </p>
+<ul class="mdl-list">
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Working with files</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">mmap()</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">fseek() and fread()</span>
+        </li>
+      
+    </ul>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="suggested-readings" class="title-text">Suggested Readings<a class="anchor title-text" href="#suggested-readings">#</a>
+</h2></div>
+  
+  
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>
+    We suggest you read the following from the
+    <a href="https://github.com/angrave/SystemProgramming/wiki" class="fancy-link wiki-link">wikibook</a>
+    before starting Mad Mad Access Pattern: <br>
+    </p>
+<ul>
+      
+        <li>
+          <a href="/wikibook/files-part-1-working-with-files.html#" target="_blank" class="fancy-link wiki-link">Files, Part 1: Working with files
+          </a>
+        </li>
+      
+        <li>
+          <a href="/wikibook/file-system-part-6-memory-mapped-files-and-shared-memory.html#" target="_blank" class="fancy-link wiki-link">File System, Part 6: Memory mapped files and Shared memory
+          </a>
+        </li>
+      
+    </ul>
+</div></div></div>
+</div></div>
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="mapping-inventory" class="title-text">Mapping Inventory<a class="anchor title-text" href="#mapping-inventory">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>You’ve landed an internship at <strong><em>Zing!</em></strong>, a search engine
+start-up.  Your first project is to develop a keyword advertisement
+inventory tool.</p>
+<p>Advertisers can “buy” keywords such that their ad is shown whenever
+a user does a search that contains one of their keywords. For example,
+if a user searches for “stapler”, they will see ads for an office supply
+company who bought that keyword.</p>
+<p>Before buying a keyword, advertisers want to know, “How much will this
+cost me?”  To compute that, they’ll need to know how often the keyword
+is searched for, and how valuable the word is.  For example “how” is
+a very common word but has little value. “Donate” is less common but
+highly valuable, because a user searching for “donate” is probably willing
+to do so.</p>
+<p>The intern before you scanned through a large volume of search logs
+to determine the frequency and value of each word.  Your job is to
+perform efficient searches on the data file she created. This file is
+expected to grow to be very large, larger than will fit in memory, so
+you will need to access it without reading it all into memory.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="data-file-structure" class="title-text">Data File Structure<a class="anchor title-text" href="#data-file-structure">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The file is structured like a binary search tree, where each tree node
+is an instance of this structure:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>typedef struct {
+uint32_t left_child;  // offset of node containing left child
+uint32_t right_child; // offset of node containing right child
+
+// Offsets are relative to the beginning of the file.
+// An offset of zero means the child does not exist.
+
+uint32_t count;  // number of times the word occurs in the data set
+float price;     // price of the word
+
+char word[0];    // contents of the word, null-terminated
+} BinaryTreeNode;
+</code></pre></div></div>
+<p>The first 4 bytes of the input file are the letters “BTRE”. Any
+file which does not start with these 4 bytes is an invalid data file.
+The root node is stored at offset 4 in the file. Each uint32_t and
+float is stored in little-endian format (the same as the processors
+your VMs use, so no conversion will be necessary). “word” is an array
+of ASCII characters at the end of each structure, and it is a
+null-terminated string.  There is no limit on the length of a word in
+the file or the length of the words your program will look up.</p>
+<p>Remember the properties of a binary search tree: if a node has a left
+child, that child’s value is less than the node. If it has a right child,
+that child’s value is greater than the node.</p>
+<p>Comparison among nodes in this assignment is defined by their <code class="highlighter-rouge">word</code>’s  <code class="highlighter-rouge">int strcmp(const char *s1, const char *s2)</code>. In other words:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BinaryTreeNode *node = ...a node from the file...
+
+if (node-&gt;left_child) {
+  BinaryTreeNode *left = ...load node at node-&gt;left_child...
+  assert(strcmp(left-&gt;word, node-&gt;word) &lt; 0);
+}
+
+if (node-&gt;right_child) {
+  BinaryTreeNode *right = ...load node at node-&gt;right_child...
+  assert(strcmp(right-&gt;word, node-&gt;word) &gt; 0);
+}
+</code></pre></div></div>
+<p><img src="images/241_memory_mapped_madness_diagram.png" alt="BTRE"></p>
+<p>Note that none of the binary search trees we give you will have duplicate keys.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="files" class="title-text">Files<a class="anchor title-text" href="#files">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>You’ll be given:</p>
+<ul>
+  <li>tree.h - contains the struct definition above and a detailed description
+   of the data in sample.data</li>
+  <li>Makefile - the makefile you should use to build lookup1 and lookup2</li>
+  <li>sample.data - a small file containing the words “sample”,
+   “word”, “list”, “for”, “this”, and “program”</li>
+  <li>utils.h - Printing functions for you to use</li>
+  <li>input_file - Sample input to create_file executable.</li>
+  <li>create_file - Creates binary tree structured data file corresponding to input_file. This will be used for your test cases.</li>
+  <li>print_file - Prints out human readable form of binary tree structured file from above.</li>
+</ul>
+<p>Make two versions of your program. Both should produce the
+same results, but using different file access methods.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="version-1-fseek--fread" class="title-text">Version 1: fseek / fread<a class="anchor title-text" href="#version-1-fseek--fread">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>When reading a node from the file, use <strong>fseek()</strong> to jump to the
+correct position and read the node with <strong>fread() and/or fgetc()</strong>.
+You may not use mmap() for this part.</p>
+<p>Put the code for this in lookup1.c.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="version-2-mmap" class="title-text">Version 2: mmap<a class="anchor title-text" href="#version-2-mmap">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Use <strong>mmap()</strong> to map the entire file into memory without
+reading any part of the file directly. When reading a node from the memory mapped file, use
+pointer arithmetic to jump to the correct position and read the node
+using regular pointer dereferencing.</p>
+<p><a href="/wikibook/file-system-part-6-memory-mapped-files-and-shared-memory.html#" class="fancy-link wiki-link">mmap Introduction</a></p>
+<p>Put the code for this in lookup2.c.</p>
+<p><strong>Notice that you can use only mmap() to map the WHOLE file</strong> for this version. Do not use other functions to read files.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="sample-usage" class="title-text">Sample usage<a class="anchor title-text" href="#sample-usage">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lookup1 &lt;data_file&gt; &lt;keyword&gt; [&lt;keyword&gt; ...]
+lookup2 &lt;data_file&gt; &lt;keyword&gt; [&lt;keyword&gt; ...]
+
+% ./lookup1 sample.data list sample werd
+list: 12 at $0.04
+sample: 25 at $10.60
+werd not found
+
+% ./lookup2 sample.data list sample werd
+list: 12 at $0.04
+sample: 25 at $10.60
+werd not found
+</code></pre></div></div></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="testing-notes" class="title-text">Testing notes<a class="anchor title-text" href="#testing-notes">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<ul>
+  <li>You are given reference files! Compare your outputs with ./lookup1-reference and ./lookup2-reference :)</li>
+  <li>Write your test cases to include comparison of performance between the two versions (lookup1 and lookup2). Think about which one is faster and why.</li>
+  <li>In order to generate different binary tree structured data files based on input required for each test case, use the <code class="highlighter-rouge">create_data</code> executable.
+See <code class="highlighter-rouge">input_file</code> for sample input to this executable.</li>
+  <li>The <code class="highlighter-rouge">print_file</code> executable will provide a human readable form of a binary tree structured data file generated from <code class="highlighter-rouge">create_data</code>.</li>
+</ul>
+<p>Error cases:</p>
+<ul>
+  <li>If run with less than 2 arguments, your program should print an error
+message describing the arguments it expects and exit with error code 1.</li>
+  <li>If the data file cannot be read or the first 4 bytes are not
+“BTRE”, print a helpful error message and exit with error code 2.</li>
+</ul>
+<p>For each word that is found, print its count and its price, where the
+price is always printed with exactly two digits to the right of the decimal
+point.</p>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="submission-instructions" class="title-text">Submission Instructions<a class="anchor title-text" href="#submission-instructions">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Please read details on <a href="/#academic-integrity" class="fancy-link wiki-link">Academic Integrity</a> fully. These are shared by all assignments in CS 241.</p>
+<p>We will be using GitHub as our hand-in system this semester. Our grading system will checkout your most recent (pre-deadline) commit for grading. Therefore, to hand in your code, all you have to do is commit and push to your Github repository.</p>
+<p>To check out the provided code for <code class="highlighter-rouge">mad_mad_access_pattern</code> from the class repository, go to your cs241 directory (the one you checked out for “know your tools”) and run:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git pull release master
+</code></pre></div></div>
+<p>If you run <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/ls" class="fancy-link">ls</a></code> you will now see a <code class="highlighter-rouge">mad_mad_access_pattern</code> folder, where you can find this assignment! To commit your changes (send them to us), type:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git add mad_mad_access_pattern
+git commit -m "mad_mad_access_pattern submission"
+git push origin master
+</code></pre></div></div>
+<p>Your repository directory can be viewed from a web browser from the following URL: 
+<a href="https://github-dev.cs.illinois.edu/cs241-fa18/NETID/tree/master/mad_mad_access_pattern" class="fancy-link wiki-link">https://github-dev.cs.illinois.edu/cs241-fa18/NETID/tree/master/mad_mad_access_pattern</a> where NETID is your University NetID. It is important to check that the files you expect to be graded are present and up to date in your remote git copy.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="assignment-feedback" class="title-text">Assignment Feedback<a class="anchor title-text" href="#assignment-feedback">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>We strive to provide the best assignments that we can for this course, and we would like your feedback on them!</p>
+<p>This is the form we will use to evaluate our assignments. We appreciate the time you take to give us your honest feedback and we promise to keep improving the course to make your experience in CS 241 the best it can be.</p>
+<p><a href="https://goo.gl/forms/hREf0ojFWumYfQF12" class="fancy-link wiki-link">https://goo.gl/forms/hREf0ojFWumYfQF12</a></p>
+</div></div></div>
+</div></div>
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_docs/mad_mad_access_pattern.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

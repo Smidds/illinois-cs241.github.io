@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Files, Part 1: Working with files</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Files, Part 1: Working with files
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/Files,-Part-1:-Working-with-files">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_two-types-of-files" href="#two-types-of-files" class="fancy-link">Two types of files</a></li>
+<li><a id="toc_how-do-i-tell-how-large-a-file-is" href="#how-do-i-tell-how-large-a-file-is" class="fancy-link">How do I tell how large a file is?</a></li>
+<li><a id="toc_but-try-not-to-do-this" href="#but-try-not-to-do-this" class="fancy-link">But try not to do this</a></li>
+<li><a id="toc_what-happens-if-a-child-process-closes-a-filestream-using-fclose-or-close" href="#what-happens-if-a-child-process-closes-a-filestream-using-fclose-or-close" class="fancy-link">What happens if a child process closes a filestream using <code class="highlighter-rouge">fclose</code> or <code class="highlighter-rouge">close</code>?</a></li>
+<li><a id="toc_how-about-mmap-for-files" href="#how-about-mmap-for-files" class="fancy-link">How about mmap for files?</a></li>
+<li><a id="toc_for-every-mmap" href="#for-every-mmap" class="fancy-link">For every mmap</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="two-types-of-files" class="title-text">Two types of files<a class="anchor title-text" href="#two-types-of-files">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>On linux, there are two abstractions with files. The first is the linux <code class="highlighter-rouge"><a href="https://linux.die.net/man/4/fd" class="fancy-link">fd</a></code> level abstraction that means you can use</p>
+<ul>
+  <li><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/open" class="fancy-link">open</a></code></li>
+  <li><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/read" class="fancy-link">read</a></code></li>
+  <li><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code></li>
+  <li><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/close" class="fancy-link">close</a></code></li>
+  <li><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/lseek" class="fancy-link">lseek</a></code></li>
+  <li>
+<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fcntl" class="fancy-link">fcntl</a></code>
+…</li>
+</ul>
+<p>And so on. The linux interface is very powerful and expressive, but sometimes we need portability (for example if we are writing for a mac or windows). This is where C’s abstraction comes into play. On different operating systems, C uses the low level functions to create a wrapper around files you can use everywhere, meaning that C on linux uses the above calls. C has a few of the following</p>
+<ul>
+  <li><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fopen" class="fancy-link">fopen</a></code></li>
+  <li>
+<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fread" class="fancy-link">fread</a></code> or <code class="highlighter-rouge">fgetc/fgets</code> or <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fscanf" class="fancy-link">fscanf</a></code>
+</li>
+  <li>
+<code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fwrite" class="fancy-link">fwrite</a></code> or <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fprintf" class="fancy-link">fprintf</a></code>
+</li>
+  <li><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fclose" class="fancy-link">fclose</a></code></li>
+  <li><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fflush" class="fancy-link">fflush</a></code></li>
+</ul>
+<p>But you don’t get the expressiveness that linux gives you with system calls you can convert back and forth between them with <code class="highlighter-rouge">int fileno(FILE* stream)</code> and <code class="highlighter-rouge">FILE* fdopen(int fd...)</code>.</p>
+<p>Another important aspect to note is the C files are <strong>buffered</strong> meaning that their contents may not be written right away by default. You can can change that with C options.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-tell-how-large-a-file-is" class="title-text">How do I tell how large a file is?<a class="anchor title-text" href="#how-do-i-tell-how-large-a-file-is">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>For files less than the size of a long, using fseek and ftell is a simple way to accomplish this:</p>
+<p>Move to the end of the file and find out the current position.</p>
+<pre><code class="language-C"><span class="n">fseek</span>
+</code></pre>
+<p>This tells us the current position in the file in bytes - i.e. the length of the file!</p>
+<p><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fseek" class="fancy-link">fseek</a></code> can also be used to set the absolute position.</p>
+<pre><code class="language-C"><span class="n">fseek</span>
+</code></pre>
+<p>All future reads and writes in the parent or child processes will honor this position.
+Note writing or reading from the file will change the current position.</p>
+<p>See the man pages for fseek and ftell for more information.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="but-try-not-to-do-this" class="title-text">But try not to do this<a class="anchor title-text" href="#but-try-not-to-do-this">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p><strong>Note: This is not recommended in the usual case because of a quirk with the C language</strong>. That quirk is that longs only need to be <strong>4 Bytes big</strong> meaning that the maximum size that ftell can return is a little under 2 Gigabytes (which we know nowadays our files could be hundreds of gigabytes or even terabytes on a distributed file system). What should we do instead? Use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stat" class="fancy-link">stat</a></code>! We will cover stat in a later part but here is some code that will tell you the size of the file</p>
+<pre><code class="language-C"><span class="k">struct</span>
+</code></pre>
+<p>buf.st_size is of type off_t which is big enough for <em>insanely</em> large files.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-happens-if-a-child-process-closes-a-filestream-using-fclose-or-close" class="title-text">What happens if a child process closes a filestream using <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fclose" class="fancy-link">fclose</a></code> or <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/close" class="fancy-link">close</a></code>?<a class="anchor title-text" href="#what-happens-if-a-child-process-closes-a-filestream-using-fclose-or-close">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Closing a file stream is unique to each process. Other processes can continue to use their own file-handle. Remember, everything is copied over when a child is created, even the relative positions of the files.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-about-mmap-for-files" class="title-text">How about mmap for files?<a class="anchor title-text" href="#how-about-mmap-for-files">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>One of the general uses for mmap is to map a file to memory. This does not mean that the file is malloc’ed to memory right away. Take the following code for example.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>int fd = open(...); //File is 2 Pages
+char* addr = mmap(..fd..);
+addr[0] = 'l';
+</code></pre></div></div>
+<p>The kernel may say, “okay I see that you want to mmap the file into memory, so I’ll reserve some space in your address space that is the length of the file”. That means when you write to addr[0] that you are actually writing to the first byte of the file. The kernel can actually do some optimizations too. Instead of loading the file into memory, it may only load pages at a time because if the file is 1024 pages; you may only access 3 or 4 pages making loading the entire file a waste of time (that is why page faults are so powerful! They let the operating system take control of how much you use your files).</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="for-every-mmap" class="title-text">For every mmap<a class="anchor title-text" href="#for-every-mmap">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Remember that once you are done <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/mmap" class="fancy-link">mmap</a></code>ping that you <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/munmap" class="fancy-link">munmap</a></code> to tell the operating system that you are no longer using the pages allocated, so the OS can write it back to disk and give you the addresses back in case you need to malloc later.</p></div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/files-part-1-working-with-files.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

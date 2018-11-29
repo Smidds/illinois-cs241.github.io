@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Introc</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Introc
+
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+<ul>
+  <li>
+<a href="#c-programming-language" class="fancy-link wiki-link">C Programming Language</a>
+    <ul>
+      <li><a href="#history-of-c" class="fancy-link wiki-link">History of C</a></li>
+      <li><a href="#features" class="fancy-link wiki-link">Features</a></li>
+      <li><a href="#crash-course-intro-to-c" class="fancy-link wiki-link">Crash course intro to C</a></li>
+      <li><a href="#preprocessor" class="fancy-link wiki-link">Preprocessor</a></li>
+      <li>
+<a href="#language-facilities" class="fancy-link wiki-link">Language Facilities</a>
+        <ul>
+          <li><a href="#keywords" class="fancy-link wiki-link">Keywords</a></li>
+          <li><a href="#c-data-types" class="fancy-link wiki-link">C data types</a></li>
+          <li><a href="#operators" class="fancy-link wiki-link">Operators</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="#common-c-functions" class="fancy-link wiki-link">Common C Functions</a>
+        <ul>
+          <li><a href="#inputoutput" class="fancy-link wiki-link">Input/Output</a></li>
+          <li><a href="#string.h" class="fancy-link wiki-link">string.h</a></li>
+          <li><a href="#conventionserrno" class="fancy-link wiki-link">Conventions/Errno</a></li>
+        </ul>
+      </li>
+      <li><a href="#system-calls" class="fancy-link wiki-link">System Calls</a></li>
+      <li>
+<a href="#c-memory-model" class="fancy-link wiki-link">C Memory Model</a>
+        <ul>
+          <li><a href="#structs" class="fancy-link wiki-link">Structs</a></li>
+          <li><a href="#strings-in-c" class="fancy-link wiki-link">Strings in C</a></li>
+          <li><a href="#two-places-for-strings" class="fancy-link wiki-link">Two places for strings</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="#pointers" class="fancy-link wiki-link">Pointers</a>
+        <ul>
+          <li><a href="#pointer-basics" class="fancy-link wiki-link">Pointer Basics</a></li>
+          <li><a href="#pointer-arithmetic" class="fancy-link wiki-link">Pointer Arithmetic</a></li>
+          <li><a href="#what-is-a-void-pointer" class="fancy-link wiki-link">What is a void pointer?</a></li>
+        </ul>
+      </li>
+      <li><a href="#shell" class="fancy-link wiki-link">Shell</a></li>
+      <li>
+<a href="#common-bugs" class="fancy-link wiki-link">Common Bugs</a>
+        <ul>
+          <li><a href="#double-frees" class="fancy-link wiki-link">Double Frees</a></li>
+          <li><a href="#returning-pointers-to-automatic-variables" class="fancy-link wiki-link">Returning pointers to automatic variables</a></li>
+          <li><a href="#buffer-overflow-underflow" class="fancy-link wiki-link">Buffer overflow/ underflow</a></li>
+          <li><a href="#using-uninitialized-variables" class="fancy-link wiki-link">Using uninitialized variables</a></li>
+          <li><a href="#assuming-uninitialized-memory-will-be-zeroed" class="fancy-link wiki-link">Assuming Uninitialized memory will be zeroed</a></li>
+        </ul>
+      </li>
+      <li>
+<a href="#logic-and-program-flow-mistakes" class="fancy-link wiki-link">Logic and Program flow mistakes</a>
+        <ul>
+          <li><a href="#equal-vs.equality" class="fancy-link wiki-link">Equal vs. equality</a></li>
+          <li><a href="#undeclared-or-incorrectly-prototyped-functions" class="fancy-link wiki-link">Undeclared or incorrectly prototyped functions</a></li>
+          <li><a href="#extra-semicolons" class="fancy-link wiki-link">Extra Semicolons</a></li>
+        </ul>
+      </li>
+      <li><a href="#topics" class="fancy-link wiki-link">Topics</a></li>
+      <li><a href="#questionsexercises" class="fancy-link wiki-link">Questions/Exercises</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p>[1][] <span> </span></p>
+
+
+
+<p><span>C</span> is the de-facto programming language to do serious system serious programming. Why? Most kernels are written in largely in C. The <span>linux kernel</span> and the XNU kernel of which Mac OS X is based off. The Windows Kernel uses C++, but doing system programming on that is much harder on windows that UNIX for beginner system programmers. Most of you have some experience with C++, but C is a different beast entirely. You don’t have nice abstractions like classes and RAII to clean up memory. You are going to have to do that yourself. C gives you much more of an opportunity to shoot yourself in the foot but lets you do thinks at a much finer grain level.</p>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="history-of-c" class="title-text">History of C<a class="anchor title-text" href="#history-of-c">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>C was developed by Dennis Ritchie and Ken Thompson at Bell Labs back in 1973 . Back then, we had gems of programming languages like Fortran, ALGOL, and LISP. The goal of C was two fold. One, to target the most popular computers at the time liek the PDP-7. Two, try and remove some of the lower level constructs like managing registers, programming assembly for jumps and instead create a language that had the power to express programs procedurally (as opposed to mathematically like lisp) with more readable code all while still having the ability to interface with the operating system. It sounded like a tough feat. At first, it was only used internally at Bell Labs along with the UNIX operating system.</p>
+<p>The first “real” standardization is with Brian Kerninghan and Dennis Ritchies book . It is still widely regarded today as the only <span>portable</span> set of C instructions. The K&amp;R book is known as the de-facto standard for learning C. There were different standards of C from ANSI to ISO after the Unix guides. The one that we will be mainly focusing on is the <span>POSIX</span> C library. Now to get the elephant out of the room, the Linux kernel is not entirely POSIX compliant. Mostly, it is because they didn’t want to pay the fee for compliance but also it doesn’t want to be completely compliant with a bunch of different standards because then it has to ensue increasing development costs to maintain compliance.</p>
+<p>Fast forward however many years, and we are at the current C standard put forth by ISO: C11. Not all the code that we us in this class will be in this format. We will aim to using C99 as the standard that most computers recognize. We will talk about some off-hand features like <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/getline" class="fancy-link">getline</a></code></span> because they are so widely used with the GNU-C library. We’ll begin by providing a decently comprehensive overview of the language with pairing facilities.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="features" class="title-text">Features<a class="anchor title-text" href="#features">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>
+    <p>Fast. There is nothing separating you and the system.</p>
+  </li>
+  <li>
+    <p>Simple. C and its standard library pose a simple set of portable functions.</p>
+  </li>
+  <li>
+    <p>Memory Management. C let’s you manage your memory. This can also bite you if you have memory errors.</p>
+  </li>
+  <li>
+    <p>It’s Everywhere. Pretty much every computer that is not embedded has some way of interfacing with C. The standard library is also everywhere. C has stood the test of time as a popular language, and it doesn’t look like it is going anywhere.</p>
+  </li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="crash-course-intro-to-c" class="title-text">Crash course intro to C<a class="anchor title-text" href="#crash-course-intro-to-c">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<!-- -->
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The only way to start learning C is by starting with hello world. As per the original example that Kernighan and Ritchie proposed way back when, the hello world hasn’t changed that much.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<ol>
+  <li>
+    <p>The <span><code class="highlighter-rouge">#include</code></span> directive takes the file <span><code class="highlighter-rouge">stdio.h</code></span> (which stands for <strong>st</strong>an<strong>d</strong>ard <strong>i</strong>nput and <strong>o</strong>utput) located somewhere in your operating system, copies the text, and substitutes it where the <span><code class="highlighter-rouge">#include</code></span> was.</p>
+  </li>
+  <li>
+    <p>The <span><code class="highlighter-rouge">int main(void)</code></span> is a function declaration. The first word <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/int" class="fancy-link">int</a></code></span> tells the compiler what the return type of the function is. The part before the parens (<span><code class="highlighter-rouge">main</code></span>) is the function name. In C, no two functions can have the same name in a single compiled program, shared libraries are a different touchy subject. Then, what comes after is the paramater list. When we give the parameter list for regular functions <span><code class="highlighter-rouge">(void)</code></span> that means that the compiler should error if the function is called with any arguments. For regular functions having a declaration like <span><code class="highlighter-rouge">void func()</code></span> means that you are allowed to call the function like <span><code class="highlighter-rouge">func(1, 2, 3)</code></span> because there is no delimiter . In the case of <span><code class="highlighter-rouge">main</code></span>, it is a special function. There are many ways of declaring <span><code class="highlighter-rouge">main</code></span> but the ones that you will be familiar with are <span><code class="highlighter-rouge">int main(void)</code></span>, <span><code class="highlighter-rouge">int main()</code></span>, and <span><code class="highlighter-rouge">int main(int argc, char *argv[])</code></span>.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">printf(Hello World);</code></span> is what we call a function call. <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code></span> is defined as a part of <span><code class="highlighter-rouge">stdio.h</code></span>. The function has been compiled and lives somewhere else on our machine. All we need to do is include the header and call the function with the appropriate parameters (a string literal <span><code class="highlighter-rouge">Hello World</code></span>). If you don’t have the newline, the buffer will not be flushed. It is by convention that buffered IO is not flushed until a newline.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">return 0;</code></span>. <span><code class="highlighter-rouge">main</code></span> has to return an integer. By convention, <span><code class="highlighter-rouge">return 0</code></span> means success and anything else means failure .</p>
+  </li>
+</ol>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gcc main.c -o main
+$ ./main
+Hello World
+$
+</code></pre></div></div>
+<ol>
+  <li>
+    <p><span><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/gcc" class="fancy-link">gcc</a></code></span> is short for the GNU-Compiler-Collection which has a host of compilers ready for use. The compiler infers from the extension that you are trying to compile a .c file</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">./main</code></span> tells your shell to execute the program in the current directory called main. The program then prints out hello world</p>
+  </li>
+</ol>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="preprocessor" class="title-text">Preprocessor<a class="anchor title-text" href="#preprocessor">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>What is the preprocessor? Preprocessing is an operation that the compiler performs <strong>before</strong> actually compiling the program. It is a copy and paste command. Meaning the following susbtitution is performed.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>There are side effects to the preprocessor though. One problem is that the preprocessor needs to be able to tokenize properly, meaning trying to redefine the interals of the C language with a preprocessor may be impossible. Another problem is that they can’t be nested infinitely – there is an unbounded depth where they need to stop. Macros are also just simple text substitutions.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Macros are simple text substitution so the above example expands to <span><code class="highlighter-rouge">x++ &lt; 100 ? x++ : 100</code></span> (parenthesis omitted for clarity). Now for this case, it is opaque what gets printed out but it will be 6. Also consider the edge case when operator precedence comes into play.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Macros are simple text substitution so the above example expands to <span><code class="highlighter-rouge">10 + 99 &lt; 100 ? 99 : 100</code></span>. You can have logical problems with the flexibility of certain parameters. One common source of confusion is with static arrays and the <span><code class="highlighter-rouge">sizeof</code></span> operator.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>What is wrong with the macro? Well, it works if we have a static array like the first array because <span><code class="highlighter-rouge">sizeof</code></span> a static array returns the number of bytes that array takes up, and dividing it by the <span><code class="highlighter-rouge">sizeof(an_element)</code></span> would give you the number of entries. But if we use a pointer to a piece of memory, taking the sizeof the pointer and dividing it by the size of the first entry won’t always give us the size of the array.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="language-facilities" class="title-text">Language Facilities<a class="anchor title-text" href="#language-facilities">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<h3 id="keywords" class="title-text">Keywords</h3>
+<p>C has an assortment of keywords. Here are some constructs that you should know briefly as of C99.</p>
+<ol>
+  <li>
+    <p><span><code class="highlighter-rouge"><a href="https://linux.die.net/man/2/break" class="fancy-link">break</a></code></span> is a keyword that is used in case statements or looping statements. When used in a case statement, the program jumps to the end of the block.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+    <p>In the context of a loop, it breaks out of the inner-most loop. The loop can be either a <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/for" class="fancy-link">for</a></code></span>, <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/while" class="fancy-link">while</a></code></span>, or <span><code class="highlighter-rouge">do-while</code></span> construct</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">const</code></span> is a language level construct that tells the compiler that this data should not be modified. If one tries to change a const variable, the program will not even compile. <span><code class="highlighter-rouge">const</code></span> works a little differently when put before the type, the compiler flips the first type and const. Then the compiler uses a left associativity rule. Meaning that whatever is left of the pointer is constant. This is known as const-correctedness.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+    <p>But, it is important to know that this is a compiler imposed restriction only. There are ways of getting around this and the program will run fine with defined behavior. In systems programming, the only type of memory that you can’t write to is system write-protected memory.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/continue" class="fancy-link">continue</a></code></span> is a control flow statement that exists only in loop constructions. Continue will skip the rest of the loop body and set the program counter back to the start of the loop before.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">do {} while();</code></span> is another loop constructs. These loops execute the body and then check the condition at the bottom of the loop. If the condition is zero, the loop body is not executed and the rest of the program is executed. Otherwise, the loop body is executed.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/enum" class="fancy-link">enum</a></code></span> is to declare an enumeration. An enumeration is a type that can take on many, finite values. If you have an enum and don’t specify any numerics, the c compiler when generate a unique number for that enum (within the context of the current enum) and use that for comparisons. To declare an instance of an enum, you must say <span><code class="highlighter-rouge">enum &lt;type&gt; varname</code></span>. The added benefit to this is that C can type check these expressions to make sure that you are only comparing alike types.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+    <p>It is completely possible to assign enum values to either be different or the same. Just don’t rely on the compiler for consistent numbering. If you are going to use this abstraction, try not to break it.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">extern</code></span> is a special keyword that tells the compiler that the variable may be defined in another object file or a library, so the compiler doesn’t throw an error when either the variable is not defined or if the variable is defined twice because the first file will really be referencing the variable in the other file.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/for" class="fancy-link">for</a></code></span> is a keyword that allows you to iterate with an initialization condition, a loop invariant, and an update condition. This is meant to be a replacement for the while loop</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+    <p>One thing to note is that as of the C89 standard, you cannot declare variables inside the <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/for" class="fancy-link">for</a></code></span> loop. This is because there was a disagreement in the standard for how the scoping rules of a variable defined in the loop would work. It has since been resolved with more recent standards, so people can use the for loop that they know and love today</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+    <p>The order of evaluation for a <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/for" class="fancy-link">for</a></code></span> loop is as follows</p>
+
+    <ol>
+      <li>
+        <p>Perform the initialization condition.</p>
+      </li>
+      <li>
+        <p>Check the invariant. If false, terminate the loop and execute the next statement. If true, continue to the body of the loop.</p>
+      </li>
+      <li>
+        <p>Perform the body of the loop.</p>
+      </li>
+      <li>
+        <p>Perform the update condition.</p>
+      </li>
+      <li>
+        <p>Jump to (2).</p>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">goto</code></span> is a keyword that allows you to do conditional jumps. Do not use <span><code class="highlighter-rouge">goto</code></span> in your programs. The reason being is that it makes your code infinitely more hard to understand when strung together with multiple chains. It is fine to use in some contexts though. The keyword is usually used in kernel contexts when adding another stack frame for cleanup isn’t a good idea. The canonical example of kernel cleanup is as below.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">if else else-if</code></span> are control flow keywords. There are a few ways to use these (1) A bare if (2) An if with an else (3) an if with an else-if (4) an if with an else if and else. The statements are always executed from the if to the else. If any of the intermediate conditions are true, the if block performs that action and goes to the end of that block.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/inline" class="fancy-link">inline</a></code></span> is a compiler keyword that tells the compiler it’s okay not to create a new function in the assembly. Instead, the compile is hinted at substituting the function body directly into the calling function. This is not always recommended explicitly as the compiler is usually smart enough to know when to <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/inline" class="fancy-link">inline</a></code></span> a function for you.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">restrict</code></span> is a keyword that tells the compiler that this particular memory region shouldn’t overlap with all other memory regions. The use case for this is to tell users of the program that it is undefined behavior if the memory regions overlap.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/return" class="fancy-link">return</a></code></span> is a control flow operator that exits the current function. If the function is <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/4/void" class="fancy-link">void</a></code></span> then it simply exits the functions. Otherwise another parameter follows as the return value.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">signed</code></span> is a modifier which is rarely used, but it forces an type to be signed instead of unsigned. The reasont that this is so rarely used is because types are signed by default and need to have the <span><code class="highlighter-rouge">unsigned</code></span> modifier to make them unsigned but it may be useful in cases where you want the compiler to default a signed type like.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">sizeof</code></span> is an operator that is evaluated at compile time, which evaluates to the number of bytes that the expression contains. Meaning that when the compiler infers the type the following code changes.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+    <p>Which then the compiler is allowed to operate on further. A note that you must have a complete definition of the type at compile time or else you may get an odd error. Consider the following</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+    <p>This code will not compile because sizeof is not able to compile <span><code class="highlighter-rouge">file.c</code></span> without knowing the full declaration of the <code class="highlighter-rouge">person</code> struct. That is typically why we either put the full declaration in a header file or we abstract the creation and the interaction away so that users cannot access the internals of our struct. Also, if the compiler knows the full length of an array object, it will use that in the expression instead of decaying it to a pointer.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+    <p>Be careful, using sizeof for the length of a string!</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">static</code></span> is a type specifier with three meanings.</p>
+
+    <ol>
+      <li>
+        <p>When used with a global variable or function declaration it means that the scope of the variable or the function is only limited to the file.</p>
+      </li>
+      <li>
+        <p>When used with a function variable, that declares that the variable has static allocation – meaning that the variable is allocated once at program start up not every time the program is run.</p>
+      </li>
+    </ol>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">struct</code></span> is a keyword that allows you to pair multiple types together into a new structure. Structs are contiguous regions of memory that one can access specific elements of each memory as if they were separate variables.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">switch case default</code></span> Switches are essentially glorified jump statements. Meaning that you take either a byte or an integer and the control flow of the program jumps to that location.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+    <p>If we give a value of 2 then</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+    <p>The break statement</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">typedef</code></span> declares an alias for a type. Often used with structs to reduce the visual clutter of having to write ‘struct’ as part of the type.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+    <p>In this class, we regularly typedef functions. A typedef for a function can be this for example</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+    <p>This declares a function type comparator that accepts two <span><code class="highlighter-rouge">void*</code></span> params and returns an integer.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">union</code></span> is a new type specifier. A union is one piece of memory that a bunch of variables occupy. It is used to maintain consistency while having the flexibility to switch between types without mainting functions to keep track of the bits. Consider an example where we have different pixel values.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">unsigned</code></span> is a type modifier that forces <span><code class="highlighter-rouge">unsigned</code></span> behavior in the variables they modify. Unsigned can only be on primitive int types (like <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/int" class="fancy-link">int</a></code></span> and <span><code class="highlighter-rouge">long</code></span>). There is a lot of behavior associated with unsigned arthmetic and whatnot, just know for the most part unless you need to do bit shifting you probably won’t need it.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge"><a href="https://linux.die.net/man/4/void" class="fancy-link">void</a></code></span> is a two folded keyword. When used in terms of function or parameter definition then it means that it returns no value or accepts no parameter specifically. The following declares a function that accepts no parameters and returns nothing.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+    <p>The other use of <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/4/void" class="fancy-link">void</a></code></span> is when you are defining. A <span><code class="highlighter-rouge">void *</code></span> pointer is just a memory address. It is specified as an incomplete type meaning that you cannot dereference it but it can be promoted to any time to any other type. Pointer arithmetic with these pointer is undefined behavior.</p>
+
+    <div class="highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>int *array = void_ptr; // No cast needed
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">volatile</code></span> is a compiler keyword. This means that the compiler should not optimize its value out. Consider the following simple function.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+    <p>The compiler may, since the internals of the while loop have nothing to do with the flag, optimize it to the following even though a function may alter the data.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+    <p>If you put the volatile keyword then it forces the compiler to keep the variable in and perform that check. This is particularly useful for cases where you are doing multi-process or multi-threading programs so that we can</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">while </code></span> represents the traditional <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/while" class="fancy-link">while</a></code></span> loop. There is a condition at the top of the loop. While that condition evaluates to a non-zero value, the loop body will be run.</p>
+  </li>
+</ol>
+<h3 id="c-data-types" class="title-text">C data types</h3>
+<ol>
+  <li>
+    <p><span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/char" class="fancy-link">char</a></code></span> Represents exactly one byte of data. The number of bits in a byte might vary. <span><code class="highlighter-rouge">unsigned char</code></span> and <span><code class="highlighter-rouge">signed char</code></span> mean the exact same thing. This must be aligned on a boundary (meaning you cannot use bits in between two addresses). The rest of the types will assume 8 bits in a byte.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">short (short int)</code></span> must be at least two bytes. This is aligned on a two byte boundary, meaning that the address must be divisble by two.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/int" class="fancy-link">int</a></code></span> must be at least two bytes. Again aligned to a two byte boundary . On most machines this will be 4 bytes.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">long (long int)</code></span> must be at least four bytes, which are aligned to a four byte boundary. On some machines this can be 8 bytes.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">long long</code></span> must be at least eight bytes, aligned to an eight byte boundary.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">float</code></span> represents an IEEE-754 single percision floating point number tightly specified by IEEE . This will be four bytes aligned to a four byte boundary on most machines.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">double</code></span> represents an IEEE-754 double percision floating point number specified by the same standard, which is aligned to the nearest eight byte boundary.</p>
+  </li>
+</ol>
+<h3 id="operators" class="title-text">Operators</h3>
+<p>Operators are language constructs in C that are defined as part of the grammar of the language.</p>
+<ol>
+  <li>
+    <p><span><code class="highlighter-rouge">[]</code></span> is the subscript operator. <code class="highlighter-rouge">a[n] == (a + n)*</code> where <code class="highlighter-rouge">n</code> is a number type and <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/a" class="fancy-link">a</a></code> is a pointer type.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">-&gt;</code></span> is the structure dereference operator. If you have a pointer to a struct <code class="highlighter-rouge">*p</code>, you can use this to access one of its elements. <code class="highlighter-rouge">p-&gt;element</code>.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">.</code></span> is the structure reference operator. If you have an object on the stack <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/a" class="fancy-link">a</a></code> then you can access an element <code class="highlighter-rouge">a.element</code>.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">+/-a</code></span> is the unary plus and minus operator. They either keep or negate the sign, respectively, of the integer or float type underneath.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">*a</code></span> is the dereference operator. If you have a pointer <code class="highlighter-rouge">*p</code>, you can use this to access the element located at this memory address. If you are reading, the return value will be the size of the underlying type. If you are writing, the value will be written with an offset.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">&amp;a</code></span> is the addressof operator. This takes the an element and returns its address.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">++</code></span> is the increment operator. You can either take it prefix or postfix, meaning that the variable that is being incremented can either be before or after the operator. <span><code class="highlighter-rouge">a = 0; ++a === 1</code></span> and <span><code class="highlighter-rouge">a = 1; a++ === 0</code></span>.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">–</code></span> is the decrement operator. Same semantics as the increment operator except with decreasing the value by one.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">sizeof</code></span> is the sizeof operator. This is also mentioned in the keywords section.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">a &lt;mop&gt; b</code></span> where <span>``&lt;mop&gt;=+, -, *, %, /</span> are the mathematical binary operators. If the operands are both number types, then the operations are plus, minus, times, modulo, and division respectively. If the left operand is a pointer and the right operand is an integer type, then only plus or minux may be used and the rules for pointer arithmetic are invoked.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">&gt;&gt;/&lt;&lt;</code></span> are the bit shift operators. The operand on the right has to be an integer type whose signedness is ignored unless it is signed negative in which case the behavior is undefined. The operator on the left decides a lot of semantics. If we are left shifting, there will always be zeros introduced on the right. If we are right shifting there are a few different cases</p>
+
+    <ul>
+      <li>
+        <p>If the operand on the left is signed, then the integer is sign extended. This means that if the number has the sign bit set, then any shift right will introduce ones on the left. If the number does not have the sign bit set, any shift right will introduce zeros on the left.</p>
+      </li>
+      <li>
+        <p>If the operand is unsigned, zeros will be introduced on the left either way.</p>
+      </li>
+    </ul>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">&lt;=/&gt;=</code></span> are the greater than equal to/less than equal to operators. They do as the name implies.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">&lt;/&gt;</code></span> are the greater than/less than operators. They again do as the name implies.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">==/=</code></span> are the equal/not equal to operators. They once again do as the name implies.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">&amp;&amp;</code></span> is the logical and operator. If the first operand is zero, the second won’t be evaluated and the expression will evaluate to 0. Otherwise, it yields a 1-0 value of the second operand.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">||</code></span> is the logical or operator. If the first operand is not zero, then second won’t be evaluated and the expression will evaluate to 1. Otherwise, it yields a 1-0 value of the second operand.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">!</code></span> is the logical not operator. If the operand is zero, then this will return 1. Otherwise, it will return 0.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">&amp;</code></span> If a bit is set in both operands, it is set in the output. Otherwise, it is not.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">|</code></span> If a bit is set in either operand, it is set in the output. Otherwise, it is not.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">~</code></span> If a bit is set in the input, it will not be set in the output and vice versa.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">?:</code></span> is the tertinary operator. You put a boolean condition before the and if it evaluates to non-zero the element before the colon is returned otherwise the element after is. <span><code class="highlighter-rouge">1 ? a : b === a</code></span> and <span><code class="highlighter-rouge">0 ? a : b === b</code></span>.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">a, b</code></span> is the comma operator. <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/a" class="fancy-link">a</a></code></span> is evaluated and then <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/b" class="fancy-link">b</a></code></span> is evaluated and <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/b" class="fancy-link">b</a></code></span> is returned.</p>
+  </li>
+</ol>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="common-c-functions" class="title-text">Common C Functions<a class="anchor title-text" href="#common-c-functions">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>To find more information about any functions, use the man pages. Note the man pages are organized into sections. Section 2 are System calls. Section 3 are C libraries. On the web, Google <span><code class="highlighter-rouge">man 7 open</code></span>. In the shell, <span><code class="highlighter-rouge">man -S2 open</code></span> or <span><code class="highlighter-rouge">man -S3 printf</code></span></p>
+<h3 id="inputoutput" class="title-text">Input/Output</h3>
+<p><span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code></span> is the function with which most people are familiar. The first parameter is a format string that includes placeholders for the data to be printed. Common format specifiers are <span><code class="highlighter-rouge">%s&lt;/span&gt; treat the argument as a c string pointer, keep printing all characters until the NULL-character is reached; &lt;span&gt;</code>%d</span> print the argument as an integer; <span>``%p</span> print the argument as a memory address. By default, for performance, <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code></span> does not actually write anything out until its buffer is full or a newline is printed.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p><span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code></span> calls the system call <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code></span>. <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code></span> includes an internal buffer so, to increase performance <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code></span> may not call <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code></span> everytime you call <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code></span>. <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code></span> is a C library function. <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/write" class="fancy-link">write</a></code></span> is a system call and as we know system calls are expensive. On the other hand, <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code></span> uses a buffer which suits our needs better at that point</p>
+<p>To print strings and single characters use <span><code class="highlighter-rouge">puts( name )</code></span> and <span><code class="highlighter-rouge">putchar( c )</code></span> where name is a pointer to a C string and c is just a <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/char" class="fancy-link">char</a></code></span></p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>To print to other file streams use <span>``fprintf( _file_ , “Hello %s, score: %d”, name, score);</span> Where _file_ is either predefined ‘stdout’ ‘stderr’ or a FILE pointer that was returned by <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fopen" class="fancy-link">fopen</a></code></span> or <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fdopen" class="fancy-link">fdopen</a></code></span>. You can also use file descriptors in the printf family of functions! Just use <span><code class="highlighter-rouge">dprintf(int fd, char* format_string, ...);</code></span> Just remember the stream may be buffered, so you will need to assure that the data is written to the file descriptor.</p>
+<p>To print data into a C string, use <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sprintf" class="fancy-link">sprintf</a></code></span> or better <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/snprintf" class="fancy-link">snprintf</a></code></span>. <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/snprintf" class="fancy-link">snprintf</a></code></span> returns the number of characters written excluding the terminating byte. In the above example, this would be a maximum of 199. We would use <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sprintf" class="fancy-link">sprintf</a></code></span> in cases where we know that the size of the string will not be anything more than a certain fixed amount (think about printing an integer, it will never be more than 11 characters with the null byte)</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>If I want to <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code></span> to call write without a newline <span><code class="highlighter-rouge">fflush( FILE* inp )</code></span>. The contents of the file will be written. If I wanted to write “Hello World” with no newline, I could write it like this.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>In addition to the printf family, there is <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/gets" class="fancy-link">gets</a></code></span>. <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/gets" class="fancy-link">gets</a></code></span> is deprecated in C99 standard and has been removed from the latest C standard (C11). Programs should use <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fgets" class="fancy-link">fgets</a></code></span> or <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/getline" class="fancy-link">getline</a></code></span> instead.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>The result is NULL if there was an error or the end of the file is reached. Note, unlike <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/gets" class="fancy-link">gets</a></code></span>, <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fgets" class="fancy-link">fgets</a></code></span> copies the newline into the buffer, which you may want to discard. On the other hand, one of the advantages of <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/getline" class="fancy-link">getline</a></code></span> is that will automatically (re-) allocate a buffer on the heap of sufficient size.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>In addition to those functions, we have <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/perror" class="fancy-link">perror</a></code></span> that has a two-fold meaning. Let’s say that you have a function call that just failed because you checked the man page and it is a failing return code.<span><code class="highlighter-rouge">perror(const char* message)</code></span> will print the English version of the error to stderr.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>To have a library function parse input, use <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/scanf" class="fancy-link">scanf</a></code></span> (or <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/fscanf" class="fancy-link">fscanf</a></code></span> or <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sscanf" class="fancy-link">sscanf</a></code></span>) to get input from the default input stream, an arbitrary file stream or a C string respectively. It’s a good idea to check the return value to see how many items were parsed. <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/scanf" class="fancy-link">scanf</a></code></span> functions require valid pointers. It’s a common source of error to pass in an incorrect pointer value. For example,</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>We wanted to write the character value into c and the integer value into the malloc’d memory. However, we passed the address of the data pointer, not what the pointer is pointing to! So <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sscanf" class="fancy-link">sscanf</a></code></span> will change the pointer itself. i.e. the pointer will now point to address 10 so this code will later fail e.g. when free(data) is called.</p>
+<p>Now, scanf will just keep reading characters until the string ends. To stop scanf from causing a buffer overflow, use a format specifier. Make sure to pass one less than the size of the buffer.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="stringh" class="title-text">string.h</h3>
+<p><a href="https://linux.die.net/man/3/string" class="fancy-link wiki-link">More information about all of these functions</a>. Any behavior not in the docs like passing <span><code class="highlighter-rouge">strlen(NULL)</code></span> is considered undefined behavior.</p>
+<ul>
+  <li>
+    <p><span><code class="highlighter-rouge">int strlen(const char s)</code></span> returns the length of the string not including the null byte</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">int strcmp(const char s1, const char s2)</code></span> returns an integer determining the lexicographic order of the strings. If s1 where to come before s2 in a dictionary, then a -1 is returned. If the two strings are equal, then 0. Else, 1.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">char strcpy(char dest, const char src)</code></span> Copies the string at <span><code class="highlighter-rouge">src</code></span> to <span><code class="highlighter-rouge">dest</code></span>. <strong>assumes dest has enough space for src</strong></p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">char strcat(char dest, const char src)</code></span> Concatenates the string at <span><code class="highlighter-rouge">src</code></span> to the end of destination. <strong>This function assumes that there is enough space for <span><code class="highlighter-rouge">src</code></span> at the end of destination including the NULL byte</strong></p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">char strdup(const char dest)</code></span> Returns a <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code></span>’ed copy of the string.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">char strchr(const char haystack, int needle)</code></span> Returns a pointer to the first occurrence of <span><code class="highlighter-rouge">needle</code></span> in the <span><code class="highlighter-rouge">haystack</code></span>. If none found, <span><code class="highlighter-rouge">NULL</code></span> is returned.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">char strstr(const char haystack, const char needle)</code></span> Same as above but this time a string!</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">char *strtock(const char *str, const char *delims)</code></span></p>
+
+    <p>A dangerous but useful function strtok takes a string and tokenizes it. Meaning that it will transform the strings into separate strings. This function has a lot of specs so please read the man pages a contrived example is below.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+    <p><strong>Output</strong></p>
+
+    <div class="highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>strtok
+is
+tricky
+!!
+</code></pre></div>    </div>
+
+    <p>What happens when I change <span><code class="highlighter-rouge">upped</code></span> like this?</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p>For integer parsing use <span><code class="highlighter-rouge">long int strtol(const char nptr, char *endptr, int base);</code></span> or <span><code class="highlighter-rouge">long long int strtoll(const char nptr, char *endptr, int base);</code></span>.</p>
+
+    <p>What these functions do is take the pointer to your string <span><code class="highlighter-rouge">*nptr</code></span> and a <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/base" class="fancy-link">base</a></code></span> (ie binary, octal, decimal, hexadecimal etc) and an optional pointer <span><code class="highlighter-rouge">endptr</code></span> and returns a parsed value.</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+    <p>Be careful though! Error handling is tricky because the function won’t return an error code. If you give it a string that is not a number it will return 0. This means you cant differentiate between a valid “0” and an invalid string. See the man page for more details on strol behavior with invalid and out of bounds values. A safer alternative is use to <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sscanf" class="fancy-link">sscanf</a></code></span> (and check the return value).</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">void memcpy(void dest, const void src, size_t n)</code></span> moves <span><code class="highlighter-rouge">n</code></span> bytes starting at <span><code class="highlighter-rouge">src</code></span> to <span><code class="highlighter-rouge">dest</code></span>. <strong>Be careful</strong>, there is undefined behavior when the memory regions overlap. This is one of the classic works on my machine examples because many times valgrind won’t be able to pick it up because it will look like it works on your machine. When the autograder hits, fail. Consider the safer version below.</p>
+  </li>
+  <li>
+    <p><span><code class="highlighter-rouge">void memmove(void dest, const void src, size_t n)</code></span> does the same thing as above, but if the memory regions overlap then it is guaranteed that all the bytes will get copied over correctly. <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/memcpy" class="fancy-link">memcpy</a></code></span> and <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/memmove" class="fancy-link">memmove</a></code></span> both in <span><code class="highlighter-rouge">&lt;string.h&gt;</code></span>? Because strings are essentially raw memory with a null byte at the end of them!</p>
+  </li>
+</ul>
+<h3 id="conventionserrno" class="title-text">Conventions/Errno</h3>
+<p><span><strong>Conventions and errno, talk about what the unix conventions are for processes and what the errno conventions are</strong></span></p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="system-calls" class="title-text">System Calls<a class="anchor title-text" href="#system-calls">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p><span><strong>System Calls, talk about what a system call is and an aside for the practicalities of system calls and what actually happens</strong></span></p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="c-memory-model" class="title-text">C Memory Model<a class="anchor title-text" href="#c-memory-model">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<h3 id="structs" class="title-text">Structs</h3>
+<p>In low-level terms, a struct is just a piece of contiguous memory, nothing more. Just like an array, a struct has enough space to keep all of its members. But unlike an array, it can store different types. Consider the contact struct declared above</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>If you compile the code without any optimizations and reordering, you can expect the addresses of each of the variables to look like this.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Because all your compiler does is say ‘hey reserve this much space, and I will go and calculate the offsets of whatever variables you want to write to’. The offsets are where the variable starts at. The phone variables starts at the <span><code class="highlighter-rouge">0x128</code></span>th bytes and continues for sizeof(int) bytes, but not always. <strong>Offsets don’t determine where the variable ends though</strong>. Consider the following hack that you see in a lot of kernel code.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<div class="pad"><div class="card">
+<h4 id="struct-packing">Struct packing</h4>
+
+<p>Structs may require something called <a href="http://www.catb.org/esr/structure-packing/" class="fancy-link wiki-link">padding</a> (tutorial). <strong>We do not expect you to pack structs in this course, just know that it is there</strong> This is because in the early days (and even now) when you have to an address from memory you have to do it in 32bit or 64bit blocks. This also meant that you could only request addresses that were multiples of that. Meaning that</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>Would conceptually look like this</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>This is on a 64-bit system. This is not always the case because sometimes your processor supports unaligned accesses. What does this mean? Well there are two options you can set an attribute</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>But now, every time I want to access <span><code class="highlighter-rouge">data</code></span> or <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/encoding" class="fancy-link">encoding</a></code></span>, I have to do two memory accesses. The other thing you can do is reorder the struct, although this is not always possible</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<h3 id="strings-in-c" class="title-text">Strings in C</h3>
+
+<p><img src="https://raw.githubusercontent.com/illinois-cs241/wikibook-project/master/https://i.imgur.com/CgsxyZb.png" alt="String"></p>
+
+<p>In C we have <a href="https://en.wikipedia.org/wiki/Null-terminated_string" class="fancy-link wiki-link">Null Terminated</a> strings rather than <a href="https://en.wikipedia.org/wiki/String_(computer_science)#Length-prefixed" class="fancy-link wiki-link">Length Prefixed</a> for historical reasons. What that means for your average everyday programming is that you need to remember the null character! A string in C is defined as a bunch of bytes until you reach ‘’ or the Null Byte.</p>
+
+<h3 id="two-places-for-strings" class="title-text">Two places for strings</h3>
+
+<p>Whenever you define a constant string (ie one in the form <span><code class="highlighter-rouge">char* str = constant</code></span>) That string is stored in the <em>data</em> or <em>lstlisting</em> segment that is <strong>read-only</strong> meaning that any attempt to modify the string will cause a segfault.</p>
+
+<p>If one, however, <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code></span>’s space, one can change that string to be whatever they want. Forgetting to NULL terminate a string is a big affect on the strings! Bounds checking is important. The heart bleed bug mentioned earlier in the wiki book is partially because of this.</p>
+
+<p>Strings in C are represented as characters in memory. The end of the string includes a NULL (0) byte. So “ABC” requires four(4) bytes <span><code class="highlighter-rouge">[A,B,C,\0</code></span>. The only way to find out the length of a C string is to keep reading memory until you find the NULL byte. C characters are always exactly one byte each.</p>
+
+<p>When you write a string literal <span><code class="highlighter-rouge">ABC</code></span> in an expression the string literal evaluates to a char pointer (<span><code class="highlighter-rouge">char </code></span>), which points to the first byte/char of the string. This means <span><code class="highlighter-rouge">ptr</code></span> in the example below will hold the memory address of the first character in the string.</p>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="string-constants-are-constant">String constants are constant</h4>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>String literals are character arrays stored in the code segment of the program, which is immutable. Two string literals may share the same space in memory. An example follows:</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>The strings pointed to by <span><code class="highlighter-rouge">str1</code></span> and <span><code class="highlighter-rouge">str2</code></span> may actually reside in the same location in memory.</p>
+
+<p>Char arrays, however, contain the literal value which has been copied from the code segment into either the stack or static memory. These following char arrays do not reside in the same place in memory.</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>Some common ways to initialize a string include:</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>Example</p>
+
+<p>The array name points to the first byte of the array. Both <span><code class="highlighter-rouge">ary</code></span> and <span><code class="highlighter-rouge">ptr</code></span> can be printed out:</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>The array is mutable, so we can change its contents. Be careful not to write bytes beyond the end of the array though. Fortunately, “World” is no longer than “Hello”</p>
+
+<p>In this case, the char pointer <span><code class="highlighter-rouge">ptr</code></span> points to some read-only memory (where the statically allocated string literal is stored), so we cannot change those contents.</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>We can, however, unlike the array, we change <span><code class="highlighter-rouge">ptr</code></span> to point to another piece of memory,</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>What to take away from this is that pointers * can point to any type of memory while C arrays <span>[</span><span>]</span> can only point to memory on the stack. In a more common case, pointers will point to heap memory in which case the memory referred to by the pointer CAN be modified.</p>
+
+</div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="pointers" class="title-text">Pointers<a class="anchor title-text" href="#pointers">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<h3 id="pointer-basics" class="title-text">Pointer Basics</h3>
+<div class="pad"><div class="card">
+<h4 id="declaring-a-pointer">Declaring a Pointer</h4>
+
+<p>A pointer refers to a memory address. The type of the pointer is useful - it tells the compiler how many bytes need to be read/written. You can declare a pointer as follows.</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>Due to C’s grammar, an <span><code class="highlighter-rouge">int*</code></span> or any pointer is not actually its own type. You have to precede each pointer variable with an asterisk. As a common gotcha, the following</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>Will only declare <span><code class="highlighter-rouge">*ptr3</code></span> as a pointer. <span><code class="highlighter-rouge">ptr4</code></span> will actually be a regular int variable. To fix this declaration, keep the <span><code class="highlighter-rouge">*</code></span> preceding to the pointer</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>Keep this in mind for structs as well. If one does not typedef them, then the pointer goes after the type.</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+</div></div>
+<div class="pad"><div class="card">
+<h4 id="readingwriting-with-pointers">Reading/Writing with pointers</h4>
+
+<p>Let’s say that we declare a pointer <span><code class="highlighter-rouge">int ptr</code></span>. For the sake of discussion, let’s say that <span><code class="highlighter-rouge">ptr</code></span> points to memory address <span><code class="highlighter-rouge">0x1000</code></span>. If we want to write to a pointer, we can dereference and assign <span><code class="highlighter-rouge">*ptr</code></span>.</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>What C will do is take the type of the pointer which is an <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/int" class="fancy-link">int</a></code></span> and writes <span><code class="highlighter-rouge">sizeof(int)</code></span> bytes from the start of the pointer, meaning that bytes <span><code class="highlighter-rouge">0x1000</code></span>, <span><code class="highlighter-rouge">0x1001</code></span>, <span><code class="highlighter-rouge">0x1002</code></span>, <span><code class="highlighter-rouge">0x1003</code></span> will all be zero. The number of bytes written depends on the pointer type. It is the same for all primitive types but structs are a little different.</p>
+
+<h3 id="pointer-arithmetic" class="title-text">Pointer Arithmetic</h3>
+
+<p>You can add an integer to a pointer. However, the pointer type is used to determine how much to increment the pointer. For char pointers this is trivial because characters are always one byte:</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>If an int is 4 bytes then ptr+1 points to 4 bytes after whatever ptr is pointing at.</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>Because pointer arithmetic in C is always automatically scaled by the size of the type that is pointed to, you can’t perform pointer arithmetic on void pointers.</p>
+
+<p>You can think of pointer arithmetic in C as essentially doing the following</p>
+
+<p>If I want to do</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>Think</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>To get the value. <strong>Every time you do pointer arithmetic, take a deep breath and make sure that you are shifting over the number of bytes you think you are shifting over.</strong></p>
+
+<h3 id="what-is-a-void-pointer" class="title-text">What is a void pointer?</h3>
+
+<p>A pointer without a type (very similar to a void variable). Void pointers are used when either a datatype you’re dealing with is unknown or when you’re interfacing C code with other programming languages. You can think of this as a raw pointer, or just a memory address. You cannot directly read or write to it because the void type does not have a size. For Example</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>This does not require a cast because C automatically promotes <span><code class="highlighter-rouge">void*</code></span> to its appropriate type. <strong>Note:</strong></p>
+
+<p><span><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/gcc" class="fancy-link">gcc</a></code></span> and <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/1/clang" class="fancy-link">clang</a></code></span> are not total ISO-C compliant, meaning that they will let you do arithmetic on a void pointer. They will treat it as a <span><code class="highlighter-rouge">char *</code></span> pointer. Do not do this because it may not work with all compilers!</p>
+
+</div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="shell" class="title-text">Shell<a class="anchor title-text" href="#shell">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Look in the appendix for Life in the Terminal!</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="common-bugs" class="title-text">Common Bugs<a class="anchor title-text" href="#common-bugs">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>In the above code it simply changes the dest pointer to point to source string. Also the nuls bytes are not copied. Here’s a better version -</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Note it’s also usual to see the following kind of implementation, which does everything inside the expression test, including copying the nul byte.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<div class="pad"><div class="card">
+<h4 id="double-frees">Double Frees</h4>
+
+<p>A double free error is when you accidentally attempt to free the same allocation twice.</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>The fix is first to write correct programs! Secondly, it’s good programming hygiene to reset pointers once the memory has been freed. This ensures the pointer can’t be used incorrectly without the program crashing.</p>
+
+<p>Fix:</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<h3 id="returning-pointers-to-automatic-variables" class="title-text">Returning pointers to automatic variables</h3>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>Automatic variables are bound to stack memory only for the lifetime of the function. After the function returns it is an error to continue to use the memory. ## Insufficient memory allocation</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>In the above example, we needed to allocate enough bytes for the struct. Instead, we allocated enough bytes to hold a pointer. Once we start using the user pointer we will corrupt memory. The correct code is shown below.</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<h3 id="buffer-overflow-underflow" class="title-text">Buffer overflow/ underflow</h3>
+
+<p>Famous example: Heart Bleed (performed a memcpy into a buffer that was of insufficient size). Simple example: implement a strcpy and forget to add one to strlen, when determining the size of the memory required.</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>C does not check that pointers are valid. The above example writes into <span><code class="highlighter-rouge">array[10]</code></span> which is outside the array bounds. This can cause memory corruption because that memory location is probably being used for something else. In practice, this can be harder to spot because the overflow/underflow may occur in a library call e.g.</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<div class="pad"><div class="card">
+<h5 id="strings-require-strlens1-bytes">Strings require strlen(s)+1 bytes</h5>
+
+<p>Every string must have a null byte after the last characters. To store the string “Hi” it takes 3 bytes: <span>[</span>H<span>]</span> <span>[</span>i<span>]</span> <span>[</span>.</p>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<h3 id="using-uninitialized-variables" class="title-text">Using uninitialized variables</h3>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>Automatic variables hold garbage (whatever bit pattern happened to be in memory). It is an error to assume that it will always be initialized to zero.</p>
+
+<h3 id="assuming-uninitialized-memory-will-be-zeroed" class="title-text">Assuming Uninitialized memory will be zeroed</h3>
+
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+<p>Automatic (temporary variables) are not automatically initialized to zero. Heap allocations using malloc are not automatically initialized to zero.</p>
+
+</div></div>
+</div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="logic-and-program-flow-mistakes" class="title-text">Logic and Program flow mistakes<a class="anchor title-text" href="#logic-and-program-flow-mistakes">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<h3 id="equal-vsequality" class="title-text">Equal vs. equality</h3>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<h3 id="undeclared-or-incorrectly-prototyped-functions" class="title-text">Undeclared or incorrectly prototyped functions</h3>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>The system function ‘time’ actually takes a parameter (a pointer to some memory that can receive the time_t structure). The compiler did not catch this error because the programmer did not provide a valid function prototype by including <span><code class="highlighter-rouge">time.h</code></span></p>
+<h3 id="extra-semicolons" class="title-text">Extra Semicolons</h3>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>However, the following code is perfectly OK.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>It is OK to have this kind of code, because the C language uses semicolons (;) to separate statements. If there is no statement in between semicolons, then there is nothing to do and the compiler moves on to the next statement</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="topics" class="title-text">Topics<a class="anchor title-text" href="#topics">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>
+    <p>C Strings representation</p>
+  </li>
+  <li>
+    <p>C Strings as pointers</p>
+  </li>
+  <li>
+    <p>char p<span>[</span><span>]</span>vs char* p</p>
+  </li>
+  <li>
+    <p>Simple C string functions (strcmp, strcat, strcpy)</p>
+  </li>
+  <li>
+    <p>sizeof char</p>
+  </li>
+  <li>
+    <p>sizeof x vs x*</p>
+  </li>
+  <li>
+    <p>Heap memory lifetime</p>
+  </li>
+  <li>
+    <p>Calls to heap allocation</p>
+  </li>
+  <li>
+    <p>Deferencing pointers</p>
+  </li>
+  <li>
+    <p>Address-of operator</p>
+  </li>
+  <li>
+    <p>Pointer arithmetic</p>
+  </li>
+  <li>
+    <p>String duplication</p>
+  </li>
+  <li>
+    <p>String truncation</p>
+  </li>
+  <li>
+    <p>double-free error</p>
+  </li>
+  <li>
+    <p>String literals</p>
+  </li>
+  <li>
+    <p>Print formatting.</p>
+  </li>
+  <li>
+    <p>memory out of bounds errors</p>
+  </li>
+  <li>
+    <p>static memory</p>
+  </li>
+  <li>
+    <p>fileio POSIX vs. C library</p>
+  </li>
+  <li>
+    <p>C io fprintf and printf</p>
+  </li>
+  <li>
+    <p>POSIX file IO (read, write, open)</p>
+  </li>
+  <li>
+    <p>Buffering of stdout</p>
+  </li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="questionsexercises" class="title-text">Questions/Exercises<a class="anchor title-text" href="#questionsexercises">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>
+    <p>What does the following print out?</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p>What are the differences between the following two declarations? What does <span><code class="highlighter-rouge">sizeof</code></span> return for one of them?</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p>What is a string in c?</p>
+  </li>
+  <li>
+    <p>Code up a simple <span><code class="highlighter-rouge">my_strcmp</code></span>. How about <span><code class="highlighter-rouge">my_strcat</code></span>, <span><code class="highlighter-rouge">my_strcpy</code></span>, or <span><code class="highlighter-rouge">my_strdup</code></span>? Bonus: Code the functions while only going through the strings <em>once</em>.</p>
+  </li>
+  <li>
+    <p>What should the following usually return?</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p>What is <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code></span>? How is it different than <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/calloc" class="fancy-link">calloc</a></code></span>. Once memory is <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/malloc" class="fancy-link">malloc</a></code></span>ed how can I use <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/realloc" class="fancy-link">realloc</a></code></span>?</p>
+  </li>
+  <li>
+    <p>What is the <span><code class="highlighter-rouge">&amp;</code></span> operator? How about <span><code class="highlighter-rouge">*</code></span>?</p>
+  </li>
+  <li>
+    <p>Pointer Arithmetic. Assume the following addresses. What are the following shifts?</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+
+    <ul>
+      <li>
+        <p><span><code class="highlighter-rouge">ptr + 2</code></span></p>
+      </li>
+      <li>
+        <p><span><code class="highlighter-rouge">ptr + 4</code></span></p>
+      </li>
+      <li>
+        <p><span><code class="highlighter-rouge">ptr[0] + 4</code></span></p>
+      </li>
+      <li>
+        <p><span><code class="highlighter-rouge">ptr[1] + 2000</code></span></p>
+      </li>
+      <li>
+        <p><span><code class="highlighter-rouge">*((int)(ptr + 1)) + 3</code></span></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>How do we prevent double free errors?</p>
+  </li>
+  <li>
+    <p>What is the printf specifier to print a string, <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/int" class="fancy-link">int</a></code></span>, or <span><code class="highlighter-rouge"><a href="https://linux.die.net/man/3/char" class="fancy-link">char</a></code></span>?</p>
+  </li>
+  <li>
+    <p>Is the following code valid? If so, why? Where is <span><code class="highlighter-rouge">output</code></span> located?</p>
+
+    <div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+  </li>
+  <li>
+    <p>Write a function that accepts a string and opens that file prints out the file 40 bytes at a time but every other print reverses the string (try using POSIX API for this).</p>
+  </li>
+  <li>
+    <p>What are some differences between the POSIX filedescriptor model and C’s <span><code class="highlighter-rouge">FILE*</code></span> (ie what function calls are used and which is buffered)? Does POSIX use C’s <span><code class="highlighter-rouge">FILE*</code></span> internally or vice versa?</p>
+  </li>
+</ul></div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook_project/Introc.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

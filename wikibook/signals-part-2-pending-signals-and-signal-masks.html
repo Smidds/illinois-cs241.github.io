@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Signals, Part 2: Pending Signals and Signal Masks</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Signals, Part 2: Pending Signals and Signal Masks
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/Signals,-Part-2:-Pending-Signals-and-Signal-Masks">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_how-can-i-learn-more-about-signals" href="#how-can-i-learn-more-about-signals" class="fancy-link">How can I learn more about signals?</a></li>
+<li><a id="toc_signal-terminology" href="#signal-terminology" class="fancy-link">Signal Terminology</a></li>
+<li><a id="toc_what-is-a-processs-signal-disposition" href="#what-is-a-processs-signal-disposition" class="fancy-link">What is a process’s signal disposition?</a></li>
+<li><a id="toc_can-multiple-signals-be-queued" href="#can-multiple-signals-be-queued" class="fancy-link">Can multiple signals be queued?</a></li>
+<li><a id="toc_how-do-i-block-signals" href="#how-do-i-block-signals" class="fancy-link">How do I block signals?</a></li>
+<li><a id="toc_what-happens-when-creating-a-new-thread" href="#what-happens-when-creating-a-new-thread" class="fancy-link">What happens when creating a new thread?</a></li>
+<li><a id="toc_what-happens-when-forking" href="#what-happens-when-forking" class="fancy-link">What happens when forking?</a></li>
+<li><a id="toc_what-happens-during-exec" href="#what-happens-during-exec" class="fancy-link">What happens during exec?</a></li>
+<li><a id="toc_what-happens-during-fork" href="#what-happens-during-fork" class="fancy-link">What happens during fork?</a></li>
+<li><a id="toc_how-do-i-block-signals-in-a-single-threaded-program" href="#how-do-i-block-signals-in-a-single-threaded-program" class="fancy-link">How do I block signals in a single-threaded program?</a></li>
+<li><a id="toc_how-do-i-block-signals-in-a-multi-threaded-program" href="#how-do-i-block-signals-in-a-multi-threaded-program" class="fancy-link">How do I block signals in a multi-threaded program?</a></li>
+<li><a id="toc_how-are-pending-signals-delivered-in-a-multi-threaded-program" href="#how-are-pending-signals-delivered-in-a-multi-threaded-program" class="fancy-link">How are pending signals delivered in a multi-threaded program?</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-can-i-learn-more-about-signals" class="title-text">How can I learn more about signals?<a class="anchor title-text" href="#how-can-i-learn-more-about-signals">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The linux man pages discusses signal system calls in section 2. There is also a longer article in section 7 (though not in OSX/BSD):</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>man -s7 signal
+</code></pre></div></div>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="signal-terminology" class="title-text">Signal Terminology<a class="anchor title-text" href="#signal-terminology">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><ul>
+  <li>Generated - The signal is being created in the kernel by the kill system call.</li>
+  <li>Pending - Not delivered yet but soon to be delivered</li>
+  <li>Blocked - Not delivered because no signal disposition lets the signal be delivered</li>
+  <li>Delivered - Delivered to the process, the action described is being taken</li>
+  <li>Caught - When the process stops a signal from destroying it and does something else with it instead</li>
+</ul></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-a-processs-signal-disposition" class="title-text">What is a process’s signal disposition?<a class="anchor title-text" href="#what-is-a-processs-signal-disposition">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>For each process, each signal has a disposition which means what action will occur when a signal is delivered to the process. For example, the default disposition SIGINT is to terminate it. The signal disposition can be changed by calling signal() (which is simple but not portable as there are subtle variations in its implementation on different POSIX architectures and also not recommended for multi-threaded programs) or <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sigaction" class="fancy-link">sigaction</a></code> (discussed later). You can imagine the processes’ disposition to all possible signals as a table of function pointers entries (one for each possible signal).</p>
+<p>The default disposition for signals can be to ignore the signal, stop the process, continue a stopped process, terminate the process, or terminate the process and also dump a ‘core’ file. Note a core file is a representation of the processes’ memory state that can be inspected using a debugger.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="can-multiple-signals-be-queued" class="title-text">Can multiple signals be queued?<a class="anchor title-text" href="#can-multiple-signals-be-queued">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>No - however it is possible to have signals that are in a pending state. If a signal is pending, it means it has not yet been delivered to the process. The most common reason for a signal to be pending is that the process (or thread) has currently blocked that particular signal.</p>
+<p>If a particular signal, e.g. SIGINT, is pending then it is not possible to queue up the same signal again.</p>
+<p>It <em>is</em> possible to have more than one signal of a different type in a pending state. For example SIGINT and SIGTERM signals may be pending (i.e. not yet delivered to the target process)</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-block-signals" class="title-text">How do I block signals?<a class="anchor title-text" href="#how-do-i-block-signals">#</a>
+</h2></div>
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Signals can be blocked (meaning they will stay in the pending state) by setting the process signal mask or, when you are writing a multi-threaded program, the thread signal mask.</p></div></div></div>
+</div></div>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-happens-when-creating-a-new-thread" class="title-text">What happens when creating a new thread?<a class="anchor title-text" href="#what-happens-when-creating-a-new-thread">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The new thread inherits a copy of the calling thread’s mask</p>
+<pre><code class="language-C"><span class="n">pthread_sigmask</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-happens-when-forking" class="title-text">What happens when forking?<a class="anchor title-text" href="#what-happens-when-forking">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The child process inherits a copy of the parent’s signal dispositions. In other words, if you have installed a SIGINT handler before forking, then the child process will also call the handler if a SIGINT is delivered to the child.</p>
+<p>Note pending signals for the child are <em>not</em> inherited during forking.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-happens-during-exec" class="title-text">What happens during exec?<a class="anchor title-text" href="#what-happens-during-exec">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Both the signal mask and the signal disposition carries over to the exec-ed program. <a href="Source" class="fancy-link wiki-link">https://www.gnu.org/software/libc/manual/html_node/Executing-a-File.html#Executing-a-File</a> Pending signals are preserved as well.  Signal handlers are reset, because the original handler code has disappeared along with the old process.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-happens-during-fork" class="title-text">What happens during fork?<a class="anchor title-text" href="#what-happens-during-fork">#</a>
+</h2></div>
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The child process inherits a copy of the parent process’s signal disposition and a copy of the parent’s signal mask.</p>
+<p>For example if <code class="highlighter-rouge">SIGINT</code> is blocked in the parent it will be blocked in the child too.
+For example if the parent installed a handler (call-back function) for SIG-INT then the child will also perform the same behavior.</p>
+<p>Pending signals however are not inherited by the child.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-block-signals-in-a-single-threaded-program" class="title-text">How do I block signals in a single-threaded program?<a class="anchor title-text" href="#how-do-i-block-signals-in-a-single-threaded-program">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Use <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/sigprocmask" class="fancy-link">sigprocmask</a></code>! With sigprocmask you can set the new mask, add new signals to be blocked to the process mask, and unblock currently blocked signals. You can also determine the existing mask (and use it for later) by passing in a non-null value for oldset.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>int sigprocmask(int how, const sigset_t *set, sigset_t *oldset);`
+</code></pre></div></div>
+<p>From the Linux man page of sigprocmask,</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SIG_BLOCK: The set of blocked signals is the union of the current set and the set argument.
+SIG_UNBLOCK: The signals in set are removed from the current set of blocked signals. It is permissible to attempt to unblock a signal which is not blocked.
+SIG_SETMASK: The set of blocked signals is set to the argument set.
+
+</code></pre></div></div>
+<p>The sigset type behaves as a bitmap, except functions are used rather than explicitly setting and unsetting bits using &amp; and |.</p>
+<p>It is a common error to forget to initialize the signal set before modifying one bit. For example,</p>
+<pre><code class="language-C"><span class="n">sigset_t</span>
+</code></pre>
+<p>Correct code initializes the set to be all on or all off. For example,</p>
+<pre><code class="language-C"><span class="n">sigfillset</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-do-i-block-signals-in-a-multi-threaded-program" class="title-text">How do I block signals in a multi-threaded program?<a class="anchor title-text" href="#how-do-i-block-signals-in-a-multi-threaded-program">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Blocking signals is similar in multi-threaded programs to single-threaded programs:</p>
+<ul>
+  <li>Use pthread_sigmask instead of sigprocmask</li>
+  <li>Block a signal in all threads to prevent its asynchronous delivery</li>
+</ul>
+<p>The easiest method to ensure a signal is blocked in all threads is to set the signal mask in the main thread before new threads are created</p>
+<pre><code class="language-C"><span class="n">sigemptyset</span>
+</code></pre>
+<p>Just as we saw with sigprocmask, pthread_sigmask includes a ‘how’ parameter that defines how the signal set is to be used:</p>
+<pre><code class="language-C"><span class="n">pthread_sigmask</span>
+</code></pre>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-are-pending-signals-delivered-in-a-multi-threaded-program" class="title-text">How are pending signals delivered in a multi-threaded program?<a class="anchor title-text" href="#how-are-pending-signals-delivered-in-a-multi-threaded-program">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>A signal is delivered to any signal thread that is not blocking that signal.</p>
+<p>If the two or more threads can receive the signal then which thread will be interrupted is arbitrary!</p>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/signals-part-2-pending-signals-and-signal-masks.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

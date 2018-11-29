@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Advanced C</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Advanced C
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/illinois-cs241/assignment-docs/blob/master//advanced_c.md">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+              <div class="submission-wrapper">
+                
+                  <b>Entire Assignment</b> due <b>10/01/2018 12:00 am</b><br/>
+                  
+                    <b>Graded files:</b>
+                    <ul>
+                      
+                        <li>dictionary.c</li>
+                      
+                    </ul>
+                  
+                
+              </div>
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc"><li><a id="toc_requirements" href="#requirements" class="fancy-link">Requirements:</a></li></ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+  <div class="pad"><div class="card">
+<div class="title"><h2 id="learning-objectives" class="title-text">Learning Objectives<a class="anchor title-text" href="#learning-objectives">#</a>
+</h2></div>
+  
+  
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>
+    The learning objectives for Advanced C are: <br>
+    </p>
+<ul class="mdl-list">
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Implementing an object with blocks</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Understanding extensions to the C language</span>
+        </li>
+      
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Exploring modern syntax structures in C</span>
+        </li>
+      
+    </ul>
+</div></div></div>
+</div></div>
+</div>
+          <div class="wrapper">
+<p>Welcome to the first CS296 assignment! Before we begin, let’s go through a quick
+overview of the structure of this document. Each document for CS2916-41 will
+have the following sections:</p>
+
+<ul>
+  <li>Introduction - a quick blurb providing some motivation behind the MP</li>
+  <li>Requirements - the minimum requirements you will need to satisfy to get a full
+score on the MP</li>
+  <li>Walkthrough - this may not be in every document, but for some assignments, we
+will include a ‘walkthrough’ section that will have more hints on how to
+complete the assignment.</li>
+  <li>Analysis - a discussion on what we hoped you learned from completing the
+assignment and some further challenges or relevant resources.</li>
+</ul>
+
+<p>If you are already comfortable with the present topic or you’d like to explore 
+it on your own before looking at the walkthrough/discussion, feel free to do so 
+(although we recommend at least coming back here for the analysis section)! This
+class is all about explorative learning and is much more open ended than CS241. 
+While your MPs and Labs from CS241 will help you master the techniques and gain 
+the knowledge required to call yourself a systems programmer, these MPs will be 
+brainteasers or puzzles to further your interest in a particular area.</p>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="requirements" class="title-text">Requirements:<a class="anchor title-text" href="#requirements">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Create an implementation of a dictionary by using clang’s blocks!
+Your implementation will have a single entry point that is a variadic function.
+You will need to support the following operations:</p>
+<ul>
+  <li>lookup</li>
+  <li>insert</li>
+  <li>destroy</li>
+</ul>
+<p>The runtime of your implementation does not matter (O(n) lookups are fine!)</p>
+<p>To invoke a particular operation the user should pass in a string with the name
+of that operation, followed by any arguments that operation may use. The
+arguments consumed by each of the operations, and their behaviors are described
+in the pseudo code example below:</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>You should also be able to use multiple instances of the dictionary at any given
+time (it doesn’t have to be thread safe, if you already know what that means).</p>
+<p>The dictionary has a destructor method <code class="highlighter-rouge">_dictionary_destructor</code> which should
+call the dictionary’s destroy method and <code class="highlighter-rouge">Block_release</code> on the dictionary.
+We’ve set this up to be the case automatically when <code class="highlighter-rouge">auto_cleanup</code> is called on
+the created dictionary.</p>
+<p>Ideally, this assignment shouldn’t take more than 2 hours using the walkthrough.
+If it does take you longer than that, we encourage you to reach out to course
+staff and detail where you’re stuck or what seems difficult about the
+assignment! This will help us update our documentation and/or the course content
+accordingly.</p>
+<h3 id="optional-exploring-variadic-functions" class="title-text">(OPTIONAL) Exploring variadic functions</h3>
+<p>Variadic functions are a controversial part of the C language - and for good
+reason! A variadic function is one that doesn’t define how many parameters it
+expects at compile time. There’s some clear use cases for variadic functions,
+such as <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code>. Have you ever wonder how to declare a function like <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/printf" class="fancy-link">printf</a></code>
+that can take in a variable number of arguments of any type? The answer is to
+declare a variadic function. Of course, variadic functions have some nasty
+downsides. One of them is that it simply leads to code that’s harder to read
+since it obtains its arguments in a strange way. Another major downside is that
+you can’t tell the compiler what types you want your arguments to have - leading
+to more situations where a programmer can create insidious bugs.</p>
+<p><em>fun fact:</em> Variadic functions are pretty common in languages, a notable
+example being python. However, python has better semantics around this feature
+by providing an array containing all passed in arguments as opposed to C’s
+approach described below.</p>
+<p>So how can we declare a variadic function? In early versions of C, it was as
+simple as just writing:</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>A far cry from what something we might see today:</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Let’s try writing an actual variadic function. The function that we’re going to
+write is going to take in an integer <code class="highlighter-rouge">n</code> telling us how many arguments to expect
+and then <code class="highlighter-rouge">n</code> integers which we will find the sum of. We’ll start with the
+prototype of the function:</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>This is the same as the example we have above. Note that it’s not important for
+our return type to be int, or the first parameter’s type to be int. It is
+required for there to be one or more named arguments before we have the <code class="highlighter-rouge">...</code>
+that signifies that this is a variadic function. We need at least one named
+parameter because we’re going to use it to obtain the unnamed parameters. In C,
+when passing in arguments, the arguments are placed onto the stack after the
+return address. When we’re looking for variadic arguments, all we have to do is
+get the pointer to the last named argument, and continue reading the stack
+memory after it. Of course, this requires us to make assumptions about the type
+of data that was initially passed in. Luckily, by including the header <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/stdarg" class="fancy-link">stdarg</a></code>
+we get some macros that make it easier for us to extract these arguments.</p>
+<p>The first thing we’re going to need is a variable of type <code class="highlighter-rouge">va_list</code> that stores
+the state required to figure out where the next argument will be located. We
+will be initializing this list with the macro <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/va_start" class="fancy-link">va_start</a></code> which will setup our
+list so that we can start pulling arguments out of it.</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Note that <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/va_start" class="fancy-link">va_start</a></code> takes in the last named argument as one of its parameters.
+Now we can start pulling values out of the stack. To do this we can use the
+macro <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/va_arg" class="fancy-link">va_arg</a></code>. <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/va_arg" class="fancy-link">va_arg</a></code> takes in a <code class="highlighter-rouge">va_list</code> and a type so that it knows what
+type the argument it pulls out should have. We can’t normally pass a type name
+as an argument to a function, but there’s nothing stopping us from passing in a
+type name as a parameter to a macro. Putting this information together, we get:</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>In this example we had the first argument to the function be the number of
+arguments we’re going to need. This isn’t always the case. Some functions use
+other mechanisms such as reading in elements until it reads NULL or some other
+special value.</p>
+<p>Try writing your own variadic functions in C! One interesting exercise could be
+to write a simple parser for an arithmetic expression such as <code class="highlighter-rouge">$1 + $2</code> and
+replace <code class="highlighter-rouge">$n</code> with the value of the nth variadic argument to make a simple
+calculator.</p>
+<p>Note that C also has variadic macros, which work a bit differently. Look online
+to see how you can write a variadic macros which works out how many arguments
+were passed in to it.</p>
+<h3 id="optional-exploring-clang-blocks" class="title-text">(OPTIONAL) Exploring clang blocks</h3>
+<p>Clang blocks are a way to write functions within functions. It’s a feature that
+was initially developed by Apple for use in Objective-C, but eventually made
+it’s way back to C as a language extension.</p>
+<p>Blocks give us better ways to describe functions and enable us to pass them
+around in ways that are increasingly common in languages such as Python,
+JavaScript and almost all functional programming languages (e.g. Haskell, OCaml,
+etc.).</p>
+<p>So what is a Block? A Block is essentially a function pointer but also some
+state that the function might reference. Let’s take a look as some example
+python code.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">adder</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add_to_x</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+    <span class="k">return</span> <span class="n">add_to_x</span>
+</code></pre></div></div>
+<p>This function takes in a number, and then returns a function which takes in
+another number and spits out the sum of the two numbers. However, in order for
+that inner function to work, it needs to remember what value was passed in for
+<code class="highlighter-rouge">x</code> so that it can reuse it. In other words, it needs to remember what was
+inside the scope of its parent function.</p>
+<p>The corresponding implementation of the above function in C using Clang’s Blocks
+would be:</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>I’m using a <code class="highlighter-rouge">typedef</code> to make the code a bit more readable. You may note that
+block types look similar to function pointers, except that the <code class="highlighter-rouge">*</code> is replaced
+by a <code class="highlighter-rouge">^</code>. We’re also using a function <code class="highlighter-rouge">Block_copy</code> which takes in a block and
+copies the current scope into it. By default, Blocks assume that they don’t need
+to save the scope of the parent, and that they can just read the values present.
+This works as long as those variables haven’t gone out of scope, at which point,
+executing the function will lead to undefined behavior. The actual code defining
+the Block is just:</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>We can leave off the return type (int) and let clang figure that out for us, so
+all we have to write is:</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>Pretty straightforward syntax if you ask me! Of course, since we called
+<code class="highlighter-rouge">Block_copy</code> we’ve allocated some memory to hold stuff that the parent owned. We
+will need to deallocate this using <code class="highlighter-rouge">Block_release</code>. A complete program may look
+like:</p>
+<div class="language-c highlighter-rouge">
+<span class="o">&lt;</span>
+</div>
+<p>We can also have variadic blocks - which you will need to complete this
+assignment.</p>
+<h3 id="hints" class="title-text">Hints</h3>
+<p>So what will our implementation of the dictionary actually look like? We know we
+need some way to store the <code class="highlighter-rouge">data_value</code> elements that we will be getting from
+insert. The easiest way to do this would be to declare some variable
+representing an array of <code class="highlighter-rouge">data_values</code>. The challenge is that we need to store
+this data somewhere that the function that represents the dictionary can access
+every time it is called.</p>
+<p>One way we could accomplish this is with a global variable. This could be an
+interesting solution, but we would like to able to use multiple instances.
+Although there are ways to make this work using globally scoped variables (Can
+you think of any?) there are far better solutions out there. Globally scoped
+variables can be hard to document and keep track of. It also exposes the
+internals of your data structure to the world, and could lead to potentially
+strange bugs causes by accidentally changing internal values.</p>
+<p>We need something that acts like a global variable, in that we have access to it
+on every call of the function without needing the caller to pass it in, but we
+want this variable to only be scoped to the dictionary. Thought of anything that
+fits the bill here? (Take a moment to see if you can figure it out for
+yourself!)</p>
+<p>We can use the <code class="highlighter-rouge">__block</code> keyword! When using the clang blocks extension,
+declaring a variable as <code class="highlighter-rouge">__block</code> will make the variable act like a <code class="highlighter-rouge">static</code>
+variable but bound to a block. Using <code class="highlighter-rouge">static</code> in a block is undefined behavior.
+So instead of using a global array of dict_values, we can use a static one.</p>
+<p>This brings us to our next point. We don’t know how many elements we have
+beforehand, when declaring an array we have to specify how many elements we
+expect to have.  A better choice might be to just have a pointer instead of an
+array, and then get space for it using calloc or malloc. We can still treat the
+variable as an array, and easily add more space to the end using realloc! The
+only thing we might need to keep track of is how many elements we have.</p>
+<p>In order to make our implementation follow good coding practices, we should
+probably put each operation in it’s own block inside the dictionary
+implementation (its like inception, but with functions). This will produce code
+that looks vaguely similar to definitions of a class in C++ or other object
+oriented languages.</p>
+<p>Now, we just need a way to access the functions we’ve built in our dictionary.
+To accomplish this we can just write a series of <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/if" class="fancy-link">if</a></code> statements and find out
+what action the user wants to perform. Once we know what action the user is
+requesting, we can assume that the remaining variadic arguments conform to the
+specifications detailed above.</p>
+</div></div></div>
+</div></div>
+
+</div>
+          
+          <div class="wrapper">
+<div class="pad"><div class="card">
+<div class="title"><h2 id="submission-instructions" class="title-text">Submission Instructions<a class="anchor title-text" href="#submission-instructions">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Please read details on <a href="/#academic-integrity" class="fancy-link wiki-link">Academic Integrity</a> fully. These are shared by all assignments in CS 241.</p>
+<p>We will be using GitHub as our hand-in system this semester. Our grading system will checkout your most recent (pre-deadline) commit for grading. Therefore, to hand in your code, all you have to do is commit and push to your Github repository.</p>
+<p>To check out the provided code for <code class="highlighter-rouge">advanced_c</code> from the class repository, go to your cs241 directory (the one you checked out for “know your tools”) and run:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git pull release master
+</code></pre></div></div>
+<p>If you run <code class="highlighter-rouge"><a href="https://linux.die.net/man/1/ls" class="fancy-link">ls</a></code> you will now see a <code class="highlighter-rouge">advanced_c</code> folder, where you can find this assignment! To commit your changes (send them to us), type:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git add advanced_c
+git commit -m "advanced_c submission"
+git push origin master
+</code></pre></div></div>
+<p>Your repository directory can be viewed from a web browser from the following URL: 
+<a href="https://github-dev.cs.illinois.edu/cs241-fa18/NETID/tree/master/advanced_c" class="fancy-link wiki-link">https://github-dev.cs.illinois.edu/cs241-fa18/NETID/tree/master/advanced_c</a> where NETID is your University NetID. It is important to check that the files you expect to be graded are present and up to date in your remote git copy.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="assignment-feedback" class="title-text">Assignment Feedback<a class="anchor title-text" href="#assignment-feedback">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>We strive to provide the best assignments that we can for this course, and we would like your feedback on them!</p>
+<p>This is the form we will use to evaluate our assignments. We appreciate the time you take to give us your honest feedback and we promise to keep improving the course to make your experience in CS 241 the best it can be.</p>
+<p><a href="https://goo.gl/forms/hREf0ojFWumYfQF12" class="fancy-link wiki-link">https://goo.gl/forms/hREf0ojFWumYfQF12</a></p>
+</div></div></div>
+</div></div>
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_docs/advanced_c.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>

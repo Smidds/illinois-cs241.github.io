@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- If for some reason you are using IE, use edge -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- So bootstrap isn't horrible, set the width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="mask-icon" href="/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+
+  <title>Scheduling, Part 1: Scheduling Processes</title>
+
+  <!-- Reference a CDN so this is properly cached in the browser forever. Unless they clean out the
+       Cache this will incur no load time. Ideally we should put a security checksum but that breaks
+       Firefox development sometimes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Asynchronously load the code style sheet because we want everything loaded as fast as possible
+       Also tag with ?v=time to bust the cache of any browser so updates appear -->
+  <link async rel="stylesheet" href="/css/code-style.css?v='2018-11-28 20:00:31 -0600'">
+
+  <!-- Don't load async because this will make the page render faster, plus the file is small.
+       Also do the same cache busting magic here -->
+  <link rel="stylesheet" href="/css/main.css?v='2018-11-28 20:00:31 -0600'">
+
+</head>
+
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <!-- Navigation button as html so we don't have to resize images -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+
+
+            <!-- Inline tux for speed -->
+            <a id="tuxlink"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAJCAMAAAA4jZ0cAAAAM1BMVEX///8CAgQMDAwsLCw0NDSjbQCkbQC+vbzOkwDU1NTlrADqvADxtgD0vQD12wD+/vz+//yBSdYEAAAAAXRSTlMAQObYZgAAADFJREFUCB0FwQkCQDAQBLCsq6g1/v9aCVQBthUwX8BIgStZCpUvKXSSLs6eyd0Pdg5+JwkBVyC74QYAAAAASUVORK5CYII=" title="Tux" alt="Tux" style="margin-left: 1em; width: 24px; filter: drop-shadow(1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(-1px -1px 0 white); margin-top: 1em;"/></a>
+
+            <a class="navbar-brand navbar-link normal" href="/">CS 241: System Programming</a>
+            <a class="navbar-brand navbar-link small" href="/">CS 241</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li>
+                <a class="navbar-link" href="/assignments.html">Assignments</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/quiz_topics.html">Quizzes</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/help.html">Help!</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/schedule.html">Schedule</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/honors.html">Honors</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/staff.html">The Crew</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/search.html">Search</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook/home.html">Wikibook</a>
+            </li>
+            
+            <li>
+                <a class="navbar-link" href="/wikibook_project/Index.html">Wikibook Project</a>
+            </li>
+            
+          </ul>
+        </div>
+        </div>
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    <div class="col-md-8 col-sm-10 col-xs-12">
+      <div class="wrapper">
+        <div class="pad"><div class="card">
+          <div class="title">
+            <div class="speaker-wrapper">
+              <button onclick="speak()" class="speaker" alt="Read Page"></button>
+            </div>
+            <h1>
+              Scheduling, Part 1: Scheduling Processes
+
+              
+                <a class="github-link hidden-xs" href="https://github.com/angrave/SystemProgramming/wiki/Scheduling,-Part-1:-Scheduling-Processes">Edit on Github</a>
+              
+            </h1>
+          </div>
+          <div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+            
+            
+          </div></div></div>
+        </div></div>
+      </div>
+      
+      <div class="toc-wrapper">
+<h4>Content</h4>
+<ul class="toc">
+<li><a id="toc_how-is-scheduling-measured-and-which-scheduler-is-best" href="#how-is-scheduling-measured-and-which-scheduler-is-best" class="fancy-link">How is scheduling measured and which scheduler is best?</a></li>
+<li><a id="toc_what-is-arrival-time" href="#what-is-arrival-time" class="fancy-link">What is arrival time?</a></li>
+<li><a id="toc_what-is-preemption" href="#what-is-preemption" class="fancy-link">What is preemption?</a></li>
+<li><a id="toc_which-schedulers-suffer-from-starvation" href="#which-schedulers-suffer-from-starvation" class="fancy-link">Which schedulers suffer from starvation?</a></li>
+<li><a id="toc_why-might-a-process-or-thread-be-placed-on-the-ready-queue" href="#why-might-a-process-or-thread-be-placed-on-the-ready-queue" class="fancy-link">Why might a process (or thread) be placed on the ready queue?</a></li>
+<li><a id="toc_what-is-turnaround-time" href="#what-is-turnaround-time" class="fancy-link">What is ‘turnaround time’?</a></li>
+<li><a id="toc_what-is-response-time" href="#what-is-response-time" class="fancy-link">What is ‘response time’?</a></li>
+<li><a id="toc_what-is-wait-time" href="#what-is-wait-time" class="fancy-link">What is ‘wait time’?</a></li>
+<li><a id="toc_what-is-the-convoy-effect" href="#what-is-the-convoy-effect" class="fancy-link">What is the Convoy Effect?</a></li>
+<li><a id="toc_linux-scheduling" href="#linux-scheduling" class="fancy-link">Linux Scheduling</a></li>
+</ul>
+</div>
+      
+      <div id="content">
+          <div class="wrapper">
+
+</div>
+          <div class="wrapper">
+
+<p><a href="https://en.wikipedia.org/wiki/Scheduling_(computing)" class="fancy-link wiki-link">CPU Scheduling</a> is the problem of efficiently selecting which process to run on a system’s CPU cores. In a busy system there will be more ready-to-run processes than there are CPU cores, so the system kernel must evaluate which processes should be scheduled to run on the CPU and which processes should be placed in a ready queue to be executed later.</p>
+
+<p>The additional complexity of multi-threaded and multiple CPU cores are considered a distraction to this initial exposition so are ignored here.</p>
+
+<p>Another gotcha for non-native speakers is the dual meanings of “Time”: The word “Time” can be used in both clock and elapsed duration context. For example “The arrival time of the first process was 9:00am.” and, “The running time of the algorithm is 3 seconds”.</p>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="how-is-scheduling-measured-and-which-scheduler-is-best" class="title-text">How is scheduling measured and which scheduler is best?<a class="anchor title-text" href="#how-is-scheduling-measured-and-which-scheduler-is-best">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Scheduling affects the performance of the system, specifically the <em>latency</em> and <em>throughput</em> of the system. The throughput might be measured by a system value, for example the I/O throughput - the number of bytes written per second, or number of small processes that can complete per unit time, or using a higher level of abstraction for example number of customer records processed per minute. The latency might be measured by the response time (elapse time before a process can start to send a response) or wait time or turnaround time (the elapsed time to complete a task). Different schedulers offer different optimization trade-offs that may or may not be appropriate to desired use - there is no optimal scheduler for all possible environments and goals. For example ‘shortest-job-first’ will minimize total wait time across all jobs but in interactive (UI) environments it would be preferable to minimize response time (at the expense of some throughput), while FCFS seems intuitively fair and easy to implement but suffers from the Convoy Effect.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-arrival-time" class="title-text">What is arrival time?<a class="anchor title-text" href="#what-is-arrival-time">#</a>
+</h2></div>
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>The time at which a process first arrives at the ready queue, and is ready to start executing. If a CPU is idle, the arrival time would also be the starting time of execution.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-preemption" class="title-text">What is preemption?<a class="anchor title-text" href="#what-is-preemption">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Without preemption processes will run until they are unable to utilize the CPU any further. For example the following conditions would remove a process from the CPU and the CPU would be available to be scheduled for other processes: The process terminates due to a signal, is blocked waiting for concurrency primitive, or exits normally.
+Thus once a process is scheduled it will continue even if another process with a high priority (e.g. shorter job) appears on the ready queue.</p>
+<p>With preemption, the existing processes may be removed immediately if a more preferable process is added to the ready queue. For example, suppose at t=0 with a Shortest Job First scheduler there are two processes (P1 P2) with 10 and 20 ms execution times. P1 is scheduled. P1 immediately creates a new process P3, with execution time of 5 ms, which is added to the ready queue. Without preemption, P3 will run 10ms later (after P1 has completed). With preemption, P1 will be immediately evicted from the CPU and instead placed back in the ready queue, and P3 will be executed instead by the CPU.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="which-schedulers-suffer-from-starvation" class="title-text">Which schedulers suffer from starvation?<a class="anchor title-text" href="#which-schedulers-suffer-from-starvation">#</a>
+</h2></div>
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1"><p>Any scheduler that uses a form of prioritization can result in starvation because earlier processes may never be scheduled to run (assigned a CPU). For example with SJF, longer jobs may never be scheduled if the system continues to have many short jobs to schedule. It all depends on the <a href="https://en.wikipedia.org/wiki/Scheduling_(computing)#Types_of_operating_system_schedulers" class="fancy-link wiki-link">type of scheduler</a>.</p></div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="why-might-a-process-or-thread-be-placed-on-the-ready-queue" class="title-text">Why might a process (or thread) be placed on the ready queue?<a class="anchor title-text" href="#why-might-a-process-or-thread-be-placed-on-the-ready-queue">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>A process is placed on the ready queue when it is able to use a CPU. Some examples include:</p>
+<ul>
+  <li>A process was blocked waiting for a <code class="highlighter-rouge"><a href="https://linux.die.net/man/3/read" class="fancy-link">read</a></code> from storage or socket to complete and data is now available.</li>
+  <li>A new process has been created and is ready to start.</li>
+  <li>A process thread was blocked on a synchronization primitive (condition variable, semaphore, mutex lock) but is now able to continue.</li>
+  <li>A process is blocked waiting for a system call to complete but a signal has been delivered and the signal handler needs to run.</li>
+</ul>
+<p>Similar examples can be generated when considering threads.</p>
+<p><code class="highlighter-rouge">start_time</code> is the wall-clock start time of the process (CPU starts working on it)
+<code class="highlighter-rouge">end_time</code> is the end wall-clock of the process (CPU finishes the process)
+<code class="highlighter-rouge">run_time</code> is the total amount of CPU time required
+<code class="highlighter-rouge">arrival_time</code> is the time the process enters the scheduler (CPU may not start working on it)</p>
+</div></div></div>
+</div></div>
+
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-turnaround-time" class="title-text">What is ‘turnaround time’?<a class="anchor title-text" href="#what-is-turnaround-time">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The total time from when you the process arrives to when it ends.</p>
+<p><code class="highlighter-rouge">turnaround_time = end_time - arrival_time</code></p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-response-time" class="title-text">What is ‘response time’?<a class="anchor title-text" href="#what-is-response-time">#</a>
+</h2></div>
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>The total latency (time) that it takes from when the process arrives to when the CPU actually starts working on it.</p>
+<p><code class="highlighter-rouge">response_time = start_time - arrival_time</code></p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-wait-time" class="title-text">What is ‘wait time’?<a class="anchor title-text" href="#what-is-wait-time">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>Wait time is the <em>total</em> wait time i.e. the total time that a process is on the ready queue. A common mistake is to believe it is only the initial waiting time in the ready queue.</p>
+<p>If a CPU intensive process with no I/O takes 7 minutes of CPU time to complete but required 9 minutes of wall-clock time to complete we can conclude that it was placed on the ready-queue for 2 minutes. For those 2 minutes the process was ready to run but had no CPU assigned. It does not matter when the job was waiting, the wait time is 2 minutes.</p>
+<p><code class="highlighter-rouge">wait_time  = (end_time - arrival_time) - run_time</code></p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="what-is-the-convoy-effect" class="title-text">What is the Convoy Effect?<a class="anchor title-text" href="#what-is-the-convoy-effect">#</a>
+</h2></div>
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>“The Convoy Effect is where I/O intensive processes are continually backed up, waiting for CPU-intensive processes that hog the CPU. This results in poor I/O performance, even for processes that have tiny CPU needs.”</p>
+<p>Suppose the CPU is currently assigned to a CPU intensive task and there is a set of I/O intensive processes that are in the ready queue. These processes require just a tiny amount of CPU time but they are unable to proceed because they are waiting for the CPU-intensive task to be removed from the processor. These processes are starved until the the CPU bound process releases the CPU. But the CPU will rarely be released (for example in the case of a FCFS scheduler, we must wait until the processes is blocked due to an I/O request). The I/O intensive processes can now finally satisfy their CPU needs, which they can do quickly because their CPU needs are small and the CPU is assigned back to the CPU-intensive process again. Thus the I/O performance of the whole system suffers through an indirect effect of starvation of CPU needs of all processes.</p>
+<p>This effect is usually discussed in the context of FCFS scheduler, however a round robin scheduler can also exhibit the Convoy effect for long time-quanta.</p>
+</div></div></div>
+</div></div>
+<div class="pad"><div class="card">
+<div class="title"><h2 id="linux-scheduling" class="title-text">Linux Scheduling<a class="anchor title-text" href="#linux-scheduling">#</a>
+</h2></div>
+
+
+
+
+
+
+
+
+
+<div class="container-fluid"><div class="row"><div class="content col-sm-11 .col-sm-offset-1">
+<p>As of February 2016, Linux by default uses the <em>Completely Fair Scheduler</em> for CPU scheduling and the Budget Fair Scheduling “BFQ” for I/O scheduling. Appropriate scheduling can have a significant impact on throughput and latency. Latency is particularly important for interactive and soft-real time applications such as audio and video streaming. See the discussion and comparative benchmarks <a href="https://lkml.org/lkml/2014/5/27/314" class="fancy-link wiki-link">here</a> for more information.</p>
+<p>Here is how the CFS schedules</p>
+<ul>
+  <li>The CPU creates a Red-Black tree with the processes virtual runtime (runtime / nice_value) and sleeper fairness (if the process is waiting on something give it the CPU when it is done waiting).</li>
+  <li>(Nice values are the kernel’s way of giving priority to certain processes, the lower nice value the higher priority)</li>
+  <li>The kernel chooses the lowest one based on this metric and schedules that process to run next, taking it off the queue. Since the red-black tree is self balancing this operation is guaranteed $O(log(n))$ (selecting the min process is the same runtime)</li>
+</ul>
+<p>Although it is called the Fair Scheduler there are a fair bit of problems.</p>
+<ul>
+  <li>Groups of processes that are scheduled may have imbalanced loads so the scheduler roughly distributes the load. When another CPU gets free it can only look at the average load of a group schedule not the individual cores. So the free CPU may not take the work from a CPU that is burning so long as the average is fine.</li>
+  <li>If a group of processes is running on non-adjacent cores then there is a bug. If the two cores are more than a hop away, the load balancing algorithm won’t even consider that core. Meaning if a CPU is free and a CPU that is doing more work is more than a hop away, it won’t take the work (may have been patched).</li>
+  <li>After a thread goes to sleep on a subset of cores, when it wakes up it can only be scheduled on the cores that it was sleeping on. If those cores are now busy, the thread will have to wait on them, wasting opportunities to use other idle cores.</li>
+  <li>To read more on the problems of the Fair Scheduler, read <a href="https://blog.acolyer.org/2016/04/26/the-linux-scheduler-a-decade-of-wasted-cores" class="fancy-link wiki-link">here</a>.</li>
+</ul>
+</div></div></div>
+</div></div>
+</div>
+          
+          <div class="wrapper">
+</div>
+      </div>
+      <div class="col-md-2 col-sm-1 col-xs-0"></div>
+    </div>
+  </div>
+  <script>
+    var github_repo = "illinois-cs241/illinois-cs241.github.io";
+    var github_path = "_wikibook/scheduling-part-1-scheduling-processes.md";
+  </script>
+  <!-- Mathjax takes a while to load so do a lazy load to so we can get accessibility -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" crossorigin="anonymous"></script>
+
+<!-- Again bust cache on the main.js file -->
+<script src="/js/main.js?v='2018-11-28 20:00:31 -0600'"></script>
+
+<script>
+<footer class="">
+
+<div class="container-fluid">
+<div class="shadow"></div>
+
+</div>
+
+</footer>
+
+</body>
+</html>
